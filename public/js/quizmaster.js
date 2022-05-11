@@ -1,10 +1,12 @@
+const headline = document.getElementById('headline');
 const answForm = document.getElementById('answ');
 const ServerMessage = document.getElementById('msg-block');
 
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username');
-// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
+window.history.replaceState('', 'Quiz-Tool - screetox', '/');
+headline.innerHTML = `Hallo, ${username}!`;
 
 const socket = io();
 
@@ -34,7 +36,7 @@ function outputServerMessage(msg) {
     div.innerHTML = msg;
     ServerMessage.insertBefore(div, ServerMessage.firstChild);
 
-    setTimeout(function(){
+    setTimeout(function() {
         ServerMessage.removeChild(ServerMessage.lastChild);
     }, 300000);
 }

@@ -13,7 +13,7 @@ if (msg) {
     div.innerHTML = msg;
     ServerMessage.insertBefore(div, ServerMessage.firstChild);
 
-    setTimeout(function(){
+    setTimeout(function() {
         ServerMessage.removeChild(ServerMessage.lastChild);
     }, 300000);
 }

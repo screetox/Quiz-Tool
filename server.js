@@ -5,7 +5,6 @@ const express = require('express');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
 const { getActiveUsers, userJoin, quizmasterJoin, getCurrentUser, userLeave } = require('./utils/users');
-const { isObject } = require('util');
 
 const app = express();
 const server = http.createServer(app);
@@ -49,4 +48,4 @@ io.on('connection', socket => {
     });
 });
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on 217.241.0.142:${PORT} (IP to be tested)`));

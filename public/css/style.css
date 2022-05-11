@@ -1,160 +1,148 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-
 :root {
-	--dark-color-a: #1bb0d1;
-	--dark-color-b: #6dcbe1;
-	--light-color: #e6e9ff;
-	--success-color: #5cb85c;
-	--error-color: #be3e39;
+    --dark-color-a: #1bb0d1;
+    --dark-color-b: #6dcbe1;
+    --light-color: #e6e9ff;
+    --success-color: #5cb85c;
+    --error-color: #be3e39;
 }
 
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-	font-family: 'Roboto', sans-serif;
-	font-size: 16px;
-	background: var(--light-color);
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    background: var(--light-color);
 }
 
 ul {
-	list-style: none;
+    list-style: none;
 }
 
 a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 img {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 header {
-	text-align: center;
-	padding: 20px;
-	background: var(--dark-color-a);
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
+    text-align: center;
+    padding: 20px;
+    background: var(--dark-color-a);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 main {
-	padding: 30px 40px;
-	background: var(--dark-color-b);
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
+    padding: 30px 40px;
+    background: var(--dark-color-b);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 label {
-	color: #fff;
-	line-height: 2em;
-	margin-bottom: 5px;
+    color: #fff;
+    line-height: 2em;
+    margin-bottom: 5px;
 }
 
 input {
-	margin-bottom: 20px;
-	font-size: 16px;
-	padding: 5px;
-	height: 40px;
-	width: 100%;
+    margin-bottom: 20px;
+    font-size: 16px;
+    padding: 5px;
+    height: 40px;
+    width: 100%;
 }
 
 .btn {
-	display: flex;
-	width: auto;
-	
-	margin-left: auto;
-	margin-right: auto;
-	padding: 10px 15px;
-
-	background: #fff;
-	color: var(--dark-color-a);
-	
-	font-size: 17px;
-
-	border: 1px solid var(--dark-color-a);
-	border-radius: 10px;
-
-	cursor: pointer;
+    display: flex;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 15px;
+    background: #fff;
+    color: var(--dark-color-a);
+    font-size: 17px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 .btn:hover {
-	background-color: #d0f5ff;
+    background-color: #d0f5ff;
 }
 
 .btn:active {
-	position: relative;
-	top: 1px;
+    position: relative;
+    top: 1px;
 }
 
 .buzzer {
-	display: block;
-	height: 200px;
-	width: 200px;
-	
-	margin-top: 20px;
-	margin-bottom: 40px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 0;
-
-	align-items: center;
-	text-align: center;
-	
-	background: var(--dark-color-a);
-	color: #fff;
-
-	font-size: 25px;
-	
-	border: 1px solid var(--dark-color-a);
-	border-radius: 100%;
-
-	cursor: pointer;
+    display: block;
+    height: 200px;
+    width: 200px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    align-items: center;
+    text-align: center;
+    background: var(--dark-color-a);
+    color: #fff;
+    font-size: 25px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 100%;
+    cursor: pointer;
 }
 
 .container {
-	max-width: 500px;
-	margin: 80px auto;
-	color: #fff;
+    max-width: 500px;
+    margin: 80px auto;
+    color: #fff;
 }
 
 .server-msg {
-	text-align: center;
-	color: var(--error-color);
-	margin-top: 10px;
+    text-align: center;
+    color: var(--error-color);
+    margin-top: 10px;
 }
 
 .quizmaster-msg {
-	text-align: center;
-	color: var(--dark-color-a);
-	margin-top: 10px;
+    text-align: center;
+    color: var(--dark-color-a);
+    margin-top: 10px;
 }
 
 .check-for-quizmaster {
-	margin-top: 20px;
-	text-align: center;
-	vertical-align: middle;
+    margin-top: 20px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .your-id {
-	color: #fff;
-	line-height: 1.5em;
-	margin: 0;
-	margin-top: 20px;
-	text-align: center;
+    color: #fff;
+    line-height: 1.5em;
+    margin: 0;
+    margin-top: 20px;
+    text-align: center;
 }
 
 #msg-block {
-	display: none;
-	padding: 20px;
+    display: none;
+    padding: 20px;
 }
 
 #quizmaster-login {
-	margin: 0;
-	margin-right: 10px;
-	padding: 0px;
-	height: auto;
-	width: auto;
+    margin: 0;
+    margin-right: 10px;
+    padding: 0px;
+    height: auto;
+    width: auto;
 }
