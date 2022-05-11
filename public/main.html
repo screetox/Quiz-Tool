@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>Quiz-Tool - screetox</title>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="https://screetox.de/"><img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo"></a>
+			<h1>Quiz-Tool</h1>
+        </header>
+        <main>
+            <input id="answ" type="text" placeholder="Antwort eingeben" required autocomplete="off" />
+            <button id="buzzer" class="buzzer" onclick="buzz()">Buzzer!</button>
+            <a href="/"><button class="btn">Abmelden</button></a>
+            <div class="your-id">Deine eindeutige ID:<br>
+                <div id="your-id"></div>
+            </div>
+        </main>
+        <div id="msg-block"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
