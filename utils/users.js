@@ -11,7 +11,7 @@ function userJoin(id, username) {
     const time = moment().format('kk:mm:ss');
 
     activeUsers.push(user);
-    console.log(`${time} - ${username} connected as a candidat.`);
+    console.log(`${time} - ${username} (${user.id}) connected as a candidat.`);
 
     return user;
 }
@@ -21,7 +21,7 @@ function quizmasterJoin(id, username) {
     const time = moment().format('kk:mm:ss');
 
     activeUsers.push(user);
-    console.log(`${time} - ${username} connected as a quizmaster.`);
+    console.log(`${time} - ${username} (${user.id}) connected as a quizmaster.`);
 
     return user;
 }
@@ -31,6 +31,21 @@ function getCurrentUser(id) {
     return activeUsers.find(user => user.id === id);
 }
 
+// GetCandidateNames
+function getCandidateNames(candidates) {
+    for (let i = 0; i < candidates.length; i++) {
+        const user = activeUsers.find(user => user.id === candidates[i].candidateId);
+        var candidateName = 'User nicht gefunden!';
+        var candidateId = 0;
+        if (user) {
+            candidateName = user.username;
+            candidateId = user.id;
+        }
+        candidates[i] = { candidateId, candidateName };
+    }
+    return candidates;
+}
+
 // User leaves chat
 function userLeave(id) {
     const index = activeUsers.findIndex(user => user.id === id);
@@ -38,7 +53,7 @@ function userLeave(id) {
 
     if (index !== -1) {
         const deletedUser = activeUsers.splice(index, 1)[0];
-        console.log(`${time} - ${deletedUser.username} disconnected.`);
+        console.log(`${time} - ${deletedUser.username} (${deletedUser.id}) disconnected.`);
         return deletedUser;
     }
 }
@@ -48,5 +63,6 @@ module.exports = {
     userJoin,
     quizmasterJoin,
     getCurrentUser,
-    userLeave
+    userLeave,
+    getCandidateNames
 }

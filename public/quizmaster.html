@@ -16,13 +16,16 @@
             <a href="https://screetox.de/"><img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
         </header>
-        <main>
-            <label for="answ1">Kandidat 1:</label>
-            <input id="answ1" type="text" readonly />
-            <label for="answ1">Kandidat 2:</label>
-            <input id="answ2" type="text" readonly />
-            <label for="answ1">Kandidat 3:</label>
-            <input id="answ3" type="text" readonly />
+        <main id="input-form">
+            <div id="candidate-input"></div>
+            <button class="btn" onclick="addCandidate()">Kandidat hinzufügen</button>
+            <div id="quizmaster-buttons">
+                <button class="btn quizmaster-button" onclick="startQuiz()">Los gehts!</button>
+                <a href="/"><button class="btn quizmaster-button">Abmelden</button></a>
+            </div>
+        </main>
+        <main id="answers-form">
+            <div id="candidate-answers"></div>
             <a href="/"><button class="btn">Abmelden</button></a>
         </main>
         <div id="msg-block"></div>

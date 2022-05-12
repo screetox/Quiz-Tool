@@ -7,7 +7,7 @@ const idDisplay = document.getElementById('your-id');
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username');
-window.history.replaceState('', 'Quiz-Tool - screetox', '/');
+// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 headline.innerHTML = `Hallo, ${username}!`;
 
 const socket = io();

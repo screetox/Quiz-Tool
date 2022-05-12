@@ -65,6 +65,7 @@ input {
     width: auto;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 10px;
     padding: 10px 15px;
     background: #fff;
     color: var(--dark-color-a);
@@ -134,6 +135,10 @@ input {
     text-align: center;
 }
 
+.quizmaster-button {
+    display: inline-block;
+}
+
 #msg-block {
     display: none;
     padding: 20px;
@@ -145,4 +150,13 @@ input {
     padding: 0px;
     height: auto;
     width: auto;
+}
+
+#quizmaster-buttons {
+    width: 100%;
+    text-align: center;
+}
+
+#answers-form {
+    display: none;
 }
