@@ -2,10 +2,6 @@ const moment = require('moment');
 
 const activeUsers = [];
 
-function getActiveUsers() {
-    return activeUsers;
-}
-
 function userJoin(id, username) {
     const user = { id, username };
     const time = moment().format('kk:mm:ss');
@@ -36,7 +32,7 @@ function getCandidateNames(candidates) {
     for (let i = 0; i < candidates.length; i++) {
         const user = activeUsers.find(user => user.id === candidates[i].candidateId);
         var candidateName = 'User nicht gefunden!';
-        var candidateId = 0;
+        var candidateId = candidates[i].candidateId;
         if (user) {
             candidateName = user.username;
             candidateId = user.id;
@@ -59,7 +55,6 @@ function userLeave(id) {
 }
 
 module.exports = {
-    getActiveUsers,
     userJoin,
     quizmasterJoin,
     getCurrentUser,

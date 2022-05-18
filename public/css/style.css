@@ -60,6 +60,10 @@ input {
     width: 100%;
 }
 
+button {
+    cursor: pointer;
+}
+
 .btn {
     display: flex;
     width: auto;
@@ -72,7 +76,6 @@ input {
     font-size: 17px;
     border: 1px solid var(--dark-color-a);
     border-radius: 10px;
-    cursor: pointer;
 }
 
 .btn:hover {
@@ -137,6 +140,51 @@ input {
 
 .quizmaster-button {
     display: inline-block;
+}
+
+.answInput {
+    width: 95%;
+}
+
+.settings-btn {
+    position: absolute;
+    margin: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: var(--dark-color-b);
+    margin: 15% auto;
+    padding: 20px;
+    padding-top: 30px;
+    width: 500px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 5px;
+}
+
+.close {
+  color: var(--dark-color-a);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 0;
+}
+
+.close:hover {
+  cursor: pointer;
 }
 
 #msg-block {
