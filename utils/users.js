@@ -1,3 +1,4 @@
+const { ISO_8601 } = require('moment');
 const moment = require('moment');
 
 const activeUsers = [];
@@ -27,8 +28,8 @@ function getCurrentUser(id) {
     return activeUsers.find(user => user.id === id);
 }
 
-// GetCandidateNames
-function getCandidateNames(candidates) {
+// Fill candidate names
+function fillCandidateNames(candidates) {
     for (let i = 0; i < candidates.length; i++) {
         const user = activeUsers.find(user => user.id === candidates[i].candidateId);
         var candidateName = 'User nicht gefunden!';
@@ -59,5 +60,5 @@ module.exports = {
     quizmasterJoin,
     getCurrentUser,
     userLeave,
-    getCandidateNames
+    fillCandidateNames
 }

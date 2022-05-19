@@ -1,6 +1,4 @@
-- Abmelden Button Hitbox
-- User Settings
-  - ID neu vergeben (bei reconnect)
 - Punkteanzeige
+- bei Quizmaster Connection aktuelle Antwort anzeigen (möglich?)
 - local db
   - highscores

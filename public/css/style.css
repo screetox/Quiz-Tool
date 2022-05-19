@@ -146,6 +146,13 @@ button {
     width: 95%;
 }
 
+.logout-link {
+    display: flex;
+    margin-left: 50%;
+    margin-right: 50%;
+    justify-content: center;
+}
+
 .settings-btn {
     position: absolute;
     margin: 5px;

@@ -85,8 +85,8 @@ socket.on('giveCandidateNames', (candidates) => {
                 </div>
             </div>`;
         candidateAnswers.appendChild(div);
-        console.log(candidates);
     }
+    console.log(candidates);
 });
 
 socket.on('newAnswerToMaster', message => {

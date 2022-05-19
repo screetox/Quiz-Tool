@@ -4,7 +4,7 @@ const moment = require('moment');
 const express = require('express');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
-const { userJoin, quizmasterJoin, getCurrentUser, userLeave, getCandidateNames } = require('./utils/users');
+const { userJoin, quizmasterJoin, getCurrentUser, userLeave, fillCandidateNames } = require('./utils/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -38,7 +38,7 @@ io.on('connection', socket => {
 
     // Send CandidateNames
     socket.on('getCandidateNames', (candidates) => {
-        candidates = getCandidateNames(candidates);
+        candidates = fillCandidateNames(candidates);
         socket.emit('giveCandidateNames', candidates);
     })
 
