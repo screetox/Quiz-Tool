@@ -1,3 +1,5 @@
+const siteBody = document.getElementById('body-id');
+const buttonDarkMode = document.getElementById('drk-md-btn');
 const headline = document.getElementById('headline');
 const answForm = document.getElementById('answ');
 const ServerMessage = document.getElementById('msg-block');
@@ -73,13 +75,13 @@ socket.on('giveCandidateNames', (candidates, answers) => {
         const div = document.createElement('div');
         div.innerHTML = `<label for="${candidates[i].candidateId}">${candidates[i].candidateName}:<br></label>
             <div>
-                <input id="${candidates[i].candidateId}" type="text" class="answInput" value="${answers[i]}" readonly />
+                <input id="${candidates[i].candidateId}" type="text" value="${answers[i]}" readonly />
                 <img class="settings-btn" id="cand${i}-btn" src="img/settings.png" width="30" height="30" alt="settings" onclick="openSettings(${i})" />
             </div>
             <div id="cand${i}-modal" class="modal">
                 <div class="modal-content">
                     <span class="close" id="cand${i}-close">&times;</span>
-                    <label for="changeCand${i}">Neue eindeutige ID für '${candidates[i].candidateName}':</label>
+                    <label for="changeCand${i}">Neue eindeutige ID für <strong>${candidates[i].candidateName}</strong>:</label>
                     <input id="changeCand${i}" type="text" value="${document.getElementById(`cand${i}`).value}" />
                     <button class="btn quizmaster-button" onclick="changeCand(${i})">Speichern</button>
                 </div>
@@ -126,4 +128,56 @@ function changeCand(i) {
 
     candidateAnswers.innerHTML = '';
     startQuiz();
+}
+
+// Toggle and save dark mode
+if (localStorage.quizmode) {
+    if (localStorage.quizmode === 'dark') {
+        activateDarkMode();
+    } else if (localStorage.quizmode === 'bright') {
+        deactivateDarkMode();
+    } else {
+        deactivateDarkMode();
+    }
+}
+function switchDarkMode() {
+    if (typeof(Storage) !== 'undefined') {
+        if (localStorage.quizmode) {
+            if (localStorage.quizmode === 'dark') {
+                deactivateDarkMode();
+            } else if (localStorage.quizmode === 'bright') {
+                activateDarkMode();
+            } else {
+                if (siteBody.classList.contains('dark-mode')) {
+                    deactivateDarkMode();
+                } else {
+                    activateDarkMode();
+                }
+            }
+        } else {
+            if (siteBody.classList.contains('dark-mode')) {
+                deactivateDarkMode();
+            } else {
+                activateDarkMode();
+            }
+        }
+    } else {
+        console.log('Kein Darkmode verfügbar!');
+    }
+}
+
+function activateDarkMode() {
+    localStorage.quizmode = 'dark';
+    siteBody.classList.add('dark-mode');
+    console.log('Dark Mode activated!');
+    buttonDarkMode.innerHTML = 'Bright Mode';
+}
+
+function deactivateDarkMode() {
+    localStorage.quizmode = 'bright';
+    if (siteBody.classList.contains('dark-mode')) {
+        siteBody.classList.remove('dark-mode');
+    }
+    console.log('Dark Mode deactivated!');
+    buttonDarkMode.innerHTML = 'Dark Mode';
 }

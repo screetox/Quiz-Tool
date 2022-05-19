@@ -10,7 +10,10 @@
     <title>Quiz-Tool - screetox</title>
 </head>
 
-<body>
+<body id="body-id">
+    <div id="small-screen-warning">
+        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
+    </div>
     <div class="container">
         <header>
             <a href="https://screetox.de/"><img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo"></a>
@@ -30,6 +33,7 @@
         </main>
         <div id="msg-block"></div>
     </div>
+    <button id="drk-md-btn" onclick="switchDarkMode()">Dark Mode</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>

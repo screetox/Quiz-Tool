@@ -3,8 +3,21 @@
     --dark-color-a: #1bb0d1;
     --dark-color-b: #6dcbe1;
     --light-color: #e6e9ff;
+
+    --button-color: #fff;
+    --button-hover-color: #d0f5ff;
+
     --success-color: #5cb85c;
     --error-color: #be3e39;
+}
+
+.dark-mode {
+    --dark-color-a: rgb(66, 66, 66);
+    --dark-color-b: #666666;
+    --light-color: #1b1b1b;
+
+    --button-color: #999999;
+    --button-hover-color: #888888;
 }
 
 * {
@@ -71,7 +84,7 @@ button {
     margin-right: auto;
     margin-top: 10px;
     padding: 10px 15px;
-    background: #fff;
+    background: var(--button-color);
     color: var(--dark-color-a);
     font-size: 17px;
     border: 1px solid var(--dark-color-a);
@@ -79,7 +92,7 @@ button {
 }
 
 .btn:hover {
-    background-color: #d0f5ff;
+    background-color: var(--button-hover-color);
 }
 
 .btn:active {
@@ -107,8 +120,15 @@ button {
 }
 
 .container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
     max-width: 500px;
-    margin: 80px auto;
+    max-height: fit-content;
+    height: -moz-max-content;
     color: #fff;
 }
 
@@ -142,10 +162,6 @@ button {
     display: inline-block;
 }
 
-.answInput {
-    width: 95%;
-}
-
 .logout-link {
     display: flex;
     margin-left: 50%;
@@ -156,8 +172,6 @@ button {
 .settings-btn {
     position: absolute;
     margin: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
 }
 
 .modal {
@@ -169,7 +183,7 @@ button {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.6);
 }
 
 .modal-content {
@@ -212,6 +226,116 @@ button {
     text-align: center;
 }
 
+#drk-md-btn {
+    display: flex;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    font-size: 12px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 0px;
+
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+}
+
+#drk-md-btn:hover {
+    background-color: var(--button-hover-color);
+}
+
+#drk-md-btn:active {
+    bottom: 31px;
+}
+
 #answers-form {
     display: none;
+}
+
+#small-screen-warning {
+    display: none;
+}
+
+@media only screen and (max-width: 500px) {
+    div:not(#small-screen-warning) {
+        display: none;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    #small-screen-warning {
+        display: flex;
+        text-align: center;
+        align-items: center;
+        height: 100%;
+        padding: 20px;
+    }
+}
+
+
+
+
+
+.theme-switch-wrapper {  
+    display: flex;  
+    float: right;  
+    align-items: center;  
+    position: absolute;  
+    top: 0px; 
+    right: 10px;  
+}
+
+.theme-switch {  
+    display: inline-block;  
+    height: 34px;  
+    position: relative;  
+    width: 60px;
+}
+   
+.theme-switch input {  
+    display: none;
+}
+
+.slider {  
+    background-color: #ccc;  
+    bottom: 0;  
+    cursor: pointer;  
+    left: 0;  
+    position: absolute;  
+    right: 0;  
+    top: 0;  
+    transition: .4s;
+}
+
+.slider:before {  
+    background-color: #fff;  
+    bottom: 4px;  
+    content: "";  
+    height: 26px;  
+    left: 4px;  
+    position: absolute;  
+    transition: .4s;  
+    width: 26px;
+}
+
+input:checked + .slider {  
+    background-color: #28acea;
+}
+
+input:checked + .slider:before {  
+    transform: translateX(26px);
+}
+
+.slider.round {  
+    border-radius: 34px;
+}
+
+.slider.round:before {  
+    border-radius: 50%;
 }
