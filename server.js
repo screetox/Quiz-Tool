@@ -4,7 +4,7 @@ const moment = require('moment');
 const express = require('express');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
-const { userJoin, quizmasterJoin, getCurrentUser, userLeave, fillCandidateNames } = require('./utils/users');
+const { userJoin, quizmasterJoin, getCurrentUser, saveAnswer, userLeave, fillCandidateNames, getCandidateAnswers } = require('./utils/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -33,13 +33,15 @@ io.on('connection', socket => {
     // Listen for newAnswer
     socket.on('newAnswer', (answ) => {
         const user = getCurrentUser(socket.id);
+        saveAnswer(user.id, answ);
         io.to('quizmaster').emit('newAnswerToMaster', formatMessage(user.id, answ));
     });
 
     // Send CandidateNames
     socket.on('getCandidateNames', (candidates) => {
         candidates = fillCandidateNames(candidates);
-        socket.emit('giveCandidateNames', candidates);
+        const answers = getCandidateAnswers(candidates);
+        socket.emit('giveCandidateNames', candidates, answers);
     })
 
     // Broadcast when a user disconnects
@@ -48,6 +50,7 @@ io.on('connection', socket => {
 
         if (user) {
             const time = moment().format('kk:mm:ss');
+            io.to('quizmaster').emit('newAnswerToMaster', formatMessage(user.id, ''));
             io.to('quizmaster').emit('disconnectMessage', user.id, formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
         }
     });

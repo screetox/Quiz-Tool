@@ -68,12 +68,12 @@ function startQuiz() {
     socket.emit('getCandidateNames', candidates);
 }
 
-socket.on('giveCandidateNames', (candidates) => {
+socket.on('giveCandidateNames', (candidates, answers) => {
     for (let i = 0; i < candidates.length; i++) {
         const div = document.createElement('div');
         div.innerHTML = `<label for="${candidates[i].candidateId}">${candidates[i].candidateName}:<br></label>
             <div>
-                <input id="${candidates[i].candidateId}" type="text" class="answInput" readonly />
+                <input id="${candidates[i].candidateId}" type="text" class="answInput" value="${answers[i]}" readonly />
                 <img class="settings-btn" id="cand${i}-btn" src="img/settings.png" width="30" height="30" alt="settings" onclick="openSettings(${i})" />
             </div>
             <div id="cand${i}-modal" class="modal">
@@ -86,12 +86,13 @@ socket.on('giveCandidateNames', (candidates) => {
             </div>`;
         candidateAnswers.appendChild(div);
     }
-    console.log(candidates);
 });
 
 socket.on('newAnswerToMaster', message => {
     const answField = document.getElementById(`${message.id}`);
-    answField.value = message.text;
+    if (answField) {
+        answField.value = message.text;
+    }
 });
 
 function outputServerMessage(msg) {
