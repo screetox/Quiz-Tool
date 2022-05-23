@@ -29,11 +29,19 @@
         </main>
         <div id="msg-block"></div>
     </div>
-    <button id="drk-md-btn" onclick="switchDarkMode()">Dark Mode</button>
+    <select id='color-mode-select' onchange='changeColorMode(this.value)'>
+        <option value='default'>Default</option>
+        <option value='dark'>Dark Mode</option>
+        <option value='red'>Rot</option>
+        <option value='purple'>Lila</option>
+        <option value='blue'>Blau</option>
+        <option value='green'>Grün</option>
+    </select>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/colorMode.js"></script>
 </body>
 
 </html>

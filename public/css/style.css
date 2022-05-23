@@ -1,23 +1,71 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 :root {
-    --dark-color-a: #1bb0d1;
-    --dark-color-b: #6dcbe1;
-    --light-color: #e6e9ff;
-
-    --button-color: #fff;
-    --button-hover-color: #d0f5ff;
-
     --success-color: #5cb85c;
     --error-color: #be3e39;
+
+    --dark-color-a: #1bb0d1;
+    --dark-color-b: #6dcbe1;
+    --light-color: #edfcff;
+
+    --button-color: #fff;
+    --button-hover-color: #e6faff;
+
+    --settings-filter: none;
 }
 
 .dark-mode {
-    --dark-color-a: rgb(66, 66, 66);
+    --dark-color-a: #424242;
     --dark-color-b: #666666;
     --light-color: #1b1b1b;
 
-    --button-color: #999999;
-    --button-hover-color: #888888;
+    --button-color: #e0e0e0;
+    --button-hover-color: #ffffff;
+
+    --settings-filter: grayscale(100%);
+}
+
+.red-mode {
+    --dark-color-a: #d11b1b;
+    --dark-color-b: #e16d6d;
+    --light-color: #ffeded;
+
+    --button-color: #fff;
+    --button-hover-color: #ffe6e6;
+
+    /* --settings-filter: hue-rotate(66deg); */
+}
+
+.purple-mode {
+    --dark-color-a: #8e1bd1;
+    --dark-color-b: #b56ce0;
+    --light-color: #f8edff;
+
+    --button-color: #fff;
+    --button-hover-color: #f6e6ff;
+
+    /* --settings-filter: hue-rotate(66deg); */
+}
+
+.blue-mode {
+    --dark-color-a: #1b39d1;
+    --dark-color-b: #6c7fe0;
+    --light-color: #edf0ff;
+
+    --button-color: #fff;
+    --button-hover-color: #e6eaff;
+
+    /* --settings-filter: hue-rotate(66deg); */
+}
+
+.green-mode {
+    --dark-color-a: #36d11b;
+    --dark-color-b: #7de06c;
+    --light-color: #efffed;
+
+    --button-color: #fff;
+    --button-hover-color: #e9ffe6;
+
+    /* --settings-filter: hue-rotate(66deg); */
 }
 
 * {
@@ -172,6 +220,7 @@ button {
 .settings-btn {
     position: absolute;
     margin: 5px;
+    filter: var(--settings-filter);
 }
 
 .modal {
@@ -197,15 +246,33 @@ button {
 }
 
 .close {
-  color: var(--dark-color-a);
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  line-height: 0;
+    color: var(--dark-color-a);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 0;
 }
 
 .close:hover {
-  cursor: pointer;
+    cursor: pointer;
+}
+
+#color-mode-select {
+    font-family: 'Roboto', sans-serif;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 12px;
+    left: 15px;
+    width: auto;
+    min-width: 100px;
+    padding: 5px 10px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    font-size: 12px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 5px;
+    box-shadow: none;
 }
 
 #msg-block {
@@ -224,32 +291,6 @@ button {
 #quizmaster-buttons {
     width: 100%;
     text-align: center;
-}
-
-#drk-md-btn {
-    display: flex;
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    padding: 5px 10px;
-    background: var(--button-color);
-    color: var(--dark-color-a);
-    font-size: 12px;
-    border: 1px solid var(--dark-color-a);
-    border-radius: 0px;
-
-    position: absolute;
-    bottom: 30px;
-    right: 30px;
-}
-
-#drk-md-btn:hover {
-    background-color: var(--button-hover-color);
-}
-
-#drk-md-btn:active {
-    bottom: 31px;
 }
 
 #answers-form {
@@ -276,66 +317,4 @@ button {
         height: 100%;
         padding: 20px;
     }
-}
-
-
-
-
-
-.theme-switch-wrapper {  
-    display: flex;  
-    float: right;  
-    align-items: center;  
-    position: absolute;  
-    top: 0px; 
-    right: 10px;  
-}
-
-.theme-switch {  
-    display: inline-block;  
-    height: 34px;  
-    position: relative;  
-    width: 60px;
-}
-   
-.theme-switch input {  
-    display: none;
-}
-
-.slider {  
-    background-color: #ccc;  
-    bottom: 0;  
-    cursor: pointer;  
-    left: 0;  
-    position: absolute;  
-    right: 0;  
-    top: 0;  
-    transition: .4s;
-}
-
-.slider:before {  
-    background-color: #fff;  
-    bottom: 4px;  
-    content: "";  
-    height: 26px;  
-    left: 4px;  
-    position: absolute;  
-    transition: .4s;  
-    width: 26px;
-}
-
-input:checked + .slider {  
-    background-color: #28acea;
-}
-
-input:checked + .slider:before {  
-    transform: translateX(26px);
-}
-
-.slider.round {  
-    border-radius: 34px;
-}
-
-.slider.round:before {  
-    border-radius: 50%;
 }

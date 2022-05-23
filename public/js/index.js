@@ -1,5 +1,4 @@
 const siteBody = document.getElementById('body-id');
-const buttonDarkMode = document.getElementById('drk-md-btn');
 const ServerMessage = document.getElementById('msg-block');
 const quizmasterCheckbox = document.getElementById('quizmaster-login');
 const loginForm = document.getElementById('login-form');
@@ -29,55 +28,3 @@ quizmasterCheckbox.addEventListener('change', function() {
         loginForm.action = 'main.html';
     }
 });
-
-// Toggle and save dark mode
-if (localStorage.quizmode) {
-    if (localStorage.quizmode === 'dark') {
-        activateDarkMode();
-    } else if (localStorage.quizmode === 'bright') {
-        deactivateDarkMode();
-    } else {
-        deactivateDarkMode();
-    }
-}
-function switchDarkMode() {
-    if (typeof(Storage) !== 'undefined') {
-        if (localStorage.quizmode) {
-            if (localStorage.quizmode === 'dark') {
-                deactivateDarkMode();
-            } else if (localStorage.quizmode === 'bright') {
-                activateDarkMode();
-            } else {
-                if (siteBody.classList.contains('dark-mode')) {
-                    deactivateDarkMode();
-                } else {
-                    activateDarkMode();
-                }
-            }
-        } else {
-            if (siteBody.classList.contains('dark-mode')) {
-                deactivateDarkMode();
-            } else {
-                activateDarkMode();
-            }
-        }
-    } else {
-        console.log('Kein Darkmode verfügbar!');
-    }
-}
-
-function activateDarkMode() {
-    localStorage.quizmode = 'dark';
-    siteBody.classList.add('dark-mode');
-    console.log('Dark Mode activated!');
-    buttonDarkMode.innerHTML = 'Bright Mode';
-}
-
-function deactivateDarkMode() {
-    localStorage.quizmode = 'bright';
-    if (siteBody.classList.contains('dark-mode')) {
-        siteBody.classList.remove('dark-mode');
-    }
-    console.log('Dark Mode deactivated!');
-    buttonDarkMode.innerHTML = 'Dark Mode';
-}
