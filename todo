@@ -1,5 +1,5 @@
-- Punkteanzeige
+- Punkteanzeige + Funktionalität
+- Streaming-Anzeige (für obs)
 - Buzzer-Funktionalität
-- Streaming-Anzeige
 - local db
   - highscores
