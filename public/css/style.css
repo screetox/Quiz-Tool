@@ -10,7 +10,7 @@
     --button-color: #fff;
     --button-hover-color: #e6faff;
 
-    --settings-filter: none;
+    --settings-filter: invert(55%) sepia(27%) saturate(1146%) hue-rotate(143deg) brightness(99%) contrast(103%);
 }
 
 .dark-mode {
@@ -21,7 +21,7 @@
     --button-color: #e0e0e0;
     --button-hover-color: #ffffff;
 
-    --settings-filter: grayscale(100%);
+    --settings-filter: invert(25%) saturate(1%) hue-rotate(280deg) brightness(96%) contrast(92%);
 }
 
 .red-mode {
@@ -32,7 +32,7 @@
     --button-color: #fff;
     --button-hover-color: #ffe6e6;
 
-    /* --settings-filter: hue-rotate(66deg); */
+    --settings-filter: invert(21%) sepia(41%) saturate(3059%) hue-rotate(337deg) brightness(112%) contrast(122%);
 }
 
 .purple-mode {
@@ -43,7 +43,7 @@
     --button-color: #fff;
     --button-hover-color: #f6e6ff;
 
-    /* --settings-filter: hue-rotate(66deg); */
+    --settings-filter: invert(16%) sepia(92%) saturate(4564%) hue-rotate(276deg) brightness(85%) contrast(98%);
 }
 
 .blue-mode {
@@ -54,7 +54,7 @@
     --button-color: #fff;
     --button-hover-color: #e6eaff;
 
-    /* --settings-filter: hue-rotate(66deg); */
+    --settings-filter: invert(13%) sepia(98%) saturate(6738%) hue-rotate(238deg) brightness(86%) contrast(90%);
 }
 
 .green-mode {
@@ -65,7 +65,7 @@
     --button-color: #fff;
     --button-hover-color: #e9ffe6;
 
-    /* --settings-filter: hue-rotate(66deg); */
+    --settings-filter: invert(72%) sepia(41%) saturate(6209%) hue-rotate(71deg) brightness(108%) contrast(87%);
 }
 
 * {

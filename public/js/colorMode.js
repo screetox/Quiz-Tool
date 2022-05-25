@@ -32,6 +32,8 @@ if (typeof(Storage) !== "undefined") {
                 colorSelect.value = 'default';
                 changeColorMode('default');
         }
+    } else {
+        changeColorMode('default');
     }
 }
 
