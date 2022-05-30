@@ -14,7 +14,7 @@
     <div id="small-screen-warning">
         <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
     </div>
-    <div class="container">
+    <div class="container-quizmaster">
         <header>
             <a href="https://screetox.de/"><img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
@@ -26,10 +26,16 @@
                 <button class="btn quizmaster-button" onclick="startQuiz()">Los gehts!</button>
                 <a href="/"><button class="btn quizmaster-button">Abmelden</button></a>
             </div>
+            <div class="your-id">Deine eindeutige ID:<br>
+                <div id="your-id-1"></div>
+            </div>
         </main>
         <main id="answers-form">
             <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
+            <div class="your-id">Deine eindeutige ID:<br>
+                <div id="your-id-2"></div>
+            </div>
         </main>
         <div id="msg-block"></div>
     </div>

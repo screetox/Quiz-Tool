@@ -24,14 +24,24 @@ function quizmasterJoin(id, username) {
     return user;
 }
 
+function overlayJoin(id, username) {
+    const user = { id, username };
+    const time = moment().format('kk:mm:ss');
+
+    activeUsers.push(user);
+    console.log(`${time} - ${username} (${user.id}) connected as overlay.`);
+
+    return user;
+}
+
 // Save new answer
 function saveAnswer(id, answ) {
     const index = currentAnswers.findIndex(answer => answer.id === id);
     if (index !== -1) {
         currentAnswers.splice(index, 1);
     }
-    
-    const answer = { id, answ };    
+
+    const answer = { id, answ };
     currentAnswers.push(answer);
 }
 
@@ -90,6 +100,7 @@ function userLeave(id) {
 module.exports = {
     userJoin,
     quizmasterJoin,
+    overlayJoin,
     getCurrentUser,
     saveAnswer,
     userLeave,

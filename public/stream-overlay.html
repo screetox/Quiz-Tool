@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Stream-Overlay Quiz-Tool</title>
+</head>
+
+<body id="body-id-stream" class="dark-mode">
+    <div id="small-screen-warning">
+        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
+    </div>
+    <h1 id="headline-stream">Stream-Overlay Quiz-Tool</h1>
+    <div id="input-form-stream">
+        <div id="candidate-input"></div>
+        <button class="btn-stream" onclick="addCandidate()">Kandidat hinzufügen</button>
+        <button class="btn-stream" onclick="startQuiz()">Los gehts!</button>
+    </div>
+    <div id="candidate-answers-stream"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/stream-overlay.js"></script>
+</body>
+
+</html>
