@@ -19,13 +19,19 @@
             <a href="https://screetox.de/"><img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
         </header>
-        <main>
+        <main id="choose-room">
+            <div id="inline-buttons">
+                <button class="btn inline-button" onclick="reloadRooms()">Aktualisieren</button>
+                <a href="/"><button class="btn inline-button">Abmelden</button></a>
+            </div>
+            <p>Bitte wähle einen Raum aus:</p>
+            <div id="show-active-rooms"></div>
+        </main>
+        <main id="candidate-form">
+            <p id="room-title">Raum: </p>
             <input id="answ" type="text" placeholder="Antwort eingeben" required autocomplete="off" />
             <button id="buzzer" class="buzzer" onclick="buzz()">Buzzer!</button>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
-            <div class="your-id">Deine eindeutige ID:<br>
-                <div id="your-id"></div>
-            </div>
         </main>
         <div id="msg-block"></div>
     </div>

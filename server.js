@@ -4,7 +4,21 @@ const moment = require('moment');
 const express = require('express');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
-const { userJoin, quizmasterJoin, overlayJoin, getCurrentUser, saveAnswer, userLeave, fillCandidateNames, getCandidateAnswers } = require('./utils/users');
+const {
+    userJoin,
+    quizmasterJoin,
+    overlayJoin,
+    createRoom,
+    testPassword,
+    getCurrentUser,
+    getActiveRoomNames,
+    saveAnswer,
+    userLeave,
+    deletePoints,
+    setRoomInactive,
+    getCandidateAnswers,
+    getCandidatePoints
+    } = require('./utils/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -20,14 +34,11 @@ io.on('connection', socket => {
     socket.on('login', (username) => {
         const time = moment().format('kk:mm:ss');
         socket.emit('welcomeMessage', formatMessage(botName, `Es ist ${time} - Willkommen beim Quiz-Tool, ${username}!`));
-        socket.emit('sendID', socket.id);
         userJoin(socket.id, username);
     });
     socket.on('login-as-quizmaster', (username) => {
         const time = moment().format('kk:mm:ss');
         socket.emit('welcomeMessage', formatMessage(botName, `Es ist ${time} - Willkommen beim Quiz-Tool, ${username}!`));
-        socket.emit('sendID', socket.id);
-        socket.join('quizmaster');
         quizmasterJoin(socket.id, username);
     });
     socket.on('login-stream-overlay', (username) => {
@@ -37,31 +48,96 @@ io.on('connection', socket => {
         overlayJoin(socket.id, username);
     });
 
-    // Listen for newAnswer
-    socket.on('newAnswer', (answ) => {
-        const user = getCurrentUser(socket.id);
-        saveAnswer(user.id, answ);
-        io.to('quizmaster').emit('newAnswerToMaster', formatMessage(user.id, answ));
-        io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, answ));
+    socket.on('getActiveRooms', () => {
+        const roomnames = getActiveRoomNames();
+        socket.emit('sendActiveRoomNames', roomnames);
     });
 
     // Send CandidateNames
-    socket.on('getCandidateNames', (candidates) => {
-        candidates = fillCandidateNames(candidates);
-        const answers = getCandidateAnswers(candidates);
-        socket.emit('giveCandidateNames', candidates, answers);
-    })
+    socket.on('createRoom', (roomname, password) => {
+        const roomCreated = createRoom(socket.id, roomname, password);
+        if (roomCreated === 0) {
+            socket.join(roomname);
+            
+            const candidates = io.sockets.adapter.rooms.get(roomname);
+            const candidateArray= [];
+            
+            for (const id of candidates) {
+                const candidate = getCurrentUser(id);
+                candidateArray.push(candidate);
+            }
+
+            const answers = getCandidateAnswers(candidateArray);
+            const points = getCandidatePoints(candidateArray);
+            socket.emit('sendCandidates', candidateArray, points, answers);
+        } else if (roomCreated === 2) {
+            const time = moment().format('kk:mm:ss');
+            socket.emit('messageFromServer', formatMessage(botName, `${time} - Der Name <i>${roomname}</i> wird bereits verwendet.<br>Bitte verwende einen anderen Raumnamen.`));
+        }
+    });
+
+    socket.on('getCandidates', (roomname) => {
+        const candidates = io.sockets.adapter.rooms.get(roomname);
+        const candidateArray= [];
+        
+        for (const id of candidates) {
+            const candidate = getCurrentUser(id);
+            candidateArray.push(candidate);
+        }
+
+        const answers = getCandidateAnswers(candidateArray);
+        const points = getCandidatePoints(candidateArray);
+        socket.emit('sendCandidates', candidateArray, points, answers);
+    });
+
+    socket.on('loginTry', (roomname, password) => {
+        const correct = testPassword(roomname, password);
+        if (correct) {
+            socket.join(roomname);
+            socket.emit('loginTryAnswer', true, roomname);
+            io.to(roomname).emit('newCandidate', roomname);
+        } else {
+            socket.emit('loginTryAnswer', false, roomname);
+        }
+    });
+
+    // Listen for newAnswer
+    socket.on('newAnswer', (answ) => {
+        var self = this;
+        const user = getCurrentUser(socket.id);
+        var rooms = socket.rooms;
+
+        saveAnswer(user.id, answ);
+        rooms.forEach(function(room) {
+            io.to(room).emit('newAnswerToMaster', formatMessage(user.id, answ));
+        });
+        io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, answ));
+    });
 
     // Broadcast when a user disconnects
-    socket.on('disconnect', () => {
+    socket.on('disconnecting', () => {
+        var rooms = socket.rooms;
         const user = userLeave(socket.id);
+        const stats = deletePoints(socket.id);
+        setRoomInactive(socket.id);
 
         if (user) {
             const time = moment().format('kk:mm:ss');
-            io.to('quizmaster').emit('newAnswerToMaster', formatMessage(user.id, ''));
-            io.to('quizmaster').emit('disconnectMessage', user.id, formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
-            io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, ''));
-            io.to('stream-overlay').emit('disconnectMessage', user.id, formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
+            if (stats) {
+                rooms.forEach(function(room) {
+                    io.to(room).emit('newAnswerToMaster', formatMessage(user.id, ''));
+                    io.to(room).emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen. Es waren ${stats.points} Punkte auf dem Konto.`));
+                });
+                io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, ''));
+                io.to('stream-overlay').emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen. Es waren ${stats.points} Punkte auf dem Konto.`));
+                } else {
+                rooms.forEach(function(room) {
+                    io.to(room).emit('newAnswerToMaster', formatMessage(user.id, ''));
+                    io.to(room).emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
+                });
+                io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, ''));
+                io.to('stream-overlay').emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
+            }
         }
     });
 });

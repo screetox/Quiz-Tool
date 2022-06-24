@@ -20,24 +20,24 @@
             <h1 id="headline">Quiz-Tool</h1>
         </header>
         <main id="input-form">
-            <div id="candidate-input"></div>
-            <button class="btn" onclick="addCandidate()">Kandidat hinzufügen</button>
-            <div id="quizmaster-buttons">
-                <button class="btn quizmaster-button" onclick="startQuiz()">Los gehts!</button>
-                <a href="/"><button class="btn quizmaster-button">Abmelden</button></a>
+            <div>
+                <input type="text" name="roomname" id="roomname" placeholder="Raumnamen eingeben..." required/>
+                <input type="password" name="password" id="password" placeholder="Passwort eingeben..." />
             </div>
-            <div class="your-id">Deine eindeutige ID:<br>
-                <div id="your-id-1"></div>
+            <div id="inline-buttons">
+                <button class="btn inline-button" onclick="startQuiz()">Los gehts!</button>
+                <a href="/"><button class="btn inline-button">Abmelden</button></a>
             </div>
         </main>
         <main id="answers-form">
+            <p id="room-title">Raum: </p>
             <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
-            <div class="your-id">Deine eindeutige ID:<br>
-                <div id="your-id-2"></div>
-            </div>
         </main>
         <div id="msg-block"></div>
+        <div id="empty-roomname">
+            <div class="server-msg">Raumname darf nicht leer sein!</div>
+        </div>
     </div>
     <select id='color-mode-select' onchange='changeColorMode(this.value)'>
         <option value='default'>Default</option>

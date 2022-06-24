@@ -3,7 +3,7 @@ const idDisplay1 = document.getElementById('your-id-1');
 const idDisplay2 = document.getElementById('your-id-2');
 const siteBody = document.getElementById('body-id-stream');
 const ServerMessage = document.getElementById('msg-block');
-const candidateInput = document.getElementById('candidate-input');
+const candidateInput = document.getElementById('choose-room');
 const candidateInputForm = document.getElementById('input-form-stream');
 const candidateAnswers = document.getElementById('candidate-answers-stream');
 
@@ -34,16 +34,6 @@ socket.on('messageFromServer', message => {
     console.log(message);
 });
 
-// Disconnect Message
-socket.on('disconnectMessage', (id, message) => {
-    for (let i = 0; i < candidates.length; i++) {
-        if (id === candidates[i].candidateId) {
-            console.log(message);
-            outputServerMessage(message.text);
-        }
-    }
-});
-
 function addCandidate() {
     const div = document.createElement('div');
     div.innerHTML = `<label for="cand${candidates.length}">Kandidat ${candidates.length + 1}:</label>
@@ -64,10 +54,10 @@ function startQuiz() {
         const candidateName = `candidate${i}`;
         candidates[i] = { candidateId, candidateName };
     }
-    socket.emit('getCandidateNames', candidates);
+    socket.emit('getCandidates', candidates);
 }
 
-socket.on('giveCandidateNames', (candidates, answers) => {
+socket.on('sendCandidates', (candidates, answers) => {
             for (let i = 0; i < candidates.length; i++) {
                 const pointsDiv = document.createElement('div');
                 const answerDiv = document.createElement('div');
@@ -85,7 +75,7 @@ socket.on('giveCandidateNames', (candidates, answers) => {
                     <span class="close" id="cand${i}-close">&times;</span>
                     <label for="changeCand${i}">Neue eindeutige ID für <strong>${candidates[i].candidateName}</strong>:</label>
                     <input id="changeCand${i}" type="text" value="${document.getElementById(`cand${i}`).value}" />
-                    <button class="btn quizmaster-button" onclick="changeCand(${i})">Speichern</button>
+                    <button class="btn inline-button" onclick="changeCand(${i})">Speichern</button>
                 </div>
             </div>
         </div>`;

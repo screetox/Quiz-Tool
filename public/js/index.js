@@ -12,19 +12,16 @@ if (msg) {
     const div = document.createElement('div');
     div.classList.add('server-msg');
     div.innerHTML = msg;
-    ServerMessage.insertBefore(div, ServerMessage.firstChild);
-
-    setTimeout(function() {
-        ServerMessage.removeChild(ServerMessage.lastChild);
-    }, 300000);
+    ServerMessage.appendChild(div);
 }
 
 window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 
-quizmasterCheckbox.addEventListener('change', function() {
-    if (this.checked) {
+function login() {
+    if (quizmasterCheckbox.checked) {
         loginForm.action = 'quizmaster.html';
     } else {
         loginForm.action = 'main.html';
     }
-});
+    loginForm.submit();
+}

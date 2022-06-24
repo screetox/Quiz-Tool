@@ -3,7 +3,9 @@ const headline = document.getElementById('headline');
 const answForm = document.getElementById('answ');
 const buzzer = document.getElementById('buzzer');
 const ServerMessage = document.getElementById('msg-block');
-const idDisplay = document.getElementById('your-id');
+const activeRooms = document.getElementById('show-active-rooms');
+const chooseRoom = document.getElementById('choose-room');
+const candidateForm = document.getElementById('candidate-form');
 
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
@@ -15,9 +17,7 @@ const socket = io();
 
 // Login
 socket.emit('login', username);
-socket.on('sendID', id => {
-    idDisplay.innerHTML = id;
-});
+socket.emit('getActiveRooms');
 
 // Server error
 socket.on('server-error', () => {
@@ -35,6 +35,35 @@ socket.on('messageFromServer', message => {
     outputServerMessage(message.text);
 });
 
+socket.on('sendActiveRoomNames', (activeRoomNames) => {
+    for (let i = 0; i < activeRoomNames.length; i++) {
+        const buttonDiv = document.createElement('div');
+        buttonDiv.innerHTML = `<button class="btn" id="${i}-btn" onclick="joinRoom(${i})">${activeRoomNames[i]}</button>`;
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = `
+            <div id="${i}-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="${i}-close">&times;</span>
+                    <label for="${i}-pw">Passwort für ${activeRoomNames[i]}:</label>
+                    <input id="${i}-pw" type="password" />
+                    <button class="btn quizmaster-button" onclick="logIntoRoom(${i})">Los geht's!</button>
+                </div>
+            </div>`;
+        activeRooms.appendChild(buttonDiv);
+        activeRooms.appendChild(modalDiv);
+    }
+});
+
+socket.on('loginTryAnswer', (bool, roomname) => {
+    if (bool) {
+        document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+        chooseRoom.style.display = 'none';
+        candidateForm.style.display = 'block';
+    } else {
+        outputServerMessage(`Falsches Passwort für ${roomname}.`);
+    }
+});
+
 // Message submit
 answForm.addEventListener('input', (e) => {
     // Get Text from Input
@@ -49,11 +78,43 @@ function outputServerMessage(msg) {
     const div = document.createElement('div');
     div.classList.add('server-msg');
     div.innerHTML = msg;
-    ServerMessage.insertBefore(div, ServerMessage.firstChild);
+    ServerMessage.appendChild(div);
 
     setTimeout(function() {
         ServerMessage.removeChild(ServerMessage.lastChild);
-    }, 300000);
+    }, 60000);
+}
+
+function reloadRooms() {
+    if (activeRooms.firstChild) {
+        activeRooms.removeChild(activeRooms.lastChild);
+        reloadRooms();
+    } else {
+        socket.emit('getActiveRooms');
+    }
+}
+
+function joinRoom(roomnumber) {
+    var modal = document.getElementById(`${roomnumber}-modal`);
+    var span = document.getElementById(`${roomnumber}-close`);
+    if (modal.style.display == "block") {
+        modal.style.display = "none";
+    } else {
+        modal.style.display = "block";
+    }
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+}
+
+function logIntoRoom(roomnumber) {
+    var modal = document.getElementById(`${roomnumber}-modal`);
+    var roomname = document.getElementById(`${roomnumber}-btn`).innerHTML;
+    var password = document.getElementById(`${roomnumber}-pw`).value;
+    document.getElementById(`${roomnumber}-pw`).value = '';
+
+    modal.style.display = "none";
+    socket.emit('loginTry', roomname, password);
 }
 
 function buzz() {

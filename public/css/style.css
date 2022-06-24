@@ -11,8 +11,8 @@
 }
 
 .dark-mode {
-    --dark-color-a: #424242;
-    --dark-color-b: #666666;
+    --dark-color-b: #424242;
+    --dark-color-a: #666666;
     --light-color: #1b1b1b;
     --button-color: #e0e0e0;
     --button-hover-color: #ffffff;
@@ -134,6 +134,7 @@ button {
     font-size: 17px;
     border: 1px solid var(--dark-color-a);
     border-radius: 10px;
+    max-width: 420px;
 }
 
 .btn:hover {
@@ -215,12 +216,6 @@ button {
     margin-top: 10px;
 }
 
-.quizmaster-msg {
-    text-align: center;
-    color: var(--dark-color-a);
-    margin-top: 10px;
-}
-
 .check-for-quizmaster {
     margin-top: 20px;
     text-align: center;
@@ -235,7 +230,7 @@ button {
     text-align: center;
 }
 
-.quizmaster-button {
+.inline-button {
     display: inline-block;
 }
 
@@ -266,10 +261,10 @@ button {
 
 .modal-content {
     background-color: var(--dark-color-b);
-    margin: 15% auto;
+    margin: 30% auto;
     padding: 20px;
     padding-top: 30px;
-    width: 500px;
+    width: 300px;
     border: 1px solid var(--dark-color-a);
     border-radius: 5px;
 }
@@ -376,6 +371,15 @@ button {
     box-shadow: none;
 }
 
+#room-title {
+    color: var(--dark-color-a);
+    position: fixed;
+    margin-bottom: 20px;
+    z-index: 1;
+    right: 15px;
+    top: 12px;
+}
+
 #headline-stream {
     color: #fff;
     margin-bottom: 30px;
@@ -383,7 +387,16 @@ button {
 
 #msg-block {
     display: none;
-    padding: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 460px;
+    z-index: -1;
+    margin: 20px;
+}
+
+#empty-roomname {
+    display: none;
+    margin: 20px;
 }
 
 #quizmaster-login {
@@ -394,13 +407,22 @@ button {
     width: auto;
 }
 
-#quizmaster-buttons {
+#inline-buttons {
     width: 100%;
     text-align: center;
 }
 
 #input-form-stream {
     max-width: 480px;
+}
+
+#choose-room p {
+    margin: 30px;
+    text-align: center;
+}
+
+#candidate-form {
+    display: none;
 }
 
 #answers-form {
@@ -432,6 +454,7 @@ button {
         height: 100%;
     }
     #small-screen-warning {
+        color: var(--dark-color-a);
         display: flex;
         text-align: center;
         align-items: center;

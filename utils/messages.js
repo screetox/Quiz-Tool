@@ -4,7 +4,7 @@ function formatMessage(id, text) {
     return {
         id,
         text,
-        time: moment().format('k:mm')
+        time: moment().format('kk:mm:ss')
     }
 }
 
