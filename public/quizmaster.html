@@ -31,6 +31,11 @@
         </main>
         <main id="answers-form">
             <p id="room-title">Raum: </p>
+            <div id="point-buttons-all" class="candidate-points">
+                <p>Alle Kandidaten:</p>
+                <button id="${i}-points-plus" onclick="subPointToAll()">-1</button>
+                <button id="${i}-points-plus" onclick="addPointToAll()">+1</button>
+            </div>
             <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
         </main>

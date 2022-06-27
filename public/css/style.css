@@ -412,6 +412,16 @@ button {
     text-align: center;
 }
 
+#point-buttons-all {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#point-buttons-all p {
+    margin-bottom: 5px;
+}
+
 #input-form-stream {
     max-width: 480px;
 }

@@ -57,7 +57,7 @@ socket.on('newCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
 });
 
-function addPoint(candidate) {
+function addPoint(candidate = '') {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) + 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
@@ -69,12 +69,35 @@ function subPoint(candidate = '') {
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
 }
 
-socket.on('sendCandidates', (candidates, points, answers) => {
+function addPointToAll() {
+    for (let i = 0; i < candidates.length; i++) {
+        var counter = document.getElementById(`${i}-points`).value;
+        var counter_new = Number(counter) + 1;
+        document.getElementById(`${i}-points`).value = `${counter_new}`;
+    };
+}
+
+function subPointToAll() {
+    for (let i = 0; i < candidates.length; i++) {
+        var counter = document.getElementById(`${i}-points`).value;
+        var counter_new = Number(counter) - 1;
+        document.getElementById(`${i}-points`).value = `${counter_new}`;
+    };
+}
+
+socket.on('sendCandidates', (cands, points, answers) => {
     clearCandidates();
     console.log('sent:');
-    console.log(candidates);
     candidateInputForm.style.display = 'none';
     candidateAnswersForm.style.display = 'block';
+
+    for (let i = 0; i < cands.length; i++) {
+        if (cands[i].id !== socket.id) {
+            candidates.push(cands[i]);
+        }
+    }
+    console.log(cands);
+    console.log(candidates);
 
     for (let i = 0; i < candidates.length; i++) {
         if (candidates[i].id !== socket.id) {
@@ -119,6 +142,7 @@ function outputServerMessage(msg) {
 }
 
 function clearCandidates() {
+    candidates.length = 0;
     if (candidateAnswers.firstChild) {
         candidateAnswers.removeChild(candidateAnswers.lastChild);
         clearCandidates();
