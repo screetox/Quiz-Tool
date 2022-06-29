@@ -172,7 +172,7 @@ io.on('connection', socket => {
                 if (stats) {
                     rooms.forEach(function(room) {
                         io.to(room).emit('leavingCandidate', room);
-                        io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.<br>Es waren ${stats.points} Punkte auf dem Konto.`));
+                        io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.<br>Es waren ${stats.pts} Punkte auf dem Konto.`));
                     });
                 } else {
                     rooms.forEach(function(room) {
