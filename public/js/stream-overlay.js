@@ -45,7 +45,7 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
                     <span class="close" id="${i}-close">&times;</span>
                     <label for="${i}-pw">Passwort für ${activeRoomNames[i]}:</label>
                     <input id="${i}-pw" type="password" />
-                    <button class="btn-stream quizmaster-button" onclick="logIntoRoom(${i})">Los geht's!</button>
+                    <button class="btn-stream" onclick="logIntoRoom(${i})">Los geht's!</button>
                 </div>
             </div>`;
         activeRooms.appendChild(buttonDiv);
@@ -77,7 +77,7 @@ socket.on('sendCandidates', (cands, points, answers) => {
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
             <button id="${i}-points-plus" onclick="moveUp(${i})">^</button>
-            <input id="${i}-points" type="number" value="${points[i]}" readonly />`;
+            <input id="${candidates[i].id}-points" type="number" value="${points[i]}" readonly />`;
         pointsDiv.classList.add('candidate-points-stream', 'candidate-answer-huge');
         pointsDiv.id = `${i}-points-div`;
         answerDiv.innerHTML = `
@@ -94,6 +94,13 @@ socket.on('newAnswerToMaster', message => {
     const answField = document.getElementById(`${message.id}`);
     if (answField) {
         answField.value = message.text;
+    }
+});
+
+socket.on('newPointsToAll', message => {
+    const ptsField = document.getElementById(`${message.id}-points`);
+    if (ptsField) {
+        ptsField.value = message.text;
     }
 });
 
@@ -134,7 +141,7 @@ function logIntoRoom(roomnumber) {
     document.getElementById(`${roomnumber}-pw`).value = '';
 
     modal.style.display = "none";
-    socket.emit('loginTry', roomname, password);
+    socket.emit('streamOverlayLoginTry', roomname, password);
 }
 
 function moveUp(idx) {

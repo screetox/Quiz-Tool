@@ -255,6 +255,16 @@ button {
     border-radius: 5px;
 }
 
+.modal-content {
+    background-color: var(--dark-color-b);
+    margin: 20% auto 0 auto;
+    padding: 20px;
+    padding-top: 30px;
+    width: 300px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 5px;
+}
+
 .modal-stream {
     display: none;
     position: fixed;
@@ -302,14 +312,14 @@ button {
     height: 28px;
     margin: 2px;
     width: 40px;
-    background: var(--button-color);
+    background: #00000000;
     color: var(--dark-color-a);
     border: 1px solid var(--dark-color-a);
     border-radius: 10px;
 }
 
 .candidate-answer-huge button:hover {
-    background-color: var(--button-hover-color);
+    background-color: var(--dark-color-b);
 }
 
 .candidate-answer-huge button:active {
@@ -357,6 +367,10 @@ button {
 .candidate-points input {
     margin: 0;
     text-align: center;
+}
+
+#html-id-stream {
+    height: 100%;
 }
 
 #body-id-stream {
@@ -448,6 +462,38 @@ button {
 
 #point-buttons-all p {
     margin-bottom: 5px;
+}
+
+#allPointsToZero-modal-content {
+    text-align: center;
+}
+
+#allPointsToZero-modal-content p {
+    margin-bottom: 18px;
+}
+
+#allPointsToZero-modal-content button {
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--dark-color-a);
+    height: 38px;
+    width: 60px;
+    max-width: 100px;
+    margin: 5px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    border: 1px solid var(--dark-color-a);
+    border-radius: 10px;
+}
+
+#allPointsToZero-modal-content button:hover {
+    background-color: var(--button-hover-color);
+}
+
+#allPointsToZero-modal-content button:active {
+    position: relative;
+    top: 1px;
 }
 
 #input-form-stream {

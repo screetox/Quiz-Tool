@@ -46,7 +46,7 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
                     <span class="close" id="${i}-close">&times;</span>
                     <label for="${i}-pw">Passwort für ${activeRoomNames[i]}:</label>
                     <input id="${i}-pw" type="password" />
-                    <button class="btn quizmaster-button" onclick="logIntoRoom(${i})">Los geht's!</button>
+                    <button class="btn" onclick="logIntoRoom(${i})">Los geht's!</button>
                 </div>
             </div>`;
         activeRooms.appendChild(buttonDiv);

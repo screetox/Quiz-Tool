@@ -13,6 +13,7 @@ const {
     getCurrentUser,
     getActiveRoomNames,
     saveAnswer,
+    savePoints,
     userLeave,
     deletePoints,
     setRoomInactive,
@@ -110,30 +111,51 @@ io.on('connection', socket => {
         }
     });
 
+    socket.on('streamOverlayLoginTry', (roomname, password) => {
+        const correct = testPassword(roomname, password);
+        if (correct) {
+            socket.join(roomname);
+            socket.emit('loginTryAnswer', true, roomname);
+        } else {
+            socket.emit('loginTryAnswer', false, roomname);
+        }
+    });
+
     // Listen for newAnswer
     socket.on('newAnswer', (answ) => {
-        var self = this;
         const user = getCurrentUser(socket.id);
         var rooms = socket.rooms;
 
         saveAnswer(user.id, answ);
         rooms.forEach(function(room) {
-            io.to(room).emit('newAnswerToMaster', formatMessage(user.id, answ));
+            if (!(room == 'quizmaster' || room == 'stream-overlay')) {
+                io.to(room).emit('newAnswerToMaster', formatMessage(user.id, answ));
+            }
         });
-        io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, answ));
+    });
+
+    // Listen for newPoints
+    socket.on('newPoints', (user, pts) => {
+        var rooms = socket.rooms;
+
+        savePoints(user.id, pts);
+        rooms.forEach(function(room) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay')) {
+                io.to(room).emit('newPointsToAll', formatMessage(user.id, pts));
+            }
+        });
     });
 
     // Broadcast when a user disconnects
     socket.on('disconnecting', () => {
         var rooms = socket.rooms;
         const user = userLeave(socket.id);
-        const stats = deletePoints(socket.id);
-        setRoomInactive(socket.id);
 
         if (user) {
             const time = moment().format('kk:mm:ss');
 
             if (rooms.has('quizmaster')) {
+                setRoomInactive(socket.id);
                 rooms.forEach(function(room) {
                     if (room != 'quizmaster') {
                         io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.`));
@@ -146,6 +168,7 @@ io.on('connection', socket => {
                     }
                 });
             } else {
+                const stats = deletePoints(socket.id);
                 if (stats) {
                     rooms.forEach(function(room) {
                         io.to(room).emit('leavingCandidate', room);

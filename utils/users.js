@@ -88,6 +88,17 @@ function saveAnswer(id, answ) {
     currentAnswers.push(answer);
 }
 
+// Save new points
+function savePoints(id, pts) {
+    const index = currentPoints.findIndex(points => points.id === id);
+    if (index !== -1) {
+        currentPoints.splice(index, 1);
+    }
+
+    const points = { id, pts };
+    currentPoints.push(points);
+}
+
 // User leaves chat
 function userLeave(id) {
     const index = activeUsers.findIndex(user => user.id === id);
@@ -142,7 +153,7 @@ function getCandidatePoints(candidates) {
         const point = currentPoints.find(point => point.id === candidates[i].id);
         var candidatePoint = 0;
         if (point) {
-            candidatePoint = point.answ;
+            candidatePoint = point.pts;
         }
         points.push(candidatePoint);
     }
@@ -158,6 +169,7 @@ module.exports = {
     getCurrentUser,
     getActiveRoomNames,
     saveAnswer,
+    savePoints,
     userLeave,
     deletePoints,
     setRoomInactive,

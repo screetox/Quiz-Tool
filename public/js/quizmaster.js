@@ -60,16 +60,18 @@ socket.on('leavingCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
 });
 
-function addPoint(candidate = '') {
+function addPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) + 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
+    socket.emit('newPoints', candidates[candidate], counter_new);
 }
 
-function subPoint(candidate = '') {
+function subPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) - 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
+    socket.emit('newPoints', candidates[candidate], counter_new);
 }
 
 function addPointToAll() {
@@ -77,6 +79,7 @@ function addPointToAll() {
         var counter = document.getElementById(`${i}-points`).value;
         var counter_new = Number(counter) + 1;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
+        socket.emit('newPoints', candidates[i], counter_new);
     };
 }
 
@@ -85,7 +88,30 @@ function subPointToAll() {
         var counter = document.getElementById(`${i}-points`).value;
         var counter_new = Number(counter) - 1;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
+        socket.emit('newPoints', candidates[i], counter_new);
     };
+}
+
+function allPointsToZero() {
+    for (let i = 0; i < candidates.length; i++) {
+        var counter_new = 0;
+        document.getElementById(`${i}-points`).value = `${counter_new}`;
+        socket.emit('newPoints', candidates[i], counter_new);
+    };
+    document.getElementById('allPointsToZero-modal').style.display = 'none';
+}
+
+function askForAllPointsToZero() {
+    const modal = document.getElementById('allPointsToZero-modal');
+    var span = document.getElementById(`allPointsToZero-close`);
+    if (modal.style.display == "block") {
+        modal.style.display = "none";
+    } else {
+        modal.style.display = "block";
+    }
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
 }
 
 socket.on('sendCandidates', (cands, points, answers) => {
@@ -101,16 +127,23 @@ socket.on('sendCandidates', (cands, points, answers) => {
         const pointsDiv = document.createElement('div');
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
-            <div class="candidate-points">
-                <button id="${i}-points-plus" onclick="addPoint(${i})">+1</button>
-                <input id="${i}-points" type="number" value="${points[i]}" readonly />
-                <button id="${i}-points-minus" onclick="subPoint(${i})">-1</button>
-            </div>`;
+            <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
+            <input id="${i}-points" type="number" value="${points[i]}" />
+            <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>`;
+        pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
-            <div class="candidate-answer">
-                <label for="${candidates[i].id}">${candidates[i].username}:<br></label>
-                <input id="${candidates[i].id}" type="text" value="${answers[i]}" readonly />
-            </div>`;
+            <label for="${candidates[i].id}">${candidates[i].username}:<br></label>
+            <input id="${candidates[i].id}" type="text" value="${answers[i]}" readonly />`;
+        answerDiv.classList.add('candidate-answer');
+
+        pointsDiv.addEventListener('input', (e) => {
+            // Get Text from Input
+            const pts = e.target.value;
+            console.log('ES TRIGGERT!');
+            // Emit a message to the server
+            socket.emit('newPoints', candidates[i], pts);
+        });
+
         candidateAnswers.appendChild(pointsDiv);
         candidateAnswers.appendChild(answerDiv);
     }
