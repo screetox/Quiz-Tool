@@ -1,9 +1,8 @@
 const siteBody = document.getElementById('body-id');
 const headline = document.getElementById('headline');
 const ServerMessage = document.getElementById('msg-block');
-const candidateInput = document.getElementById('create-room');
+const roomInputForm = document.getElementById('input-form');
 const candidateAnswers = document.getElementById('candidate-answers');
-const candidateInputForm = document.getElementById('input-form');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
@@ -57,6 +56,10 @@ socket.on('newCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
 });
 
+socket.on('leavingCandidate', (roomname) => {
+    socket.emit('getCandidates', roomname);
+});
+
 function addPoint(candidate = '') {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) + 1;
@@ -87,36 +90,29 @@ function subPointToAll() {
 
 socket.on('sendCandidates', (cands, points, answers) => {
     clearCandidates();
-    console.log('sent:');
-    candidateInputForm.style.display = 'none';
+    roomInputForm.style.display = 'none';
     candidateAnswersForm.style.display = 'block';
 
     for (let i = 0; i < cands.length; i++) {
-        if (cands[i].id !== socket.id) {
-            candidates.push(cands[i]);
-        }
+        candidates.push(cands[i]);
     }
-    console.log(cands);
-    console.log(candidates);
 
     for (let i = 0; i < candidates.length; i++) {
-        if (candidates[i].id !== socket.id) {
-            const pointsDiv = document.createElement('div');
-            const answerDiv = document.createElement('div');
-            pointsDiv.innerHTML = `
-                <div class="candidate-points">
-                    <button id="${i}-points-plus" onclick="addPoint(${i})">+1</button>
-                    <input id="${i}-points" type="number" value="${points[i]}" readonly />
-                    <button id="${i}-points-minus" onclick="subPoint(${i})">-1</button>
-                </div>`;
-            answerDiv.innerHTML = `
-                <div class="candidate-answer">
-                    <label for="${candidates[i].id}">${candidates[i].username}:<br></label>
-                    <input id="${candidates[i].id}" type="text" value="${answers[i]}" readonly />
-                </div>`;
-            candidateAnswers.appendChild(pointsDiv);
-            candidateAnswers.appendChild(answerDiv);
-        }
+        const pointsDiv = document.createElement('div');
+        const answerDiv = document.createElement('div');
+        pointsDiv.innerHTML = `
+            <div class="candidate-points">
+                <button id="${i}-points-plus" onclick="addPoint(${i})">+1</button>
+                <input id="${i}-points" type="number" value="${points[i]}" readonly />
+                <button id="${i}-points-minus" onclick="subPoint(${i})">-1</button>
+            </div>`;
+        answerDiv.innerHTML = `
+            <div class="candidate-answer">
+                <label for="${candidates[i].id}">${candidates[i].username}:<br></label>
+                <input id="${candidates[i].id}" type="text" value="${answers[i]}" readonly />
+            </div>`;
+        candidateAnswers.appendChild(pointsDiv);
+        candidateAnswers.appendChild(answerDiv);
     }
 });
 
@@ -128,7 +124,7 @@ socket.on('newAnswerToMaster', message => {
 });
 
 function outputServerMessage(msg) {
-    document.getElementById('msg-block').style.display = 'block';
+    ServerMessage.style.display = 'block';
     const div = document.createElement('div');
     div.classList.add('server-msg');
     div.innerHTML = msg;
@@ -136,7 +132,7 @@ function outputServerMessage(msg) {
 
     setTimeout(function() {
         if (ServerMessage.firstChild) {
-            ServerMessage.removeChild(ServerMessage.lastChild);
+            ServerMessage.removeChild(ServerMessage.firstChild);
         }
     }, 60000);
 }
@@ -144,14 +140,14 @@ function outputServerMessage(msg) {
 function clearCandidates() {
     candidates.length = 0;
     if (candidateAnswers.firstChild) {
-        candidateAnswers.removeChild(candidateAnswers.lastChild);
+        candidateAnswers.removeChild(candidateAnswers.firstChild);
         clearCandidates();
     }
 }
 
 function clearMessages() {
     if (ServerMessage.firstChild) {
-        ServerMessage.removeChild(ServerMessage.lastChild);
+        ServerMessage.removeChild(ServerMessage.firstChild);
         clearMessages();
     }
 }

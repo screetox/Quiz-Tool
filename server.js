@@ -39,6 +39,7 @@ io.on('connection', socket => {
     socket.on('login-as-quizmaster', (username) => {
         const time = moment().format('kk:mm:ss');
         socket.emit('welcomeMessage', formatMessage(botName, `Es ist ${time} - Willkommen beim Quiz-Tool, ${username}!`));
+        socket.join('quizmaster');
         quizmasterJoin(socket.id, username);
     });
     socket.on('login-stream-overlay', (username) => {
@@ -59,12 +60,16 @@ io.on('connection', socket => {
         if (roomCreated === 0) {
             socket.join(roomname);
             
-            const candidates = io.sockets.adapter.rooms.get(roomname);
             const candidateArray= [];
-            
-            for (const id of candidates) {
-                const candidate = getCurrentUser(id);
-                candidateArray.push(candidate);
+            const candidates = io.sockets.adapter.rooms.get(roomname);
+            const quizmasters = io.sockets.adapter.rooms.get('quizmaster');
+            const overlays = io.sockets.adapter.rooms.get('stream-overlay');
+        
+            for (let id of candidates) {
+                if (!(quizmasters?.has(id) || overlays?.has(id))) {
+                    const candidate = getCurrentUser(id);
+                    candidateArray.push(candidate);
+                }
             }
 
             const answers = getCandidateAnswers(candidateArray);
@@ -72,17 +77,21 @@ io.on('connection', socket => {
             socket.emit('sendCandidates', candidateArray, points, answers);
         } else if (roomCreated === 2) {
             const time = moment().format('kk:mm:ss');
-            socket.emit('messageFromServer', formatMessage(botName, `${time} - Der Name <i>${roomname}</i> wird bereits verwendet.<br>Bitte verwende einen anderen Raumnamen.`));
+            socket.emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Der Name <i>${roomname}</i> wird bereits verwendet.<br>Bitte verwende einen anderen Raumnamen.`));
         }
     });
 
     socket.on('getCandidates', (roomname) => {
-        const candidates = io.sockets.adapter.rooms.get(roomname);
         const candidateArray= [];
-        
-        for (const id of candidates) {
-            const candidate = getCurrentUser(id);
-            candidateArray.push(candidate);
+        const candidates = io.sockets.adapter.rooms.get(roomname);
+        const quizmasters = io.sockets.adapter.rooms.get('quizmaster');
+        const overlays = io.sockets.adapter.rooms.get('stream-overlay');
+    
+        for (let id of candidates) {
+            if (!(quizmasters?.has(id) || overlays?.has(id))) {
+                const candidate = getCurrentUser(id);
+                candidateArray.push(candidate);
+            }
         }
 
         const answers = getCandidateAnswers(candidateArray);
@@ -123,20 +132,31 @@ io.on('connection', socket => {
 
         if (user) {
             const time = moment().format('kk:mm:ss');
-            if (stats) {
+
+            if (rooms.has('quizmaster')) {
                 rooms.forEach(function(room) {
-                    io.to(room).emit('newAnswerToMaster', formatMessage(user.id, ''));
-                    io.to(room).emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen. Es waren ${stats.points} Punkte auf dem Konto.`));
+                    if (room != 'quizmaster') {
+                        io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.`));
+                    }
                 });
-                io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, ''));
-                io.to('stream-overlay').emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen. Es waren ${stats.points} Punkte auf dem Konto.`));
+            } else if (rooms.has('stream-overlay')) {
+                rooms.forEach(function(room) {
+                    if (room != 'stream-overlay') {
+                        io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zum ${user.username} wurde unterbrochen.`));
+                    }
+                });
+            } else {
+                if (stats) {
+                    rooms.forEach(function(room) {
+                        io.to(room).emit('leavingCandidate', room);
+                        io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.<br>Es waren ${stats.points} Punkte auf dem Konto.`));
+                    });
                 } else {
-                rooms.forEach(function(room) {
-                    io.to(room).emit('newAnswerToMaster', formatMessage(user.id, ''));
-                    io.to(room).emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
-                });
-                io.to('stream-overlay').emit('newAnswerToMaster', formatMessage(user.id, ''));
-                io.to('stream-overlay').emit('messageFromServer', formatMessage(botName, `${time} - Die Verbindung zu ${user.username} wurde unterbrochen.`));
+                    rooms.forEach(function(room) {
+                        io.to(room).emit('leavingCandidate', room);
+                        io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.`));
+                    });
+                }
             }
         }
     });

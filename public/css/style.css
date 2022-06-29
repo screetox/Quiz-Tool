@@ -222,14 +222,6 @@ button {
     vertical-align: middle;
 }
 
-.your-id {
-    color: #fff;
-    line-height: 1.5em;
-    margin: 0;
-    margin-top: 20px;
-    text-align: center;
-}
-
 .inline-button {
     display: inline-block;
 }
@@ -239,12 +231,6 @@ button {
     margin-left: 50%;
     margin-right: 50%;
     justify-content: center;
-}
-
-.settings-btn {
-    position: absolute;
-    margin: 5px;
-    filter: var(--settings-filter);
 }
 
 .modal {
@@ -261,7 +247,7 @@ button {
 
 .modal-content {
     background-color: var(--dark-color-b);
-    margin: 30% auto;
+    margin: 20% auto 0 auto;
     padding: 20px;
     padding-top: 30px;
     width: 300px;
@@ -269,12 +255,23 @@ button {
     border-radius: 5px;
 }
 
+.modal-stream {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: auto;
+    height: auto;
+    overflow: auto;
+}
+
 .modal-content-stream {
     background-color: var(--dark-color-b);
-    margin: 30px 600px;
+    margin: 30px 30px;
     padding: 20px;
     padding-top: 30px;
-    width: 500px;
+    width: 300px;
     border: 1px solid var(--dark-color-a);
     border-radius: 5px;
 }
@@ -291,23 +288,38 @@ button {
     cursor: pointer;
 }
 
-.displayGrid {
-    display: grid;
-}
-
 .candidate-answer {
     grid-column: 2;
 }
 
-.candidate-answer-huge {
+.candidate-answer-huge input {
     font-weight: bold;
     font-size: 30px;
     color: #10687A;
 }
 
+.candidate-answer-huge button {
+    height: 28px;
+    margin: 2px;
+    width: 40px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    border: 1px solid var(--dark-color-a);
+    border-radius: 10px;
+}
+
+.candidate-answer-huge button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.candidate-answer-huge button:active {
+    position: relative;
+    top: 1px;
+}
+
 .candidate-points-stream {
     width: 50px;
-    padding: 32px 0 32px 0;
+    padding: 0 0 32px 0;
     grid-column: 1;
     text-align: center;
 }
@@ -348,9 +360,16 @@ button {
 }
 
 #body-id-stream {
+    color: #fff;
+    padding: 20px;
     transform: scale(1.7);
     transform-origin: 0 0;
-    overflow: hidden;
+    width: calc(100% / 1.7);
+    height: calc(100% / 1.7);
+}
+
+#choose-stream-room p {
+    margin-top: 10px;
 }
 
 #color-mode-select {
@@ -381,7 +400,6 @@ button {
 }
 
 #headline-stream {
-    color: #fff;
     margin-bottom: 30px;
 }
 
@@ -392,6 +410,16 @@ button {
     width: 460px;
     z-index: -1;
     margin: 20px;
+}
+
+#msg-block-stream {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 460px;
+    z-index: -1;
+    margin: 20px 20px 0 20px;
 }
 
 #empty-roomname {
@@ -439,6 +467,10 @@ button {
     display: none;
 }
 
+#answers-form-stream {
+    display: none;
+}
+
 #candidate-answers {
     display: grid;
     grid-template-columns: 50px 420px;
@@ -446,7 +478,7 @@ button {
 }
 
 #candidate-answers-stream {
-    display: none;
+    display: grid;
     grid-template-columns: 50px 420px;
     gap: 10px;
 }

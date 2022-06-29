@@ -1,6 +1,7 @@
 - Punkteanzeige Funktionalität
-- bei User Disconnect Antwort-Feld entfernen
-- Streaming-Anzeige (für obs)
 - Buzzer-Funktionalität
 - local db
   - highscores
+
+- alle .js Dateien Variablen am Dateianfang durchgehen
+- alle .css Regeln durchgehen

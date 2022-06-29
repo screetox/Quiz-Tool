@@ -15,12 +15,17 @@
         <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
     </div>
     <h1 id="headline-stream">Stream-Overlay Quiz-Tool</h1>
-    <div id="input-form-stream">
-        <div id="choose-room"></div>
-        <button class="btn-stream" onclick="addCandidate()">Kandidat hinzufügen</button>
-        <button class="btn-stream" onclick="startQuiz()">Los gehts!</button>
+    <div id="choose-stream-room">
+        <button class="btn-stream inline-button" onclick="reloadRooms()">Aktualisieren</button>
+        <a href="/"><button class="btn-stream inline-button">Abmelden</button></a>
+        <p>Bitte wähle einen Raum aus:</p>
+        <div id="show-active-rooms"></div>
     </div>
-    <div id="candidate-answers-stream"></div>
+    <div id="answers-form-stream">
+        <p id="room-title">Raum: </p>
+        <div id="candidate-answers-stream"></div>
+    </div>
+    <div id="msg-block-stream"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>

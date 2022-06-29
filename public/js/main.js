@@ -56,6 +56,7 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
 
 socket.on('loginTryAnswer', (bool, roomname) => {
     if (bool) {
+        clearMessages();
         document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
         chooseRoom.style.display = 'none';
         candidateForm.style.display = 'block';
@@ -74,20 +75,20 @@ answForm.addEventListener('input', (e) => {
 });
 
 function outputServerMessage(msg) {
-    document.getElementById('msg-block').style.display = 'block';
+    ServerMessage.style.display = 'block';
     const div = document.createElement('div');
     div.classList.add('server-msg');
     div.innerHTML = msg;
     ServerMessage.appendChild(div);
 
     setTimeout(function() {
-        ServerMessage.removeChild(ServerMessage.lastChild);
+        ServerMessage.removeChild(ServerMessage.firstChild);
     }, 60000);
 }
 
 function reloadRooms() {
     if (activeRooms.firstChild) {
-        activeRooms.removeChild(activeRooms.lastChild);
+        activeRooms.removeChild(activeRooms.firstChild);
         reloadRooms();
     } else {
         socket.emit('getActiveRooms');
@@ -115,6 +116,13 @@ function logIntoRoom(roomnumber) {
 
     modal.style.display = "none";
     socket.emit('loginTry', roomname, password);
+}
+
+function clearMessages() {
+    if (ServerMessage.firstChild) {
+        ServerMessage.removeChild(ServerMessage.firstChild);
+        clearMessages();
+    }
 }
 
 function buzz() {
