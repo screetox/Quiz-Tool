@@ -97,7 +97,7 @@ socket.on('newAnswerToMaster', message => {
     }
 });
 
-socket.on('newPointsToAll', message => {
+socket.on('newPointsToAll', (message) => {
     const ptsField = document.getElementById(`${message.id}-points`);
     if (ptsField) {
         ptsField.value = message.text;

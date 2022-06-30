@@ -1,3 +1,3 @@
 {
-    "ignore": ["utils/*", "public/*", "node_modules/*", "package-lock.json", "package.json"]
+    "ignore": ["public/*", "node_modules/*", "package-lock.json", "package.json"]
 }

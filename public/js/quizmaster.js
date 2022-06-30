@@ -1,14 +1,11 @@
 const siteBody = document.getElementById('body-id');
 const headline = document.getElementById('headline');
-const ServerMessage = document.getElementById('msg-block');
+const ServerMessage = document.getElementById('msg-block-quizmaster');
 const roomInputForm = document.getElementById('input-form');
 const candidateAnswers = document.getElementById('candidate-answers');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
-var dontSpam = true;
-var roomname = '';
-var password = '';
 
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
@@ -54,10 +51,12 @@ function startQuiz() {
 
 socket.on('newCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
+    socket.emit('getEnemyPoints');
 });
 
 socket.on('leavingCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
+    socket.emit('getEnemyPoints');
 });
 
 function addPoint(candidate) {
@@ -65,6 +64,7 @@ function addPoint(candidate) {
     var counter_new = Number(counter) + 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     socket.emit('newPoints', candidates[candidate], counter_new);
+    socket.emit('getEnemyPoints');
 }
 
 function subPoint(candidate) {
@@ -72,6 +72,7 @@ function subPoint(candidate) {
     var counter_new = Number(counter) - 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     socket.emit('newPoints', candidates[candidate], counter_new);
+    socket.emit('getEnemyPoints');
 }
 
 function addPointToAll() {
@@ -81,6 +82,7 @@ function addPointToAll() {
         document.getElementById(`${i}-points`).value = `${counter_new}`;
         socket.emit('newPoints', candidates[i], counter_new);
     };
+    socket.emit('getEnemyPoints');
 }
 
 function subPointToAll() {
@@ -90,6 +92,7 @@ function subPointToAll() {
         document.getElementById(`${i}-points`).value = `${counter_new}`;
         socket.emit('newPoints', candidates[i], counter_new);
     };
+    socket.emit('getEnemyPoints');
 }
 
 function allPointsToZero() {
@@ -98,6 +101,7 @@ function allPointsToZero() {
         document.getElementById(`${i}-points`).value = `${counter_new}`;
         socket.emit('newPoints', candidates[i], counter_new);
     };
+    socket.emit('getEnemyPoints');
     document.getElementById('allPointsToZero-modal').style.display = 'none';
 }
 
@@ -137,11 +141,11 @@ socket.on('sendCandidates', (cands, points, answers) => {
         answerDiv.classList.add('candidate-answer');
 
         pointsDiv.addEventListener('input', (e) => {
-            // Get Text from Input
-            const pts = e.target.value;
-            console.log('ES TRIGGERT!');
+            // Get Number from Input
+            const pts = Number(e.target.value);
             // Emit a message to the server
             socket.emit('newPoints', candidates[i], pts);
+            socket.emit('getEnemyPoints');
         });
 
         candidateAnswers.appendChild(pointsDiv);

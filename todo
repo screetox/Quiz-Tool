@@ -1,8 +1,6 @@
-- Punkteanzeige Kandidaten (main.html / main.js)
-- Stream Overlay Punkteanzeige ver
-- gößern
+- Spectator Ansicht
 - Buzzer-Funktionalität
-- local db
+- local db (json?)
   - highscores
 
 - alle .js Dateien Variablen am Dateianfang durchgehen

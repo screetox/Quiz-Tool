@@ -6,6 +6,8 @@ const ServerMessage = document.getElementById('msg-block');
 const activeRooms = document.getElementById('show-active-rooms');
 const chooseRoom = document.getElementById('choose-room');
 const candidateForm = document.getElementById('candidate-form');
+const sideBoard = document.getElementById('sideboard');
+const enemyPoints = document.getElementById('enemy-points');
 
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
@@ -60,8 +62,26 @@ socket.on('loginTryAnswer', (bool, roomname) => {
         document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
         chooseRoom.style.display = 'none';
         candidateForm.style.display = 'block';
+        sideBoard.style.display = 'block';
     } else {
         outputServerMessage(`Falsches Passwort für ${roomname}.`);
+    }
+});
+
+socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
+    clearPoints();
+    for (let i = 0; i < allPoints.length; i++) {
+        const div = document.createElement('div');
+        div.innerHTML = `<p class="enemy-name">${allCandidates[i].username}</p>
+                         <p class="enemy-point">${allPoints[i]}</p>`;
+
+        if (allCandidates[i].id == socket.id) {
+            div.classList.add('own-point');
+        } else {
+            div.classList.add('enemy-points-grid');
+        }
+
+        enemyPoints.appendChild(div);
     }
 });
 
@@ -116,6 +136,13 @@ function logIntoRoom(roomnumber) {
 
     modal.style.display = "none";
     socket.emit('loginTry', roomname, password);
+}
+
+function clearPoints() {
+    if (enemyPoints.firstChild) {
+        enemyPoints.removeChild(enemyPoints.firstChild);
+        clearPoints();
+    }
 }
 
 function clearMessages() {

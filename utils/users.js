@@ -160,6 +160,42 @@ function getCandidatePoints(candidates) {
     return points;
 }
 
+// Get candidate points
+function getAllPoints(candidates) {
+    const allPoints = [];
+    const allCandidates = [];
+    const allCandidateIDs = [];
+    for (let i = 0; i < candidates.length; i++) {
+        const point = currentPoints.find(point => point.id === candidates[i].id);
+        var candidatePoint = 0;
+        if (point) {
+            candidatePoint = point.pts;
+        }
+        allPoints.push(candidatePoint);
+        allCandidates.push(candidates[i].username);
+        allCandidateIDs.push(candidates[i].id);
+    }
+
+    const indicesAlphabetically = Array.from(allPoints.keys()).sort((a,b) => allCandidates[a].localeCompare(allCandidates[b]));
+    const alphabeticallyAllPoints = indicesAlphabetically.map(i => allPoints[i]);
+    const alphabeticallyAllCandidates = indicesAlphabetically.map(i => allCandidates[i]);
+    const alphabeticallyAllCandidateIDs = indicesAlphabetically.map(i => allCandidateIDs[i]);
+
+    const indices = Array.from(allPoints.keys()).sort((a,b) => alphabeticallyAllPoints[b] - alphabeticallyAllPoints[a]);
+    const sortedAllPoints = indices.map(i => alphabeticallyAllPoints[i]);
+    const sortedAllCandidates = indices.map(i => alphabeticallyAllCandidates[i]);
+    const sortedAllCandidateIDs = indices.map(i => alphabeticallyAllCandidateIDs[i]);
+
+    const returnAllCandidates = [];
+    for (let i = 0; i < sortedAllCandidates.length; i++) {
+        const id = sortedAllCandidateIDs[i];
+        const username = sortedAllCandidates[i];
+        returnAllCandidates.push({ id, username });
+    }
+
+    return [returnAllCandidates, sortedAllPoints];
+}
+
 module.exports = {
     userJoin,
     quizmasterJoin,
@@ -174,5 +210,6 @@ module.exports = {
     deletePoints,
     setRoomInactive,
     getCandidateAnswers,
-    getCandidatePoints
+    getCandidatePoints,
+    getAllPoints
 }

@@ -8,11 +8,31 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Quiz-Tool - screetox</title>
+
+    <style>
+        @media only screen and (max-width: 560px) {
+            div:not(#small-screen-warning) {
+                display: none;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            #small-screen-warning {
+                color: var(--dark-color-a);
+                display: flex;
+                text-align: center;
+                align-items: center;
+                height: 100%;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body id="body-id">
     <div id="small-screen-warning">
-        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
+        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 560px Breite auf. Danke!</p>
     </div>
     <div class="container-quizmaster">
         <header>
@@ -35,7 +55,7 @@
                 <p>Alle Kandidaten:</p>
                 <button id="all-points-minus" onclick="subPointToAll()">- 1</button>
                 <button id="all-points-plus" onclick="addPointToAll()">+ 1</button>
-            <button id="all-points-zero" onclick="askForAllPointsToZero()">= 0</button>
+                <button id="all-points-zero" onclick="askForAllPointsToZero()">= 0</button>
             </div>
             <div id="allPointsToZero-modal" class="modal">
                 <div id="allPointsToZero-modal-content" class="modal-content">
@@ -48,7 +68,7 @@
             <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
         </main>
-        <div id="msg-block"></div>
+        <div id="msg-block-quizmaster"></div>
         <div id="empty-roomname">
             <div class="server-msg">Raumname darf nicht leer sein!</div>
         </div>

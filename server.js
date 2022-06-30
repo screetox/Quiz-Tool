@@ -18,7 +18,8 @@ const {
     deletePoints,
     setRoomInactive,
     getCandidateAnswers,
-    getCandidatePoints
+    getCandidatePoints,
+    getAllPoints
     } = require('./utils/users');
 
 const app = express();
@@ -128,7 +129,7 @@ io.on('connection', socket => {
 
         saveAnswer(user.id, answ);
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay')) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == user.id)) {
                 io.to(room).emit('newAnswerToMaster', formatMessage(user.id, answ));
             }
         });
@@ -137,11 +138,33 @@ io.on('connection', socket => {
     // Listen for newPoints
     socket.on('newPoints', (user, pts) => {
         var rooms = socket.rooms;
-
+        
         savePoints(user.id, pts);
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay')) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == user.id)) {
                 io.to(room).emit('newPointsToAll', formatMessage(user.id, pts));
+            }
+        });
+    });
+
+    socket.on('getEnemyPoints', () => {
+        var rooms = socket.rooms;
+        rooms.forEach(function(room) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == socket.id)) {
+                const candidateArray= [];
+                const candidates = io.sockets.adapter.rooms.get(room);
+                const quizmasters = io.sockets.adapter.rooms.get('quizmaster');
+                const overlays = io.sockets.adapter.rooms.get('stream-overlay');
+            
+                for (let id of candidates) {
+                    if (!(quizmasters?.has(id) || overlays?.has(id))) {
+                        const candidate = getCurrentUser(id);
+                        candidateArray.push(candidate);
+                    }
+                }
+
+                const allPointsAndCandidateNames = getAllPoints(candidateArray);
+                io.to(room).emit('sendEnemyPoints', allPointsAndCandidateNames[0], allPointsAndCandidateNames[1]);
             }
         });
     });
