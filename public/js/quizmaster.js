@@ -63,6 +63,7 @@ function addPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) + 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
+    document.getElementById(`${candidate}-points`).title = `${counter_new}`;
     socket.emit('newPoints', candidates[candidate], counter_new);
     socket.emit('getEnemyPoints');
 }
@@ -71,6 +72,7 @@ function subPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) - 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
+    document.getElementById(`${candidate}-points`).title = `${counter_new}`;
     socket.emit('newPoints', candidates[candidate], counter_new);
     socket.emit('getEnemyPoints');
 }
@@ -80,6 +82,7 @@ function addPointToAll() {
         var counter = document.getElementById(`${i}-points`).value;
         var counter_new = Number(counter) + 1;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
+        document.getElementById(`${i}-points`).title = `${counter_new}`;
         socket.emit('newPoints', candidates[i], counter_new);
     };
     socket.emit('getEnemyPoints');
@@ -90,6 +93,7 @@ function subPointToAll() {
         var counter = document.getElementById(`${i}-points`).value;
         var counter_new = Number(counter) - 1;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
+        document.getElementById(`${i}-points`).title = `${counter_new}`;
         socket.emit('newPoints', candidates[i], counter_new);
     };
     socket.emit('getEnemyPoints');
@@ -99,6 +103,7 @@ function allPointsToZero() {
     for (let i = 0; i < candidates.length; i++) {
         var counter_new = 0;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
+        document.getElementById(`${i}-points`).title = `${counter_new}`;
         socket.emit('newPoints', candidates[i], counter_new);
     };
     socket.emit('getEnemyPoints');
@@ -132,17 +137,18 @@ socket.on('sendCandidates', (cands, points, answers) => {
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
             <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
-            <input id="${i}-points" type="number" value="${points[i]}" />
+            <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
             <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
-            <label for="${candidates[i].id}">${candidates[i].username}:<br></label>
-            <input id="${candidates[i].id}" type="text" value="${answers[i]}" readonly />`;
-        answerDiv.classList.add('candidate-answer');
+            <label for="${candidates[i].id}" title="${candidates[i].username}:">${candidates[i].username}:<br></label>
+            <input id="${candidates[i].id}" type="text" value="${answers[i]}" title="${answers[i]}" readonly />`;
+        answerDiv.classList.add('candidate-answer', 'inline-block-label');
 
         pointsDiv.addEventListener('input', (e) => {
             // Get Number from Input
             const pts = Number(e.target.value);
+            e.target.title = `${pts}`;
             // Emit a message to the server
             socket.emit('newPoints', candidates[i], pts);
             socket.emit('getEnemyPoints');
@@ -157,6 +163,7 @@ socket.on('newAnswerToMaster', message => {
     const answField = document.getElementById(`${message.id}`);
     if (answField) {
         answField.value = message.text;
+        answField.title = message.text;
     }
 });
 

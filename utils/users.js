@@ -26,6 +26,16 @@ function quizmasterJoin(id, username) {
     return user;
 }
 
+function spectatorJoin(id, username) {
+    const user = { id, username };
+    const time = moment().format('kk:mm:ss');
+
+    activeUsers.push(user);
+    console.log(`${time} - ${username} (${user.id}) connected as a spectator.`);
+
+    return user;
+}
+
 function overlayJoin(id, username) {
     const user = { id, username };
     const time = moment().format('kk:mm:ss');
@@ -199,6 +209,7 @@ function getAllPoints(candidates) {
 module.exports = {
     userJoin,
     quizmasterJoin,
+    spectatorJoin,
     overlayJoin,
     createRoom,
     testPassword,

@@ -219,6 +219,8 @@ button {
     text-align: center;
     color: var(--error-color);
     margin-top: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .check-for-quizmaster {
@@ -297,14 +299,25 @@ button {
     font-size: 28px;
     font-weight: bold;
     line-height: 0;
-}
-
-.close:hover {
     cursor: pointer;
 }
 
 .candidate-answer {
     grid-column: 2;
+}
+
+.inline-block-label {
+    font-size: 0;
+}
+
+.inline-block-label label {
+    display: inline-block;
+    font-size: medium;
+    width: 100%;
+    height: 32px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .candidate-answer-huge input {
@@ -441,12 +454,52 @@ button {
     width: auto;
     min-width: 100px;
     padding: 5px 10px;
-    background: var(--button-color);
+    background: var(--light-color);
     color: var(--dark-color-a);
     font-size: 12px;
     border: 1px solid var(--dark-color-a);
     border-radius: 5px;
     box-shadow: none;
+}
+
+#spectate-button {
+    font-family: 'Roboto', sans-serif;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 12px;
+    right: 15px;
+    width: auto;
+    padding: 5px 10px;
+    background: var(--light-color);
+    color: var(--dark-color-a);
+    font-size: 12px;
+    border: 1px solid var(--dark-color-a);
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+#stream-overlay-button {
+    font-family: 'Roboto', sans-serif;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 12px;
+    right: 15px;
+    width: auto;
+    padding: 5px 10px;
+    background: var(--light-color);
+    color: var(--light-color);
+    font-size: 12px;
+    border: 1px solid var(--light-color);
+    border-radius: 5px;
+    box-shadow: none;
+    cursor: default;
+}
+
+#stream-overlay-button:hover {
+    color: var(--dark-color-a);
+    border-color: var(--dark-color-a);
 }
 
 #room-title {

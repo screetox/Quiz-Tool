@@ -72,8 +72,8 @@ socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
     clearPoints();
     for (let i = 0; i < allPoints.length; i++) {
         const div = document.createElement('div');
-        div.innerHTML = `<p class="enemy-name">${allCandidates[i].username}</p>
-                         <p class="enemy-point">${allPoints[i]}</p>`;
+        div.innerHTML = `<p class="enemy-name" title="${allCandidates[i].username}">${allCandidates[i].username}</p>
+                         <p class="enemy-point" title="${allPoints[i]}">${allPoints[i]}</p>`;
 
         if (allCandidates[i].id == socket.id) {
             div.classList.add('own-point');
@@ -89,7 +89,7 @@ socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
 answForm.addEventListener('input', (e) => {
     // Get Text from Input
     const answ = e.target.value;
-
+    e.target.title = answ;
     // Emit a message to the server
     socket.emit('newAnswer', answ);
 });

@@ -25,3 +25,13 @@ function login() {
     }
     loginForm.submit();
 }
+
+function spectate() {
+    loginForm.action = 'spectator.html';
+    loginForm.submit();
+}
+
+function streamOverlay() {
+    loginForm.action = 'stream-overlay.html';
+    loginForm.submit();
+}

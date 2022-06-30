@@ -7,6 +7,7 @@ const formatMessage = require('./utils/messages');
 const {
     userJoin,
     quizmasterJoin,
+    spectatorJoin,
     overlayJoin,
     createRoom,
     testPassword,
@@ -44,6 +45,12 @@ io.on('connection', socket => {
         socket.join('quizmaster');
         quizmasterJoin(socket.id, username);
     });
+    socket.on('login-spectator', (username) => {
+        const time = moment().format('kk:mm:ss');
+        socket.emit('welcomeMessage', formatMessage(botName, `Es ist ${time} - Willkommen beim Quiz-Tool, ${username}!`));
+        socket.join('spectator');
+        spectatorJoin(socket.id, username);
+    });
     socket.on('login-stream-overlay', (username) => {
         const time = moment().format('kk:mm:ss');
         socket.emit('welcomeMessage', formatMessage(botName, `Es ist ${time} - Willkommen beim Quiz-Tool, ${username}!`));
@@ -65,10 +72,11 @@ io.on('connection', socket => {
             const candidateArray= [];
             const candidates = io.sockets.adapter.rooms.get(roomname);
             const quizmasters = io.sockets.adapter.rooms.get('quizmaster');
+            const spectators = io.sockets.adapter.rooms.get('spectator');
             const overlays = io.sockets.adapter.rooms.get('stream-overlay');
         
             for (let id of candidates) {
-                if (!(quizmasters?.has(id) || overlays?.has(id))) {
+                if (!(quizmasters?.has(id) || overlays?.has(id) || spectators?.has(id))) {
                     const candidate = getCurrentUser(id);
                     candidateArray.push(candidate);
                 }
@@ -87,10 +95,11 @@ io.on('connection', socket => {
         const candidateArray= [];
         const candidates = io.sockets.adapter.rooms.get(roomname);
         const quizmasters = io.sockets.adapter.rooms.get('quizmaster');
+        const spectators = io.sockets.adapter.rooms.get('spectator');
         const overlays = io.sockets.adapter.rooms.get('stream-overlay');
     
         for (let id of candidates) {
-            if (!(quizmasters?.has(id) || overlays?.has(id))) {
+            if (!(quizmasters?.has(id) || overlays?.has(id) || spectators?.has(id))) {
                 const candidate = getCurrentUser(id);
                 candidateArray.push(candidate);
             }
@@ -129,7 +138,7 @@ io.on('connection', socket => {
 
         saveAnswer(user.id, answ);
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == user.id)) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == 'spectator' || room == user.id)) {
                 io.to(room).emit('newAnswerToMaster', formatMessage(user.id, answ));
             }
         });
@@ -141,7 +150,7 @@ io.on('connection', socket => {
         
         savePoints(user.id, pts);
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == user.id)) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == 'spectator' || room == user.id)) {
                 io.to(room).emit('newPointsToAll', formatMessage(user.id, pts));
             }
         });
@@ -150,14 +159,15 @@ io.on('connection', socket => {
     socket.on('getEnemyPoints', () => {
         var rooms = socket.rooms;
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == socket.id)) {
+            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == 'spectator' || room == socket.id)) {
                 const candidateArray= [];
                 const candidates = io.sockets.adapter.rooms.get(room);
                 const quizmasters = io.sockets.adapter.rooms.get('quizmaster');
+                const spectators = io.sockets.adapter.rooms.get('spectator');
                 const overlays = io.sockets.adapter.rooms.get('stream-overlay');
             
                 for (let id of candidates) {
-                    if (!(quizmasters?.has(id) || overlays?.has(id))) {
+                    if (!(quizmasters?.has(id) || overlays?.has(id) || spectators?.has(id))) {
                         const candidate = getCurrentUser(id);
                         candidateArray.push(candidate);
                     }
@@ -190,7 +200,7 @@ io.on('connection', socket => {
                         io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zum ${user.username} wurde unterbrochen.`));
                     }
                 });
-            } else {
+            } else if (!(rooms.has('spectator'))) {
                 const stats = deletePoints(socket.id);
                 if (stats) {
                     rooms.forEach(function(room) {

@@ -1,26 +1,28 @@
+const siteBody = document.getElementById('body-id');
 const headline = document.getElementById('headline');
-const siteBody = document.getElementById('body-id-stream');
-const chooseRoom = document.getElementById('choose-stream-room');
+const chooseRoom = document.getElementById('choose-room');
 const activeRooms = document.getElementById('show-active-rooms');
-const ServerMessage = document.getElementById('msg-block-stream');
-const candidateAnswers = document.getElementById('candidate-answers-stream');
-const candidateAnswersForm = document.getElementById('answers-form-stream');
+const ServerMessage = document.getElementById('msg-block-quizmaster');
+const candidateAnswers = document.getElementById('candidate-answers');
+const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
 
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
-const username = 'Stream-Overlay';
+const username = 'Spectator';
+// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
+headline.innerHTML = `Hallo, ${username}!`;
 
 const socket = io();
 
 // Login
-socket.emit('login-stream-overlay', username);
+socket.emit('login-spectator', username);
 socket.emit('getActiveRooms');
 
 // Server error
 socket.on('server-error', () => {
-    console.log('Server Error! Bitte wende dich an den Administrator unter business@screetox.de');
+    location.href = "/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de";
 });
 
 // Message from server
@@ -31,20 +33,21 @@ socket.on('welcomeMessage', message => {
 // Message from server
 socket.on('messageFromServer', message => {
     console.log(message);
+    outputServerMessage(message.text);
 });
 
 socket.on('sendActiveRoomNames', (activeRoomNames) => {
     for (let i = 0; i < activeRoomNames.length; i++) {
         const buttonDiv = document.createElement('div');
-        buttonDiv.innerHTML = `<button class="btn-stream" id="${i}-btn" onclick="joinRoom(${i})">${activeRoomNames[i]}</button>`;
+        buttonDiv.innerHTML = `<button class="btn" id="${i}-btn" onclick="joinRoom(${i})">${activeRoomNames[i]}</button>`;
         const modalDiv = document.createElement('div');
         modalDiv.innerHTML = `
-            <div id="${i}-modal" class="modal-stream">
-                <div class="modal-content-stream">
+            <div id="${i}-modal" class="modal">
+                <div class="modal-content">
                     <span class="close" id="${i}-close">&times;</span>
                     <label for="${i}-pw">Passwort für ${activeRoomNames[i]}:</label>
                     <input id="${i}-pw" type="password" />
-                    <button class="btn-stream" onclick="logIntoRoom(${i})">Los geht's!</button>
+                    <button class="btn" onclick="logIntoRoom(${i})">Los geht's!</button>
                 </div>
             </div>`;
         activeRooms.appendChild(buttonDiv);
@@ -75,15 +78,13 @@ socket.on('sendCandidates', (cands, points, answers) => {
         const pointsDiv = document.createElement('div');
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
-            <button id="${i}-points-plus" onclick="moveUp(${i})">^</button>
-            <input id="${candidates[i].id}-points" type="number" value="${points[i]}" readonly />`;
-        pointsDiv.classList.add('candidate-points-stream', 'candidate-answer-huge');
-        pointsDiv.id = `${i}-points-div`;
+            <div style="width:44px;height:32px;"></div>
+            <input id="${candidates[i].id}-points" type="number" value="${points[i]}" title="${points[i]}" readonly />`;
+        pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
-            <label for="${candidates[i].id}">${candidates[i].username}:<br></label>
-            <input id="${candidates[i].id}" type="text" value="${answers[i]}" readonly />`;
-        answerDiv.classList.add('candidate-answer', 'candidate-answer-huge', 'inline-block-label');
-        answerDiv.id = `${i}-answer-div`;
+            <label for="${candidates[i].id}" title="${candidates[i].username}:">${candidates[i].username}:<br></label>
+            <input id="${candidates[i].id}" type="text" value="${answers[i]}" title="${answers[i]}" readonly />`;
+        answerDiv.classList.add('candidate-answer', 'inline-block-label');
         candidateAnswers.appendChild(pointsDiv);
         candidateAnswers.appendChild(answerDiv);
     }
@@ -93,6 +94,7 @@ socket.on('newAnswerToMaster', message => {
     const answField = document.getElementById(`${message.id}`);
     if (answField) {
         answField.value = message.text;
+        answField.title = message.text;
     }
 });
 
@@ -100,6 +102,7 @@ socket.on('newPointsToAll', (message) => {
     const ptsField = document.getElementById(`${message.id}-points`);
     if (ptsField) {
         ptsField.value = message.text;
+        ptsField.title = message.text;
     }
 });
 
@@ -140,16 +143,7 @@ function logIntoRoom(roomnumber) {
     document.getElementById(`${roomnumber}-pw`).value = '';
 
     modal.style.display = "none";
-    socket.emit('streamOverlayLoginTry', roomname, password);
-}
-
-function moveUp(idx) {
-    var answMove = document.getElementById(`${idx}-answer-div`);
-    var ptsMove = document.getElementById(`${idx}-points-div`);
-
-    var parent = answMove.parentNode;
-    parent.insertBefore(answMove, parent.firstChild);
-    parent.insertBefore(ptsMove, parent.firstChild);
+    socket.emit('loginTry', roomname, password);
 }
 
 function outputServerMessage(msg) {
@@ -160,7 +154,9 @@ function outputServerMessage(msg) {
     ServerMessage.appendChild(div);
 
     setTimeout(function() {
-        ServerMessage.removeChild(ServerMessage.firstChild);
+        if (ServerMessage.firstChild) {
+            ServerMessage.removeChild(ServerMessage.firstChild);
+        }
     }, 60000);
 }
 

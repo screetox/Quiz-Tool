@@ -8,15 +8,35 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Quiz-Tool - screetox</title>
+
+    <style>
+        @media only screen and (max-width: 560px) {
+            div:not(#small-screen-warning) {
+                display: none;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            #small-screen-warning {
+                color: var(--dark-color-a);
+                display: flex;
+                text-align: center;
+                align-items: center;
+                height: 100%;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body id="body-id">
     <div id="small-screen-warning">
-        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
+        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 560px Breite auf. Danke!</p>
     </div>
-    <div class="container">
+    <div class="container-quizmaster">
         <header>
-            <img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo">
+            <a href="https://screetox.de/"><img src="https://screetox.de/wp-content/uploads/2020/08/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
         </header>
         <main id="choose-room">
@@ -27,20 +47,12 @@
             <p>Bitte wähle einen Raum aus:</p>
             <div id="show-active-rooms"></div>
         </main>
-        <main id="candidate-form">
+        <main id="answers-form">
             <p id="room-title">Raum: </p>
-            <input id="answ" type="text" placeholder="Antwort eingeben" title="" required autocomplete="off" />
-            <button id="buzzer" class="buzzer" onclick="buzz()">Buzzer!</button>
+            <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
         </main>
-        <div id="msg-block"></div>
-    </div>
-    <div id="sideboard">
-        <div id="enemy-points-sideboard">
-            <p>Punkte:</p>
-            <hr>
-            <div id="enemy-points"></div>
-        </div>
+        <div id="msg-block-quizmaster"></div>
     </div>
     <select id='color-mode-select' onchange='changeColorMode(this.value)'>
         <option value='default'>Default</option>
@@ -53,7 +65,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/spectator.js"></script>
     <script src="js/colorMode.js"></script>
 </body>
 

@@ -1,7 +1,7 @@
-- Spectator Ansicht
 - Buzzer-Funktionalität
 - local db (json?)
   - highscores
 
 - alle .js Dateien Variablen am Dateianfang durchgehen
 - alle .css Regeln durchgehen
+- Kommentare einfügen
