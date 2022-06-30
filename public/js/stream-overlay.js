@@ -1,5 +1,3 @@
-const headline = document.getElementById('headline');
-const siteBody = document.getElementById('body-id-stream');
 const chooseRoom = document.getElementById('choose-stream-room');
 const activeRooms = document.getElementById('show-active-rooms');
 const ServerMessage = document.getElementById('msg-block-stream');

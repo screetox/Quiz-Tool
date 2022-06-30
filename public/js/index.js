@@ -1,4 +1,3 @@
-const siteBody = document.getElementById('body-id');
 const ServerMessage = document.getElementById('msg-block');
 const quizmasterCheckbox = document.getElementById('quizmaster-login');
 const loginForm = document.getElementById('login-form');

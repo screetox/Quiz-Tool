@@ -1,4 +1,3 @@
-const siteBody = document.getElementById('body-id');
 const headline = document.getElementById('headline');
 const answForm = document.getElementById('answ');
 const buzzer = document.getElementById('buzzer');

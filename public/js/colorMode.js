@@ -1,3 +1,4 @@
+const siteBody = document.getElementById('body-id');
 const colorSelect = document.getElementById('color-mode-select');
 
 // Toggle and save: dark, red, purple, blue, green, yellow

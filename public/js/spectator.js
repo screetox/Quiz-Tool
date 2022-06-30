@@ -1,4 +1,3 @@
-const siteBody = document.getElementById('body-id');
 const headline = document.getElementById('headline');
 const chooseRoom = document.getElementById('choose-room');
 const activeRooms = document.getElementById('show-active-rooms');
@@ -7,9 +6,6 @@ const candidateAnswers = document.getElementById('candidate-answers');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
-
-// Get username from url
-const urlParams = new URLSearchParams(location.search);
 const username = 'Spectator';
 // window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 headline.innerHTML = `Hallo, ${username}!`;

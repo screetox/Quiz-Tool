@@ -1,4 +1,3 @@
-const siteBody = document.getElementById('body-id');
 const headline = document.getElementById('headline');
 const ServerMessage = document.getElementById('msg-block-quizmaster');
 const roomInputForm = document.getElementById('input-form');
