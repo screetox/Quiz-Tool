@@ -37,7 +37,7 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
         if (activeRoomNames[i].length > 25) {
             const cutRoomname = activeRoomNames[i].substring(0, 22);
             const buttonDiv = document.createElement('div');
-            buttonDiv.innerHTML = `<button class="btn" id="${i}-btn" onclick="joinRoom(${i})">${cutRoomname}...</button>`;
+            buttonDiv.innerHTML = `<button class="btn" id="${i}-btn" onclick="joinRoom(${i})" title="${activeRoomNames[i]}">${cutRoomname}...</button>`;
             const modalDiv = document.createElement('div');
             modalDiv.innerHTML = `
                 <div id="${i}-modal" class="modal">
@@ -52,7 +52,7 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
             activeRooms.appendChild(modalDiv);
         } else {
             const buttonDiv = document.createElement('div');
-            buttonDiv.innerHTML = `<button class="btn" id="${i}-btn" onclick="joinRoom(${i})">${activeRoomNames[i]}</button>`;
+            buttonDiv.innerHTML = `<button class="btn" id="${i}-btn" onclick="joinRoom(${i})" title="${activeRoomNames[i]}">${activeRoomNames[i]}</button>`;
             const modalDiv = document.createElement('div');
             modalDiv.innerHTML = `
                 <div id="${i}-modal" class="modal">
@@ -157,9 +157,10 @@ function joinRoom(roomnumber) {
 
 function logIntoRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
-    var roomname = document.getElementById(`${roomnumber}-btn`).innerHTML;
+    var roomname = document.getElementById(`${roomnumber}-btn`).title;
     var password = document.getElementById(`${roomnumber}-pw`).value;
     document.getElementById(`${roomnumber}-pw`).value = '';
+    document.getElementById(`${roomnumber}-btn`).blur();
 
     modal.style.display = "none";
     socket.emit('loginTry', roomname, password);
@@ -193,3 +194,16 @@ function clearMessages() {
         clearMessages();
     }
 }
+
+window.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        if (chooseRoom.style.display != "none") {
+            var elements = document.getElementsByClassName('modal');
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].style.display == "block") {
+                    logIntoRoom(`${i}`);
+                }
+            }
+        }
+    }
+});

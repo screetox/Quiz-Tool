@@ -138,7 +138,7 @@ io.on('connection', socket => {
 
         saveAnswer(user.id, answ);
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == 'spectator' || room == user.id)) {
+            if (!(room === 'quizmaster' || room === 'stream-overlay' || room === 'spectator' || room === user.id)) {
                 io.to(room).emit('newAnswerToMaster', formatMessage(user.id, answ));
             }
         });
@@ -150,7 +150,7 @@ io.on('connection', socket => {
         
         savePoints(user.id, pts);
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == 'spectator' || room == user.id)) {
+            if (!(room === 'quizmaster' || room === 'stream-overlay' || room === 'spectator' || room === user.id)) {
                 io.to(room).emit('newPointsToAll', formatMessage(user.id, pts));
             }
         });
@@ -159,7 +159,7 @@ io.on('connection', socket => {
     socket.on('getEnemyPoints', () => {
         var rooms = socket.rooms;
         rooms.forEach(function(room) {
-            if (!(room == 'quizmaster' || room == 'stream-overlay' || room == 'spectator' || room == socket.id)) {
+            if (!(room === 'quizmaster' || room === 'stream-overlay' || room === 'spectator' || room === socket.id)) {
                 const candidateArray= [];
                 const candidates = io.sockets.adapter.rooms.get(room);
                 const quizmasters = io.sockets.adapter.rooms.get('quizmaster');

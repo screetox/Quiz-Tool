@@ -34,3 +34,9 @@ function streamOverlay() {
     loginForm.action = 'stream-overlay.html';
     loginForm.submit();
 }
+
+window.addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        login();
+    }
+});

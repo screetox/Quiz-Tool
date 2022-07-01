@@ -35,8 +35,8 @@ socket.on('messageFromServer', message => {
 
 function startQuiz() {
     if (document.getElementById('roomname').value) {
-        roomname = document.getElementById('roomname').value;
-        password = document.getElementById('password').value;
+        const roomname = document.getElementById('roomname').value;
+        const password = document.getElementById('password').value;
 
         clearMessages();
         document.getElementById('empty-roomname').style.display = 'none';
@@ -200,3 +200,11 @@ function clearMessages() {
         clearMessages();
     }
 }
+
+window.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        if (roomInputForm.style.display != "none") {
+            startQuiz();
+        }
+    }
+});
