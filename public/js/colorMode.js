@@ -38,6 +38,8 @@ if (typeof(Storage) !== "undefined") {
     }
 }
 
+// Activate color mode
+// color = str
 function changeColorMode(color) {
     siteBody.classList = '';
     siteBody.classList.add(`${color}-mode`);

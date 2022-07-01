@@ -5,34 +5,33 @@ const candidateAnswers = document.getElementById('candidate-answers');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
-
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';
-// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 headline.innerHTML = `Hallo, ${username}!`;
-
+// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 const socket = io();
 
 // Login
 socket.emit('login-as-quizmaster', username);
 
-// Server error
+// Exit application and show server error
 socket.on('server-error', () => {
     location.href = "/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de";
 });
 
-// Message from server
+// Log welcomeMessage from server; message = {id = str, text = str, time = str}
 socket.on('welcomeMessage', message => {
     console.log(message.text);
 });
 
-// Message from server
+//Log message from server; message = {id = str, text = str, time = str}
 socket.on('messageFromServer', message => {
     console.log(message);
     outputServerMessage(message.text);
 });
 
+// If roomname is provided: create room and show quiz main; if not: show error
 function startQuiz() {
     if (document.getElementById('roomname').value) {
         const roomname = document.getElementById('roomname').value;
@@ -54,16 +53,19 @@ function startQuiz() {
     }
 }
 
+// New candidate joined the room, ask for new render of candidates; roomname = str
 socket.on('newCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
     socket.emit('getEnemyPoints');
 });
 
+// Candidate left the room, ask for new render of candidates; roomname = str
 socket.on('leavingCandidate', (roomname) => {
     socket.emit('getCandidates', roomname);
     socket.emit('getEnemyPoints');
 });
 
+// Add point to candidate and inform server; candidate = number
 function addPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) + 1;
@@ -73,6 +75,7 @@ function addPoint(candidate) {
     socket.emit('getEnemyPoints');
 }
 
+// Sub point from candidate and inform server; candidate = number
 function subPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) - 1;
@@ -82,6 +85,7 @@ function subPoint(candidate) {
     socket.emit('getEnemyPoints');
 }
 
+// Add point to all candidates and inform server
 function addPointToAll() {
     for (let i = 0; i < candidates.length; i++) {
         var counter = document.getElementById(`${i}-points`).value;
@@ -93,6 +97,7 @@ function addPointToAll() {
     socket.emit('getEnemyPoints');
 }
 
+// Sub point from all candidates and inform server
 function subPointToAll() {
     for (let i = 0; i < candidates.length; i++) {
         var counter = document.getElementById(`${i}-points`).value;
@@ -104,6 +109,7 @@ function subPointToAll() {
     socket.emit('getEnemyPoints');
 }
 
+// Set points from all candidates to 0 and inform server
 function allPointsToZero() {
     for (let i = 0; i < candidates.length; i++) {
         var counter_new = 0;
@@ -115,6 +121,7 @@ function allPointsToZero() {
     document.getElementById('allPointsToZero-modal').style.display = 'none';
 }
 
+// Ask for confirmation to set all points to 0
 function askForAllPointsToZero() {
     const modal = document.getElementById('allPointsToZero-modal');
     var span = document.getElementById(`allPointsToZero-close`);
@@ -128,6 +135,7 @@ function askForAllPointsToZero() {
     }
 }
 
+// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
 socket.on('sendCandidates', (cands, points, answers) => {
     clearCandidates();
     roomInputForm.style.display = 'none';
@@ -164,6 +172,7 @@ socket.on('sendCandidates', (cands, points, answers) => {
     }
 });
 
+// Get new candidate answer from server; message = {id = str, text = str, time = str}
 socket.on('newAnswerToMaster', message => {
     const answField = document.getElementById(`${message.id}`);
     if (answField) {
@@ -172,6 +181,7 @@ socket.on('newAnswerToMaster', message => {
     }
 });
 
+// Output messages from server and delete after 60 seconds; msg = str
 function outputServerMessage(msg) {
     ServerMessage.style.display = 'block';
     const div = document.createElement('div');
@@ -186,6 +196,7 @@ function outputServerMessage(msg) {
     }, 60000);
 }
 
+// Clear candidate list and all points and answers displayed
 function clearCandidates() {
     candidates.length = 0;
     if (candidateAnswers.firstChild) {
@@ -194,6 +205,7 @@ function clearCandidates() {
     }
 }
 
+// Clear all messages shown from server
 function clearMessages() {
     if (ServerMessage.firstChild) {
         ServerMessage.removeChild(ServerMessage.firstChild);
@@ -201,6 +213,7 @@ function clearMessages() {
     }
 }
 
+// Listen for 'Enter'-keypress and try to start Quiz
 window.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         if (roomInputForm.style.display != "none") {

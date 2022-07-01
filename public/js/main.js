@@ -11,31 +11,31 @@ const enemyPoints = document.getElementById('enemy-points');
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';
-// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 headline.innerHTML = `Hallo, ${username}!`;
-
+// window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 const socket = io();
 
 // Login
 socket.emit('login', username);
 socket.emit('getActiveRooms');
 
-// Server error
+// Exit application and show server error
 socket.on('server-error', () => {
     location.href = "/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de";
 });
 
-// Message from server
+// Log welcomeMessage from server; message = {id = str, text = str, time = str}
 socket.on('welcomeMessage', message => {
     console.log(message.text);
 });
 
-// Message from server
+//Log message from server; message = {id = str, text = str, time = str}
 socket.on('messageFromServer', message => {
     console.log(message);
     outputServerMessage(message.text);
 });
 
+// Get active rooms from server and print buttons to join; activeRoomNames = [str]
 socket.on('sendActiveRoomNames', (activeRoomNames) => {
     for (let i = 0; i < activeRoomNames.length; i++) {
         if (activeRoomNames[i].length > 25) {
@@ -74,6 +74,7 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
     }
 });
 
+// Get answer to login try from server and login or display message; bool = bool, roomname = str
 socket.on('loginTryAnswer', (bool, roomname) => {
     if (bool) {
         clearMessages();
@@ -91,6 +92,7 @@ socket.on('loginTryAnswer', (bool, roomname) => {
     }
 });
 
+// get points from all candidates and display in sidebar; allCandidates = [str], allPoints = [number]
 socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
     clearPoints();
     for (let i = 0; i < allPoints.length; i++) {
@@ -117,6 +119,7 @@ answForm.addEventListener('input', (e) => {
     socket.emit('newAnswer', answ);
 });
 
+// Output messages from server and delete after 60 seconds; msg = str
 function outputServerMessage(msg) {
     ServerMessage.style.display = 'block';
     const div = document.createElement('div');
@@ -129,6 +132,7 @@ function outputServerMessage(msg) {
     }, 60000);
 }
 
+// Reload list of active rooms to join
 function reloadRooms() {
     if (activeRooms.firstChild) {
         activeRooms.removeChild(activeRooms.firstChild);
@@ -138,6 +142,7 @@ function reloadRooms() {
     }
 }
 
+// Open modal for password input to join selected room; roomname = str
 function joinRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
     var span = document.getElementById(`${roomnumber}-close`);
@@ -151,6 +156,7 @@ function joinRoom(roomnumber) {
     }
 }
 
+// Try to log into room with password; roomname = str
 function logIntoRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
     var roomname = document.getElementById(`${roomnumber}-btn`).title;
@@ -162,6 +168,7 @@ function logIntoRoom(roomnumber) {
     socket.emit('loginTry', roomname, password);
 }
 
+// Clear points shown in sidebar
 function clearPoints() {
     if (enemyPoints.firstChild) {
         enemyPoints.removeChild(enemyPoints.firstChild);
@@ -169,6 +176,7 @@ function clearPoints() {
     }
 }
 
+// Clear all messages shown from server
 function clearMessages() {
     if (ServerMessage.firstChild) {
         ServerMessage.removeChild(ServerMessage.firstChild);
@@ -176,10 +184,12 @@ function clearMessages() {
     }
 }
 
+// buzzer not implemented yet
 function buzz() {
     buzzer.style.background = 'var(--dark-color-b)';
 }
 
+// Listen for 'Enter'-keypress and try to login if a password modal is active
 window.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         if (chooseRoom.style.display != "none") {
