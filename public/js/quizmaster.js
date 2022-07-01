@@ -40,7 +40,13 @@ function startQuiz() {
 
         clearMessages();
         document.getElementById('empty-roomname').style.display = 'none';
-        document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+        if (roomname.length > 25) {
+            const cutRoomname = roomname.substring(0, 22);
+            document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
+        } else {
+            document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+        }
+        document.getElementById('room-title').title = `Passwort: ${password}`
 
         socket.emit('createRoom', roomname, password);
     } else {

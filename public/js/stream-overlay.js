@@ -33,27 +33,50 @@ socket.on('messageFromServer', message => {
 
 socket.on('sendActiveRoomNames', (activeRoomNames) => {
     for (let i = 0; i < activeRoomNames.length; i++) {
-        const buttonDiv = document.createElement('div');
-        buttonDiv.innerHTML = `<button class="btn-stream" id="${i}-btn" onclick="joinRoom(${i})">${activeRoomNames[i]}</button>`;
-        const modalDiv = document.createElement('div');
-        modalDiv.innerHTML = `
-            <div id="${i}-modal" class="modal-stream">
-                <div class="modal-content-stream">
-                    <span class="close" id="${i}-close">&times;</span>
-                    <label for="${i}-pw">Passwort für ${activeRoomNames[i]}:</label>
-                    <input id="${i}-pw" type="password" />
-                    <button class="btn-stream" onclick="logIntoRoom(${i})">Los geht's!</button>
-                </div>
-            </div>`;
-        activeRooms.appendChild(buttonDiv);
-        activeRooms.appendChild(modalDiv);
+        if (activeRoomNames[i].length > 25) {
+            const cutRoomname = activeRoomNames[i].substring(0, 22);
+            const buttonDiv = document.createElement('div');
+            buttonDiv.innerHTML = `<button class="btn-stream" id="${i}-btn" onclick="joinRoom(${i})">${cutRoomname}...</button>`;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = `
+                <div id="${i}-modal" class="modal-stream">
+                    <div class="modal-content-stream">
+                        <span class="close" id="${i}-close">&times;</span>
+                        <label for="${i}-pw">Passwort für ${cutRoomname}...:</label>
+                        <input id="${i}-pw" type="password" />
+                        <button class="btn-stream" onclick="logIntoRoom(${i})">Los geht's!</button>
+                    </div>
+                </div>`;
+            activeRooms.appendChild(buttonDiv);
+            activeRooms.appendChild(modalDiv);
+        } else {
+            const buttonDiv = document.createElement('div');
+            buttonDiv.innerHTML = `<button class="btn-stream" id="${i}-btn" onclick="joinRoom(${i})">${activeRoomNames[i]}</button>`;
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = `
+                <div id="${i}-modal" class="modal-stream">
+                    <div class="modal-content-stream">
+                        <span class="close" id="${i}-close">&times;</span>
+                        <label for="${i}-pw">Passwort für ${activeRoomNames[i]}:</label>
+                        <input id="${i}-pw" type="password" />
+                        <button class="btn-stream" onclick="logIntoRoom(${i})">Los geht's!</button>
+                    </div>
+                </div>`;
+            activeRooms.appendChild(buttonDiv);
+            activeRooms.appendChild(modalDiv);
+        }
     }
 });
 
 socket.on('loginTryAnswer', (bool, roomname) => {
     if (bool) {
         clearMessages();
-        document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+        if (roomname.length > 25) {
+            const cutRoomname = roomname.substring(0, 22);
+            document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
+        } else {
+            document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+        }
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
         socket.emit('getCandidates', roomname);
