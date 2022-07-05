@@ -1,6 +1,3 @@
-const { ISO_8601 } = require('moment');
-const moment = require('moment');
-
 const activeUsers = [];
 const activeRooms = [];
 const currentAnswers = [];

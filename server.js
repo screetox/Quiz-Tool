@@ -3,7 +3,6 @@ const http = require('http');
 const moment = require('moment');
 const express = require('express');
 const socketio = require('socket.io');
-const formatMessage = require('./utils/messages');
 const {
     userJoin,
     quizmasterJoin,
@@ -21,7 +20,7 @@ const {
     getCandidateAnswers,
     getCandidatePoints,
     getAllPoints
-    } = require('./utils/users');
+    } = require('./users');
 
 const app = express();
 const server = http.createServer(app);
@@ -223,3 +222,11 @@ http.get({ 'host': 'api.ipify.org', 'port': 80, 'path': '/' }, function(resp) {
         server.listen(PORT, () => console.log(`Server running on ${ip}:${PORT}`));
     });
 });
+
+function formatMessage(id, text) {
+    return {
+        id,
+        text,
+        time: moment().format('kk:mm:ss')
+    }
+}
