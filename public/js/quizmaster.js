@@ -135,6 +135,23 @@ function askForAllPointsToZero() {
     }
 }
 
+// Free buzzer after buzzed
+function freeBuzzer() {
+    console.log('Buzzer not free. TODO.');
+}
+
+// Activate/Deactivate buzzer
+function activateBuzzer() {
+    const button = document.getElementById('buzzerActivationButton');
+    button.innerHTML = 'deaktivieren';
+    button.setAttribute('onclick','deactivateBuzzer()');
+}
+function deactivateBuzzer() {
+    const button = document.getElementById('buzzerActivationButton');
+    button.innerHTML = 'aktivieren';
+    button.setAttribute('onclick','activateBuzzer()');
+}
+
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
 socket.on('sendCandidates', (cands, points, answers) => {
     clearCandidates();
@@ -179,6 +196,11 @@ socket.on('newAnswerToMaster', message => {
         answField.value = message.text;
         answField.title = message.text;
     }
+});
+
+// Detect buzzer and see who buzzed first
+socket.on('candidateBuzzed', (user, moment) => {
+    console.log(`${user.username} buzzed at ${moment}.`)
 });
 
 // Output messages from server and delete after 60 seconds; msg = str

@@ -51,11 +51,18 @@
         </main>
         <main id="answers-form">
             <p id="room-title">Raum: </p>
-            <div id="point-buttons-all" class="candidate-points">
-                <p>Alle Kandidaten:</p>
-                <button id="all-points-minus" onclick="subPointToAll()">- 1</button>
-                <button id="all-points-plus" onclick="addPointToAll()">+ 1</button>
-                <button id="all-points-zero" onclick="askForAllPointsToZero()">= 0</button>
+            <div id="quizmaster-control">
+                <div id="point-buttons-all" class="candidate-points">
+                    <p>Alle Kandidaten:</p>
+                    <button onclick="subPointToAll()">- 1</button>
+                    <button onclick="addPointToAll()">+ 1</button>
+                    <button onclick="askForAllPointsToZero()">= 0</button>
+                </div>
+                <div id="buzzer-control">
+                    <p>Buzzer (inaktiv):</p>
+                    <button onclick="freeBuzzer()" disabled>freigeben</button>
+                    <button id="buzzerActivationButton" onclick="activateBuzzer()">aktivieren</button>
+                </div>
             </div>
             <div id="allPointsToZero-modal" class="modal">
                 <div id="allPointsToZero-modal-content" class="modal-content">

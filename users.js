@@ -5,6 +5,7 @@ const activeRooms = [];
 const currentAnswers = [];
 const currentPoints = [];
 
+// Candidate joins
 function userJoin(id, username) {
     const user = { id, username };
     const time = moment().format('kk:mm:ss');
@@ -15,6 +16,7 @@ function userJoin(id, username) {
     return user;
 }
 
+// Quizmaster joins
 function quizmasterJoin(id, username) {
     const user = { id, username };
     const time = moment().format('kk:mm:ss');
@@ -25,6 +27,7 @@ function quizmasterJoin(id, username) {
     return user;
 }
 
+// Spectator joins
 function spectatorJoin(id, username) {
     const user = { id, username };
     const time = moment().format('kk:mm:ss');
@@ -35,6 +38,7 @@ function spectatorJoin(id, username) {
     return user;
 }
 
+// Overlay joins
 function overlayJoin(id, username) {
     const user = { id, username };
     const time = moment().format('kk:mm:ss');
@@ -45,6 +49,7 @@ function overlayJoin(id, username) {
     return user;
 }
 
+// Quizmaster creates room
 function createRoom(id, roomname, password) {
     const index = activeRooms.findIndex(room => room.roomname === roomname);
     if (index === -1) {
@@ -60,6 +65,7 @@ function createRoom(id, roomname, password) {
     }
 }
 
+// Test password for room login
 function testPassword(roomname, password) {
     const room = activeRooms.find(room => room.roomname === roomname);
     if (room) {
@@ -78,6 +84,7 @@ function getCurrentUser(id) {
     return activeUsers.find(user => user.id === id);
 }
 
+// Get names of open rooms
 function getActiveRoomNames() {
     const roomnames = [];
     for (let i = 0; i < activeRooms.length; i++) {
@@ -109,12 +116,12 @@ function savePoints(id, pts) {
 }
 
 // User leaves chat
+    // delete answer
 function userLeave(id) {
     const index = activeUsers.findIndex(user => user.id === id);
     const index2 = currentAnswers.findIndex(answer => answer.id === id);
     const time = moment().format('kk:mm:ss');
 
-    // delete answer
     if (index2 !== -1) {
         currentAnswers.splice(index2, 1);
     }
@@ -125,7 +132,7 @@ function userLeave(id) {
         return deletedUser;
     }
 }
-
+    // delete points
 function deletePoints(id) {
     const index = currentPoints.findIndex(points => points.id === id);
     if (index !== -1) {
@@ -134,6 +141,8 @@ function deletePoints(id) {
     }
 }
 
+// Quizmaster leaves
+    // set room to inactive
 function setRoomInactive(id) {
     const index = activeRooms.findIndex(room => room.id === id);
     if (index !== -1) {

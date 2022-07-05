@@ -27,6 +27,8 @@ const server = http.createServer(app);
 const PORT = 3000;
 const io = socketio(server);
 const botName = 'Server';
+var   isBuzzed = false;
+var   timeLastBuzz = moment();
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -57,12 +59,7 @@ io.on('connection', socket => {
         overlayJoin(socket.id, username);
     });
 
-    socket.on('getActiveRooms', () => {
-        const roomnames = getActiveRoomNames();
-        socket.emit('sendActiveRoomNames', roomnames);
-    });
-
-    // Send CandidateNames
+    // Create room for quizmaster
     socket.on('createRoom', (roomname, password) => {
         const roomCreated = createRoom(socket.id, roomname, password);
         if (roomCreated === 0) {
@@ -90,6 +87,7 @@ io.on('connection', socket => {
         }
     });
 
+    // Send CandidateNames
     socket.on('getCandidates', (roomname) => {
         const candidateArray= [];
         const candidates = io.sockets.adapter.rooms.get(roomname);
@@ -109,6 +107,13 @@ io.on('connection', socket => {
         socket.emit('sendCandidates', candidateArray, points, answers);
     });
 
+    // Send active rooms
+    socket.on('getActiveRooms', () => {
+        const roomnames = getActiveRoomNames();
+        socket.emit('sendActiveRoomNames', roomnames);
+    });
+
+    // Login user if credentials correct
     socket.on('loginTry', (roomname, password) => {
         const correct = testPassword(roomname, password);
         if (correct) {
@@ -120,6 +125,7 @@ io.on('connection', socket => {
         }
     });
 
+    // Login user if stream overlay credentials correct
     socket.on('streamOverlayLoginTry', (roomname, password) => {
         const correct = testPassword(roomname, password);
         if (correct) {
@@ -143,6 +149,35 @@ io.on('connection', socket => {
         });
     });
 
+    // Listen for newBuzz
+    socket.on('newBuzz', (momentSent) => {
+        const user = getCurrentUser(socket.id);
+        var rooms = socket.rooms;
+
+        const earlierMoment = moment.min(moment(momentSent), moment(timeLastBuzz));
+
+        if (isBuzzed) {
+            if (moment(earlierMoment).isSame(momentSent)) {
+                rooms.forEach(function(room) {
+                    if (!(room === 'quizmaster' || room === 'stream-overlay' || room === 'spectator' || room === user.id)) {
+                        io.to(room).emit('candidateBuzzed', user, momentSent);
+                    }
+                });
+                timeLastBuzz = moment(momentSent);
+            } else {
+                console.log(`${user.id} buzzed without active buzzer.`);
+            }
+        } else {
+            rooms.forEach(function(room) {
+                if (!(room === 'quizmaster' || room === 'stream-overlay' || room === 'spectator' || room === user.id)) {
+                    io.to(room).emit('candidateBuzzed', user, momentSent);
+                }
+            });
+            timeLastBuzz = moment(momentSent);
+            isBuzzed = true;
+        }
+    });
+
     // Listen for newPoints
     socket.on('newPoints', (user, pts) => {
         var rooms = socket.rooms;
@@ -155,6 +190,7 @@ io.on('connection', socket => {
         });
     });
 
+    // Send Points from every candidate in room
     socket.on('getEnemyPoints', () => {
         var rooms = socket.rooms;
         rooms.forEach(function(room) {
@@ -217,12 +253,7 @@ io.on('connection', socket => {
     });
 });
 
-http.get({ 'host': 'api.ipify.org', 'port': 80, 'path': '/' }, function(resp) {
-    resp.on('data', function(ip) {
-        server.listen(PORT, () => console.log(`Server running on ${ip}:${PORT}`));
-    });
-});
-
+// Format message to send
 function formatMessage(id, text) {
     return {
         id,
@@ -230,3 +261,10 @@ function formatMessage(id, text) {
         time: moment().format('kk:mm:ss')
     }
 }
+
+// Get current IP and start server
+http.get({ 'host': 'api.ipify.org', 'port': 80, 'path': '/' }, function(resp) {
+    resp.on('data', function(ip) {
+        server.listen(PORT, () => console.log(`Server running on ${ip}:${PORT}`));
+    });
+});

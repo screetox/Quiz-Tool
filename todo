@@ -1,4 +1,8 @@
 - Buzzer-Funktionalität
+  - show who buzzed to quizmaster
+  - wait 500ms to see other buzzes timing
+  - free buzzer
+  - activate/deactivate buzzer
+  - show who buzzed to candidates
 - local db (json?)
   - highscores
-  

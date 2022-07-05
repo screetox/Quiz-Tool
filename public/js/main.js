@@ -187,6 +187,8 @@ function clearMessages() {
 // buzzer not implemented yet
 function buzz() {
     buzzer.style.background = 'var(--dark-color-b)';
+    const momentBuzzed = moment();
+    socket.emit('newBuzz', momentBuzzed);
 }
 
 // Listen for 'Enter'-keypress and try to login if a password modal is active

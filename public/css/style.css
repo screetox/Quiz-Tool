@@ -93,6 +93,10 @@ p {
     cursor: default;
 }
 
+div {
+    cursor: default;
+}
+
 header {
     cursor: default;
     text-align: center;
@@ -565,14 +569,57 @@ button {
     text-align: center;
 }
 
+#quizmaster-control {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 10px;
+}
+
 #point-buttons-all {
     width: 100%;
     text-align: center;
     margin-bottom: 15px;
+    grid-column: 1;
 }
 
 #point-buttons-all p {
     margin-bottom: 5px;
+}
+
+#buzzer-control {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+    grid-column: 2;
+}
+
+#buzzer-control p {
+    margin-bottom: 5px;
+}
+
+#buzzer-control button {
+    height: 28px;
+    width: 90px;
+    margin: 2px;
+    padding: 0 5px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    border: 1px solid var(--dark-color-a);
+    border-radius: 10px;
+}
+
+#buzzer-control button:hover {
+    background-color: var(--button-hover-color);
+}
+
+#buzzer-control button:active:not(button:disabled) {
+    position: relative;
+    top: 1px;
+}
+
+#buzzer-control button:disabled {
+  background-color: var(--dark-color-b);
+  cursor: default;
 }
 
 #allPointsToZero-modal-content {
