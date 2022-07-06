@@ -5,6 +5,8 @@ const candidateAnswers = document.getElementById('candidate-answers');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
+var buzzedUser = '';
+var firstBuzzer = true;
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';
@@ -45,7 +47,7 @@ function startQuiz() {
         } else {
             document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
         }
-        document.getElementById('room-title').title = `Passwort: ${password}`
+        document.getElementById('room-title').title = `Passwort: ${password}`;
 
         socket.emit('createRoom', roomname, password);
     } else {
@@ -137,19 +139,33 @@ function askForAllPointsToZero() {
 
 // Free buzzer after buzzed
 function freeBuzzer() {
-    console.log('Buzzer not free. TODO.');
+    socket.emit('freeBuzzers');
+    const button = document.getElementById('buzzerFreeButton');
+    button.disabled = true;
+    firstBuzzer = true;
 }
 
 // Activate/Deactivate buzzer
 function activateBuzzer() {
+    socket.emit('activateBuzzers');
     const button = document.getElementById('buzzerActivationButton');
     button.innerHTML = 'deaktivieren';
+    const state = document.getElementById('showBuzzerState');
+    state.innerHTML = 'Buzzer (aktiv):';
     button.setAttribute('onclick','deactivateBuzzer()');
 }
 function deactivateBuzzer() {
+    socket.emit('deactivateBuzzers');
     const button = document.getElementById('buzzerActivationButton');
     button.innerHTML = 'aktivieren';
+    const state = document.getElementById('showBuzzerState');
+    state.innerHTML = 'Buzzer (inaktiv):';
     button.setAttribute('onclick','activateBuzzer()');
+
+    // free too
+    const button2 = document.getElementById('buzzerFreeButton');
+    button2.disabled = true;
+    firstBuzzer = true;
 }
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
@@ -199,9 +215,28 @@ socket.on('newAnswerToMaster', message => {
 });
 
 // Detect buzzer and see who buzzed first
-socket.on('candidateBuzzed', (user, moment) => {
-    console.log(`${user.username} buzzed at ${moment}.`)
+socket.on('candidateBuzzed', user => {
+    buzzedUser = user.id;
+    if (firstBuzzer) {
+        var audio = new Audio('https://screetox.de/files/bonk-sound-effect.mp3');
+        audio.play();
+        setTimeout(function() {analyzeBuzzing();}, 500);
+        const button = document.getElementById('buzzerFreeButton');
+        button.disabled = false;
+        firstBuzzer = false;
+    }
 });
+socket.on('candidateBuzzedLate', user => {
+    const answField = document.getElementById(user.id);
+    answField.value = 'i buzzed too late';
+});
+
+// Crown whoever buzzed first
+function analyzeBuzzing() {
+    socket.emit('analyzedBuzzing', buzzedUser);
+    const answField = document.getElementById(buzzedUser);
+    answField.value = 'i buzzed';
+}
 
 // Output messages from server and delete after 60 seconds; msg = str
 function outputServerMessage(msg) {

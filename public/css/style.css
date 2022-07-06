@@ -125,6 +125,7 @@ input {
     padding: 5px;
     height: 40px;
     width: 100%;
+    border: 1px solid var(--dark-color-a);
 }
 
 button {
@@ -191,6 +192,20 @@ button {
     border: 1px solid var(--dark-color-a);
     border-radius: 100%;
     cursor: pointer;
+}
+
+.buzzer:disabled {
+    background: var(--dark-color-b);
+    cursor: default;
+}
+
+.buzzer span {
+    color: var(--dark-color-a);
+    position: absolute;
+    font-size: 12px;
+    display: block;
+    margin: 5px 0 0 0;
+    width: 200px;
 }
 
 .container {

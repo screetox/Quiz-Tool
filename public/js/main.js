@@ -110,6 +110,49 @@ socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
     }
 });
 
+// other buzzing
+socket.on('sendBuzzed', user => {
+    var audio = new Audio('https://screetox.de/files/bonk-sound-effect.mp3');
+    audio.play();
+    const buzzer = document.getElementById('buzzer');
+    if (user.id === socket.id) {
+        buzzer.innerHTML = `Du hast<br>gebuzzert!`;
+    } else {
+        if (user.username.length > 8) {
+            const cutName = user.username.substring(0, 6)
+            buzzer.innerHTML = `${cutName}...<br>hat gebuzzert!`;
+        } else {
+            buzzer.innerHTML = `${user.username}<br>hat gebuzzert!`;
+        }
+    }
+    buzzer.disabled = true;
+});
+
+// Activate/Deactivate buzzer
+socket.on('activateBuzzer', () => {
+    const buzzer = document.getElementById('buzzer');
+    buzzer.disabled = false;
+    buzzer.innerHTML = 'Buzzer!';
+});
+socket.on('deactivateBuzzer', () => {
+    const buzzer = document.getElementById('buzzer');
+    buzzer.disabled = true;
+    buzzer.innerHTML = 'Buzzer!<br><span>(inactive)</span>';
+});
+
+// Free buzzer
+socket.on('freeBuzzer', unlockMoment => {
+    const now = moment().valueOf();
+    const timeLeft = unlockMoment - now;
+    const waitTime = timeLeft < 500 ? timeLeft : 500;
+
+    setTimeout(function() {
+        const buzzer = document.getElementById('buzzer');
+        buzzer.innerHTML = 'Buzzer!';
+        buzzer.disabled = false;
+    }, waitTime);
+});
+
 // Message submit
 answForm.addEventListener('input', (e) => {
     // Get Text from Input
@@ -184,11 +227,13 @@ function clearMessages() {
     }
 }
 
-// buzzer not implemented yet
+// self buzzing
 function buzz() {
-    buzzer.style.background = 'var(--dark-color-b)';
     const momentBuzzed = moment();
     socket.emit('newBuzz', momentBuzzed);
+    const buzzer = document.getElementById('buzzer');
+    buzzer.disabled = true;
+    buzzer.innerHTML = '...';
 }
 
 // Listen for 'Enter'-keypress and try to login if a password modal is active
