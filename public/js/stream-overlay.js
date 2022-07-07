@@ -80,7 +80,34 @@ socket.on('loginTryAnswer', (bool, roomname) => {
         socket.emit('getCandidates', roomname);
     } else {
         outputServerMessage(`Falsches Passwort für ${roomname}.`);
+        reloadRooms();
     }
+});
+
+// buzzing
+socket.on('sendBuzzed', user => {
+    const answField = document.getElementById(`${user.id}`);
+    console.log(user);
+    console.log(answField);
+    if (answField) {answField.parentElement.classList.add('i-buzzed-stream');}
+});
+socket.on('deactivateBuzzer', () => {
+    const isBuzzed = document.querySelectorAll('.i-buzzed-stream');
+    isBuzzed.forEach((div) => {
+        div.classList.remove('i-buzzed-stream');
+    });
+});
+socket.on('freeBuzzer', unlockMoment => {
+    const now = moment().valueOf();
+    const timeLeft = unlockMoment - now;
+    const waitTime = timeLeft < 300 ? timeLeft : 300;
+
+    setTimeout(function() {
+        const isBuzzed = document.querySelectorAll('.i-buzzed-stream');
+        isBuzzed.forEach((div) => {
+            div.classList.remove('i-buzzed-stream');
+        });
+    }, waitTime);
 });
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
@@ -202,6 +229,11 @@ function clearCandidates() {
         clearCandidates();
     }
 }
+
+// reconnect to server
+socket.on('reloadPage', () => {
+    location.reload();
+});
 
 // Clear all messages shown from server
 function clearMessages() {

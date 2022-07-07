@@ -315,6 +315,27 @@ button {
     grid-column: 2;
 }
 
+.i-buzzed::before {
+    content: "\1F534";
+    position: relative;
+    display: flex;
+    height: 0;
+    left: -30px;
+    top: 40px;
+    font-size: 16px;
+}
+
+.i-buzzed-stream::after {
+    content: "\1F534";
+    font-size: 32px;
+    position: relative;
+    height: 0;
+    width: 0;
+    display: flex;
+    top: -64px;
+    left: 420px;
+}
+
 .inline-block-label {
     font-size: 0;
 }

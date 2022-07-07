@@ -89,6 +89,7 @@ socket.on('loginTryAnswer', (bool, roomname) => {
         sideBoard.style.display = 'block';
     } else {
         outputServerMessage(`Falsches Passwort für ${roomname}.`);
+        reloadRooms();
     }
 });
 
@@ -112,12 +113,12 @@ socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
 
 // other buzzing
 socket.on('sendBuzzed', user => {
-    var audio = new Audio('https://screetox.de/files/bonk-sound-effect.mp3');
-    audio.play();
     const buzzer = document.getElementById('buzzer');
     if (user.id === socket.id) {
         buzzer.innerHTML = `Du hast<br>gebuzzert!`;
     } else {
+        var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+        audio.play();
         if (user.username.length > 8) {
             const cutName = user.username.substring(0, 6)
             buzzer.innerHTML = `${cutName}...<br>hat gebuzzert!`;
@@ -144,7 +145,7 @@ socket.on('deactivateBuzzer', () => {
 socket.on('freeBuzzer', unlockMoment => {
     const now = moment().valueOf();
     const timeLeft = unlockMoment - now;
-    const waitTime = timeLeft < 500 ? timeLeft : 500;
+    const waitTime = timeLeft < 300 ? timeLeft : 300;
 
     setTimeout(function() {
         const buzzer = document.getElementById('buzzer');
@@ -234,7 +235,14 @@ function buzz() {
     const buzzer = document.getElementById('buzzer');
     buzzer.disabled = true;
     buzzer.innerHTML = '...';
+    var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+    audio.play();
 }
+
+// reconnect to server
+socket.on('reloadPage', () => {
+    location.reload();
+});
 
 // Listen for 'Enter'-keypress and try to login if a password modal is active
 window.addEventListener('keydown', function(event) {

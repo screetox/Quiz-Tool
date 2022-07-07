@@ -84,7 +84,34 @@ socket.on('loginTryAnswer', (bool, roomname) => {
         socket.emit('getCandidates', roomname);
     } else {
         outputServerMessage(`Falsches Passwort für ${roomname}.`);
+        reloadRooms();
     }
+});
+
+// buzzing
+socket.on('sendBuzzed', user => {
+    var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+    audio.play();
+    const ptsField = document.getElementById(`${user.id}-points`);
+    if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
+});
+socket.on('deactivateBuzzer', () => {
+    const isBuzzed = document.querySelectorAll('.i-buzzed');
+    isBuzzed.forEach((div) => {
+        div.classList.remove('i-buzzed');
+    });
+});
+socket.on('freeBuzzer', unlockMoment => {
+    const now = moment().valueOf();
+    const timeLeft = unlockMoment - now;
+    const waitTime = timeLeft < 300 ? timeLeft : 300;
+
+    setTimeout(function() {
+        const isBuzzed = document.querySelectorAll('.i-buzzed');
+        isBuzzed.forEach((div) => {
+            div.classList.remove('i-buzzed');
+        });
+    }, waitTime);
 });
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
@@ -206,6 +233,11 @@ function clearMessages() {
         clearMessages();
     }
 }
+
+// reconnect to server
+socket.on('reloadPage', () => {
+    location.reload();
+});
 
 // Listen for 'Enter'-keypress and try to login if a password modal is active
 window.addEventListener('keydown', function(event) {

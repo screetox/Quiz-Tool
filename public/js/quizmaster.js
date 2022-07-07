@@ -143,6 +143,10 @@ function freeBuzzer() {
     const button = document.getElementById('buzzerFreeButton');
     button.disabled = true;
     firstBuzzer = true;
+    const isBuzzed = document.querySelectorAll('.i-buzzed');
+    isBuzzed.forEach((div) => {
+        div.classList.remove('i-buzzed');
+    });
 }
 
 // Activate/Deactivate buzzer
@@ -166,6 +170,10 @@ function deactivateBuzzer() {
     const button2 = document.getElementById('buzzerFreeButton');
     button2.disabled = true;
     firstBuzzer = true;
+    const isBuzzed = document.querySelectorAll('.i-buzzed');
+    isBuzzed.forEach((div) => {
+        div.classList.remove('i-buzzed');
+    });
 }
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
@@ -218,12 +226,12 @@ socket.on('newAnswerToMaster', message => {
 socket.on('candidateBuzzed', user => {
     buzzedUser = user.id;
     if (firstBuzzer) {
-        var audio = new Audio('https://screetox.de/files/bonk-sound-effect.mp3');
+        firstBuzzer = false;
+        setTimeout(function() {analyzeBuzzing();}, 300);
+        var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
         audio.play();
-        setTimeout(function() {analyzeBuzzing();}, 500);
         const button = document.getElementById('buzzerFreeButton');
         button.disabled = false;
-        firstBuzzer = false;
     }
 });
 socket.on('candidateBuzzedLate', user => {
@@ -233,9 +241,12 @@ socket.on('candidateBuzzedLate', user => {
 
 // Crown whoever buzzed first
 function analyzeBuzzing() {
-    socket.emit('analyzedBuzzing', buzzedUser);
-    const answField = document.getElementById(buzzedUser);
-    answField.value = 'i buzzed';
+    const analyzedBuzzedUser = buzzedUser;
+
+    const index = candidates.findIndex(cand => cand.id === analyzedBuzzedUser);
+    const ptsField = document.getElementById(`${index}-points`);
+    if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
+    socket.emit('analyzedBuzzing', analyzedBuzzedUser);
 }
 
 // Output messages from server and delete after 60 seconds; msg = str
@@ -269,6 +280,11 @@ function clearMessages() {
         clearMessages();
     }
 }
+
+// reconnect to server
+socket.on('reloadPage', () => {
+    location.reload();
+});
 
 // Listen for 'Enter'-keypress and try to start Quiz
 window.addEventListener('keydown', function(event) {
