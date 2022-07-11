@@ -10,6 +10,7 @@ const enemyPoints = document.getElementById('enemy-points');
 
 var roomname = '';
 var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+var audioPlayed = false;
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';
@@ -128,7 +129,7 @@ socket.on('sendBuzzed', (user) => {
     if (user.id === socket.id) {
         buzzer.innerHTML = `Du hast<br>gebuzzert!`;
     } else {
-        audio.play();
+        if (!(audioPlayed)) {audio.play();}
         if (user.username.length > 8) {
             const cutName = user.username.substring(0, 6)
             buzzer.innerHTML = `${cutName}...<br>hat gebuzzert!`;
@@ -246,6 +247,8 @@ function buzz() {
     buzzer.disabled = true;
     buzzer.innerHTML = '...';
     audio.play();
+    audioPlayed = true;
+    setTimeout(function() {audioPlayed = false;}, 600);
 }
 
 // reconnect to server
