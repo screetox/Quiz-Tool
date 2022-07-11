@@ -77,6 +77,8 @@ socket.on('loginTryAnswer', (bool, roomname) => {
         }
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
+        document.getElementById('question-count').style.display = 'block';
+        document.getElementById('headline-stream').style.marginLeft = '110px';
         socket.emit('getCandidates', roomname);
     } else {
         outputServerMessage(`Falsches Passwort für ${roomname}.`);
