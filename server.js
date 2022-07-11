@@ -310,17 +310,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Listen for getQuestionCount
-    socket.on('getQuestionCount', (roomname) => {
-        const user = getCurrentUser(socket.id);
-        if (user) {
-            getCurrentQuestion(roomname);
-            socket.emit('newQuestionCountToAll', count);
-        } else {
-            socket.emit('reloadPage');
-        }
-    });
-
     // Listen for newPoints
     socket.on('newPoints', (roomname, userPts, pts) => {
         const user = getCurrentUser(socket.id);
