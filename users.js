@@ -4,6 +4,7 @@ const activeUsers = [];
 const activeRooms = [];
 const currentAnswers = [];
 const currentPoints = [];
+const currentQuestions = [];
 
 // Candidate joins
 function userJoin(id, username) {
@@ -115,6 +116,17 @@ function savePoints(id, pts) {
     currentPoints.push(points);
 }
 
+// Save new points
+function saveCurrentQuestion(room, count) {
+    const index = currentQuestions.findIndex(question => question.room === room);
+    if (index !== -1) {
+        currentQuestions.splice(index, 1);
+    }
+
+    const question = { room, count };
+    currentQuestions.push(question);
+}
+
 // User leaves chat
     // delete answer
 function userLeave(id) {
@@ -145,8 +157,12 @@ function deletePoints(id) {
     // set room to inactive
 function setRoomInactive(id) {
     const index = activeRooms.findIndex(room => room.id === id);
+    const index2 = currentQuestions.findIndex(room => room.id === id);
     if (index !== -1) {
         activeRooms.splice(index, 1);
+    }
+    if (index2 !== -1) {
+        currentQuestions.splice(index2, 1);
     }
 }
 
@@ -214,6 +230,16 @@ function getAllPoints(candidates) {
     return [returnAllCandidates, sortedAllPoints];
 }
 
+// Get candidate points
+function getCurrentQuestion(room) {
+    const index = currentQuestions.findIndex(question => question.room === room);
+    if (index !== -1) {
+        return currentQuestions[index].count;
+    } else {
+        return 0;
+    }
+}
+
 module.exports = {
     userJoin,
     quizmasterJoin,
@@ -225,10 +251,12 @@ module.exports = {
     getActiveRoomNames,
     saveAnswer,
     savePoints,
+    saveCurrentQuestion,
     userLeave,
     deletePoints,
     setRoomInactive,
     getCandidateAnswers,
     getCandidatePoints,
-    getAllPoints
+    getAllPoints,
+    getCurrentQuestion
 }

@@ -6,6 +6,7 @@ const candidateAnswersForm = document.getElementById('answers-form-stream');
 
 const candidates = [];
 const username = 'Stream-Overlay';
+var roomname = '';
 const socket = io();
 
 // Login and get active rooms
@@ -18,12 +19,12 @@ socket.on('server-error', () => {
 });
 
 // Log welcomeMessage from server; message = {id = str, text = str, time = str}
-socket.on('welcomeMessage', message => {
+socket.on('welcomeMessage', (message) => {
     console.log(message.text);
 });
 
 //Log message from server; message = {id = str, text = str, time = str}
-socket.on('messageFromServer', message => {
+socket.on('messageFromServer', (message) => {
     console.log(message);
 });
 
@@ -65,32 +66,30 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
     }
 });
 
-// Get answer to login try from server and login or display message; bool = bool, roomname = str
-socket.on('loginTryAnswer', (bool, roomname) => {
+// Get answer to login try from server and login or display message; bool = bool
+socket.on('loginTryAnswer', (bool) => {
     if (bool) {
         clearMessages();
-        if (roomname.length > 25) {
-            const cutRoomname = roomname.substring(0, 22);
+        if (this.roomname.length > 25) {
+            const cutRoomname = this.roomname.substring(0, 22);
             document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
         }
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
         document.getElementById('question-count').style.display = 'block';
         document.getElementById('headline-stream').style.marginLeft = '110px';
-        socket.emit('getCandidates', roomname);
+        socket.emit('getCandidates', this.roomname);
     } else {
-        outputServerMessage(`Falsches Passwort für ${roomname}.`);
+        outputServerMessage(`Falsches Passwort für ${this.roomname}.`);
         reloadRooms();
     }
 });
 
 // buzzing
-socket.on('sendBuzzed', user => {
+socket.on('sendBuzzed', (user) => {
     const answField = document.getElementById(`${user.id}`);
-    console.log(user);
-    console.log(answField);
     if (answField) {answField.parentElement.classList.add('i-buzzed-stream');}
 });
 socket.on('deactivateBuzzer', () => {
@@ -99,7 +98,7 @@ socket.on('deactivateBuzzer', () => {
         div.classList.remove('i-buzzed-stream');
     });
 });
-socket.on('freeBuzzer', unlockMoment => {
+socket.on('freeBuzzer', (unlockMoment) => {
     const now = moment().valueOf();
     const timeLeft = unlockMoment - now;
     const waitTime = timeLeft < 300 ? timeLeft : 300;
@@ -112,8 +111,8 @@ socket.on('freeBuzzer', unlockMoment => {
     }, waitTime);
 });
 
-// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
-socket.on('sendCandidates', (cands, points, answers) => {
+// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], answers = [str], userBuzzedId = str
+socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId) => {
     clearCandidates();
 
     for (let i = 0; i < cands.length; i++) {
@@ -136,10 +135,16 @@ socket.on('sendCandidates', (cands, points, answers) => {
         candidateAnswers.appendChild(pointsDiv);
         candidateAnswers.appendChild(answerDiv);
     }
+
+    const cntField = document.getElementById(`question-count`);
+    if (cntField) {cntField.value = questionCount;}
+
+    const answField = document.getElementById(`${userBuzzedId}`);
+    if (answField) {answField.parentElement.classList.add('i-buzzed-stream');}
 });
 
 // Get new candidate answer from server; message = {id = str, text = str, time = str}
-socket.on('newAnswerToMaster', message => {
+socket.on('newAnswerToMaster', (message) => {
     const answField = document.getElementById(`${message.id}`);
     if (answField) {
         answField.value = message.text;
@@ -154,14 +159,22 @@ socket.on('newPointsToAll', (message) => {
     }
 });
 
-// New candidate joined the room, ask for new render of candidates; roomname = str
-socket.on('newCandidate', (roomname) => {
-    socket.emit('getCandidates', roomname);
+// Get new question count from server; count = number
+socket.on('newQuestionCountToAll', (count) => {
+    const cntField = document.getElementById(`question-count`);
+    if (cntField) {
+        cntField.value = count;
+    }
 });
 
-// Candidate left the room, ask for new render of candidates; roomname = str
-socket.on('leavingCandidate', (roomname) => {
-    socket.emit('getCandidates', roomname);
+// New candidate joined the room, ask for new render of candidates
+socket.on('newCandidate', () => {
+    socket.emit('getCandidates', this.roomname);
+});
+
+// Candidate left the room, ask for new render of candidates
+socket.on('leavingCandidate', () => {
+    socket.emit('getCandidates', this.roomname);
 });
 
 // Reload list of active rooms to join
@@ -174,7 +187,7 @@ function reloadRooms() {
     }
 }
 
-// Open modal for password input to join selected room; roomname = str
+// Open modal for password input to join selected room; roomnumber = str
 function joinRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
     var span = document.getElementById(`${roomnumber}-close`);
@@ -188,16 +201,16 @@ function joinRoom(roomnumber) {
     }
 }
 
-// Try to log into room with password; roomname = str
+// Try to log into room with password; roomnumber = str
 function logIntoRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
-    var roomname = document.getElementById(`${roomnumber}-btn`).title;
+    this.roomname = document.getElementById(`${roomnumber}-btn`).title;
     var password = document.getElementById(`${roomnumber}-pw`).value;
     document.getElementById(`${roomnumber}-pw`).value = '';
     document.getElementById(`${roomnumber}-btn`).blur();
 
     modal.style.display = "none";
-    socket.emit('streamOverlayLoginTry', roomname, password);
+    socket.emit('streamOverlayLoginTry', this.roomname, password);
 }
 
 // Move the selected answer and points to the top most position in the list; idx = number
@@ -219,7 +232,7 @@ function outputServerMessage(msg) {
     ServerMessage.appendChild(div);
 
     setTimeout(function() {
-        ServerMessage.removeChild(ServerMessage.firstChild);
+        if (ServerMessage.firstChild) {ServerMessage.removeChild(ServerMessage.firstChild);}
     }, 60000);
 }
 

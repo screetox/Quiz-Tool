@@ -28,6 +28,12 @@
                 padding: 20px;
             }
         }
+
+        @media only screen and (max-width: 760px) {
+            #question-count-sideboard {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -54,6 +60,13 @@
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
         </main>
         <div id="msg-block-quizmaster"></div>
+    </div>
+    <div id="sideboard" class="sideboard-left">
+        <div id="question-count-sideboard" class="sideboard">
+            <p>Frage:</p>
+            <hr>
+            <div><p id="question-count"></p></div>
+        </div>
     </div>
     <select id='color-mode-select' onchange='changeColorMode(this.value)'>
         <option value='default'>Default</option>

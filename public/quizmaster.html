@@ -52,16 +52,25 @@
         <main id="answers-form">
             <p id="room-title">Raum: </p>
             <div id="quizmaster-control">
+                <div id="question-count-control" class="candidate-points">
+                    <button id="question-count-plus" onclick="addQuestionCount()">+ 1</button>
+                    <input id="question-count" type="number" value="0" title="0" />
+                    <button id="question-count-minus" onclick="subQuestionCount()">- 1</button>
+                </div>
                 <div id="point-buttons-all" class="candidate-points">
                     <p>Alle Kandidaten:</p>
-                    <button onclick="subPointToAll()">- 1</button>
-                    <button onclick="addPointToAll()">+ 1</button>
-                    <button onclick="askForAllPointsToZero()">= 0</button>
+                    <div>
+                        <button onclick="subPointToAll()">- 1</button>
+                        <button onclick="addPointToAll()">+ 1</button>
+                        <button onclick="askForAllPointsToZero()">= 0</button>
+                    </div>
                 </div>
                 <div id="buzzer-control">
                     <p id="showBuzzerState">Buzzer (inaktiv):</p>
-                    <button id="buzzerFreeButton" onclick="freeBuzzer()" disabled>freigeben</button>
-                    <button id="buzzerActivationButton" onclick="activateBuzzer()">aktivieren</button>
+                    <div>
+                        <button id="buzzerFreeButton" onclick="freeBuzzer()" disabled>freigeben</button>
+                        <button id="buzzerActivationButton" onclick="activateBuzzer()">aktivieren</button>
+                    </div>
                 </div>
             </div>
             <div id="allPointsToZero-modal" class="modal">
@@ -72,6 +81,7 @@
                     <button class="inline-button" onclick="allPointsToZero()">Ja!</button>
                 </div>
             </div>
+            <hr id="hr-quizmaster">
             <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
         </main>

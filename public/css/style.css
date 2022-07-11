@@ -438,6 +438,45 @@ button {
     overflow: hidden;
 }
 
+.sideboard-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: max-content;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto auto auto 0;
+    max-height: fit-content;
+    height: -moz-max-content;
+}
+
+.sideboard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto auto auto 0;
+    max-height: fit-content;
+    height: -moz-max-content;
+    text-align: center;
+    color: #fff;
+    padding: 15px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background: var(--dark-color-b);
+}
+
+.sideboard hr {
+    height: 1px;
+    margin: 10px 0;
+    border-width: 0;
+    color: var(--light-color);
+    background-color: var(--light-color);
+}
+
 .enemy-points-grid {
     width: auto;
     max-width: 170px;
@@ -541,10 +580,10 @@ button {
     right: 15px;
     width: auto;
     padding: 5px 10px;
-    background: var(--light-color);
-    color: var(--light-color);
     font-size: 12px;
-    border: 1px solid var(--light-color);
+    color: #00000000;
+    background: #00000000;
+    border: 1px solid #00000000;
     border-radius: 5px;
     box-shadow: none;
     cursor: default;
@@ -557,6 +596,7 @@ button {
 
 #room-title {
     color: var(--dark-color-a);
+    text-shadow: 1px 1px 2px var(--light-color);
     position: fixed;
     z-index: 1;
     right: 15px;
@@ -621,15 +661,22 @@ button {
 
 #quizmaster-control {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 50px calc((100% - 70px) / 2) calc((100% - 70px) / 2);
     gap: 10px;
+}
+
+#question-count-control {
+    width: 100%;
+    grid-column: 1;
 }
 
 #point-buttons-all {
     width: 100%;
     text-align: center;
-    margin-bottom: 15px;
-    grid-column: 1;
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #point-buttons-all p {
@@ -639,8 +686,10 @@ button {
 #buzzer-control {
     width: 100%;
     text-align: center;
-    margin-bottom: 15px;
-    grid-column: 2;
+    grid-column: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #buzzer-control p {
@@ -704,6 +753,15 @@ button {
     top: 1px;
 }
 
+#hr-quizmaster {
+    height: 1px;
+    margin: 10px 0;
+    border-width: 0;
+    color: var(--dark-color-a);
+    background-color: var(--dark-color-a);
+    box-shadow: 20px 0 var(--dark-color-a), -20px 0 var(--dark-color-a);
+}
+
 #input-form-stream {
     max-width: 480px;
 }
@@ -746,37 +804,18 @@ button {
 }
 
 #enemy-points-sideboard {
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto auto auto 0;
     width: fit-content;
     max-width: 200px;
     min-height: 150px;
-    max-height: fit-content;
-    height: -moz-max-content;
-    text-align: center;
-    color: #fff;
-    padding: 15px;
-    background: var(--dark-color-b);
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-#enemy-points-sideboard hr {
-    height: 1px;
-    margin: 10px 0;
-    border-width: 0;
-    color: var(--light-color);
-    background-color: var(--light-color);
 }
 
 #enemy-points {
     width: auto;
-    padding-bottom: 10px;
+}
+
+#question-count-sideboard {
+    width: 100px;
+    min-height: 50px;
 }
 
 #small-screen-warning {
@@ -798,6 +837,12 @@ button {
         align-items: center;
         height: 100%;
         padding: 20px;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    #question-count-sideboard {
+        display: none;
     }
 }
 

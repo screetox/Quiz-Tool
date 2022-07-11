@@ -5,9 +5,11 @@ const ServerMessage = document.getElementById('msg-block');
 const activeRooms = document.getElementById('show-active-rooms');
 const chooseRoom = document.getElementById('choose-room');
 const candidateForm = document.getElementById('candidate-form');
-const sideBoard = document.getElementById('sideboard');
+const sideboard = document.getElementById('sideboard');
 const enemyPoints = document.getElementById('enemy-points');
 
+var roomname = '';
+var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';
@@ -25,12 +27,12 @@ socket.on('server-error', () => {
 });
 
 // Log welcomeMessage from server; message = {id = str, text = str, time = str}
-socket.on('welcomeMessage', message => {
+socket.on('welcomeMessage', (message) => {
     console.log(message.text);
 });
 
 //Log message from server; message = {id = str, text = str, time = str}
-socket.on('messageFromServer', message => {
+socket.on('messageFromServer', (message) => {
     console.log(message);
     outputServerMessage(message.text);
 });
@@ -74,21 +76,22 @@ socket.on('sendActiveRoomNames', (activeRoomNames) => {
     }
 });
 
-// Get answer to login try from server and login or display message; bool = bool, roomname = str
-socket.on('loginTryAnswer', (bool, roomname) => {
+// Get answer to login try from server and login or display message; bool = bool
+socket.on('loginTryAnswer', (bool) => {
     if (bool) {
         clearMessages();
-        if (roomname.length > 25) {
-            const cutRoomname = roomname.substring(0, 22);
+        if (this.roomname.length > 25) {
+            const cutRoomname = this.roomname.substring(0, 22);
             document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
         }
+        document.getElementById('room-title').title = `Raum: ${this.roomname}`;
         chooseRoom.style.display = 'none';
         candidateForm.style.display = 'block';
-        sideBoard.style.display = 'block';
+        sideboard.style.display = 'flex';
     } else {
-        outputServerMessage(`Falsches Passwort für ${roomname}.`);
+        outputServerMessage(`Falsches Passwort für ${this.roomname}.`);
         reloadRooms();
     }
 });
@@ -111,13 +114,20 @@ socket.on('sendEnemyPoints', (allCandidates, allPoints) => {
     }
 });
 
+// Get new question count from server; count = number
+socket.on('newQuestionCountToAll', (count) => {
+    const cntField = document.getElementById(`question-count`);
+    if (cntField) {
+        cntField.innerHTML = `${count}`;
+    }
+});
+
 // other buzzing
-socket.on('sendBuzzed', user => {
+socket.on('sendBuzzed', (user) => {
     const buzzer = document.getElementById('buzzer');
     if (user.id === socket.id) {
         buzzer.innerHTML = `Du hast<br>gebuzzert!`;
     } else {
-        var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
         audio.play();
         if (user.username.length > 8) {
             const cutName = user.username.substring(0, 6)
@@ -142,7 +152,7 @@ socket.on('deactivateBuzzer', () => {
 });
 
 // Free buzzer
-socket.on('freeBuzzer', unlockMoment => {
+socket.on('freeBuzzer', (unlockMoment) => {
     const now = moment().valueOf();
     const timeLeft = unlockMoment - now;
     const waitTime = timeLeft < 300 ? timeLeft : 300;
@@ -160,7 +170,7 @@ answForm.addEventListener('input', (e) => {
     const answ = e.target.value;
     e.target.title = answ;
     // Emit a message to the server
-    socket.emit('newAnswer', answ);
+    socket.emit('newAnswer', this.roomname, answ);
 });
 
 // Output messages from server and delete after 60 seconds; msg = str
@@ -186,7 +196,7 @@ function reloadRooms() {
     }
 }
 
-// Open modal for password input to join selected room; roomname = str
+// Open modal for password input to join selected room; roomnumber = str
 function joinRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
     var span = document.getElementById(`${roomnumber}-close`);
@@ -200,16 +210,16 @@ function joinRoom(roomnumber) {
     }
 }
 
-// Try to log into room with password; roomname = str
+// Try to log into room with password; roomnumber = str
 function logIntoRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
-    var roomname = document.getElementById(`${roomnumber}-btn`).title;
+    this.roomname = document.getElementById(`${roomnumber}-btn`).title;
     var password = document.getElementById(`${roomnumber}-pw`).value;
     document.getElementById(`${roomnumber}-pw`).value = '';
     document.getElementById(`${roomnumber}-btn`).blur();
 
     modal.style.display = "none";
-    socket.emit('loginTry', roomname, password);
+    socket.emit('loginTry', this.roomname, password);
 }
 
 // Clear points shown in sidebar
@@ -231,11 +241,10 @@ function clearMessages() {
 // self buzzing
 function buzz() {
     const momentBuzzed = moment();
-    socket.emit('newBuzz', momentBuzzed);
+    socket.emit('newBuzz', this.roomname, momentBuzzed);
     const buzzer = document.getElementById('buzzer');
     buzzer.disabled = true;
     buzzer.innerHTML = '...';
-    var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
     audio.play();
 }
 
@@ -254,6 +263,13 @@ window.addEventListener('keydown', function(event) {
                     logIntoRoom(`${i}`);
                 }
             }
+        } else if (candidateForm.style.display != "none") {
+            buzz();
+        }
+    }
+    if (event.key === ' ') {
+        if (candidateForm.style.display != "none") {
+            buzz();
         }
     }
 });

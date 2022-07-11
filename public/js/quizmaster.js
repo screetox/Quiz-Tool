@@ -5,8 +5,11 @@ const candidateAnswers = document.getElementById('candidate-answers');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
+var roomname = '';
+var password = '';
 var buzzedUser = '';
 var firstBuzzer = true;
+var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';
@@ -23,12 +26,12 @@ socket.on('server-error', () => {
 });
 
 // Log welcomeMessage from server; message = {id = str, text = str, time = str}
-socket.on('welcomeMessage', message => {
+socket.on('welcomeMessage', (message) => {
     console.log(message.text);
 });
 
 //Log message from server; message = {id = str, text = str, time = str}
-socket.on('messageFromServer', message => {
+socket.on('messageFromServer', (message) => {
     console.log(message);
     outputServerMessage(message.text);
 });
@@ -36,36 +39,58 @@ socket.on('messageFromServer', message => {
 // If roomname is provided: create room and show quiz main; if not: show error
 function startQuiz() {
     if (document.getElementById('roomname').value) {
-        const roomname = document.getElementById('roomname').value;
-        const password = document.getElementById('password').value;
+        this.roomname = document.getElementById('roomname').value;
+        this.password = document.getElementById('password').value;
 
         clearMessages();
         document.getElementById('empty-roomname').style.display = 'none';
-        if (roomname.length > 25) {
-            const cutRoomname = roomname.substring(0, 22);
+        if (this.roomname.length > 25) {
+            const cutRoomname = this.roomname.substring(0, 22);
             document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${roomname}`;
+            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
         }
-        document.getElementById('room-title').title = `Passwort: ${password}`;
+        if (this.password != '') {
+            document.getElementById('room-title').title = `Raum: ${this.roomname}\nPasswort: ${this.password}`;
+        } else {
+            document.getElementById('room-title').title = `Raum: ${this.roomname}`;
+        }
 
-        socket.emit('createRoom', roomname, password);
+        socket.emit('createRoom', this.roomname, this.password);
     } else {
         document.getElementById('empty-roomname').style.display = 'block';
     }
 }
 
-// New candidate joined the room, ask for new render of candidates; roomname = str
-socket.on('newCandidate', (roomname) => {
-    socket.emit('getCandidates', roomname);
-    socket.emit('getEnemyPoints');
+// New candidate joined the room, ask for new render of candidates
+socket.on('newCandidate', () => {
+    socket.emit('getCandidates', this.roomname);
+    socket.emit('getEnemyPoints', this.roomname);
 });
 
-// Candidate left the room, ask for new render of candidates; roomname = str
-socket.on('leavingCandidate', (roomname) => {
-    socket.emit('getCandidates', roomname);
-    socket.emit('getEnemyPoints');
+// Candidate left the room, ask for new render of candidates
+socket.on('leavingCandidate', () => {
+    socket.emit('getCandidates', this.roomname);
+    socket.emit('getEnemyPoints', this.roomname);
 });
+
+// Add count to question count and inform server
+function addQuestionCount() {
+    var counter = document.getElementById('question-count').value;
+    var counter_new = Number(counter) + 1;
+    document.getElementById('question-count').value = `${counter_new}`;
+    document.getElementById('question-count').title = `${counter_new}`;
+    socket.emit('newQuestionCount', this.roomname, counter_new);
+}
+
+// Sub count from question count and inform server
+function subQuestionCount() {
+    var counter = document.getElementById('question-count').value;
+    var counter_new = Number(counter) - 1;
+    document.getElementById('question-count').value = `${counter_new}`;
+    document.getElementById('question-count').title = `${counter_new}`;
+    socket.emit('newQuestionCount', this.roomname, counter_new);
+}
 
 // Add point to candidate and inform server; candidate = number
 function addPoint(candidate) {
@@ -73,8 +98,8 @@ function addPoint(candidate) {
     var counter_new = Number(counter) + 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     document.getElementById(`${candidate}-points`).title = `${counter_new}`;
-    socket.emit('newPoints', candidates[candidate], counter_new);
-    socket.emit('getEnemyPoints');
+    socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
+    socket.emit('getEnemyPoints', this.roomname);
 }
 
 // Sub point from candidate and inform server; candidate = number
@@ -83,8 +108,8 @@ function subPoint(candidate) {
     var counter_new = Number(counter) - 1;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     document.getElementById(`${candidate}-points`).title = `${counter_new}`;
-    socket.emit('newPoints', candidates[candidate], counter_new);
-    socket.emit('getEnemyPoints');
+    socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
+    socket.emit('getEnemyPoints', this.roomname);
 }
 
 // Add point to all candidates and inform server
@@ -94,9 +119,9 @@ function addPointToAll() {
         var counter_new = Number(counter) + 1;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
         document.getElementById(`${i}-points`).title = `${counter_new}`;
-        socket.emit('newPoints', candidates[i], counter_new);
+        socket.emit('newPoints', this.roomname, candidates[i], counter_new);
     };
-    socket.emit('getEnemyPoints');
+    socket.emit('getEnemyPoints', this.roomname);
 }
 
 // Sub point from all candidates and inform server
@@ -106,9 +131,9 @@ function subPointToAll() {
         var counter_new = Number(counter) - 1;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
         document.getElementById(`${i}-points`).title = `${counter_new}`;
-        socket.emit('newPoints', candidates[i], counter_new);
+        socket.emit('newPoints', this.roomname, candidates[i], counter_new);
     };
-    socket.emit('getEnemyPoints');
+    socket.emit('getEnemyPoints', this.roomname);
 }
 
 // Set points from all candidates to 0 and inform server
@@ -117,9 +142,9 @@ function allPointsToZero() {
         var counter_new = 0;
         document.getElementById(`${i}-points`).value = `${counter_new}`;
         document.getElementById(`${i}-points`).title = `${counter_new}`;
-        socket.emit('newPoints', candidates[i], counter_new);
+        socket.emit('newPoints', this.roomname, candidates[i], counter_new);
     };
-    socket.emit('getEnemyPoints');
+    socket.emit('getEnemyPoints', this.roomname);
     document.getElementById('allPointsToZero-modal').style.display = 'none';
 }
 
@@ -139,7 +164,7 @@ function askForAllPointsToZero() {
 
 // Free buzzer after buzzed
 function freeBuzzer() {
-    socket.emit('freeBuzzers');
+    socket.emit('freeBuzzers', this.roomname);
     const button = document.getElementById('buzzerFreeButton');
     button.disabled = true;
     firstBuzzer = true;
@@ -151,7 +176,7 @@ function freeBuzzer() {
 
 // Activate/Deactivate buzzer
 function activateBuzzer() {
-    socket.emit('activateBuzzers');
+    socket.emit('activateBuzzers', this.roomname);
     const button = document.getElementById('buzzerActivationButton');
     button.innerHTML = 'deaktivieren';
     const state = document.getElementById('showBuzzerState');
@@ -159,7 +184,7 @@ function activateBuzzer() {
     button.setAttribute('onclick','deactivateBuzzer()');
 }
 function deactivateBuzzer() {
-    socket.emit('deactivateBuzzers');
+    socket.emit('deactivateBuzzers', this.roomname);
     const button = document.getElementById('buzzerActivationButton');
     button.innerHTML = 'aktivieren';
     const state = document.getElementById('showBuzzerState');
@@ -176,8 +201,8 @@ function deactivateBuzzer() {
     });
 }
 
-// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str]
-socket.on('sendCandidates', (cands, points, answers) => {
+// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str], userBuzzedId = str
+socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId) => {
     clearCandidates();
     roomInputForm.style.display = 'none';
     candidateAnswersForm.style.display = 'block';
@@ -204,17 +229,21 @@ socket.on('sendCandidates', (cands, points, answers) => {
             const pts = Number(e.target.value);
             e.target.title = `${pts}`;
             // Emit a message to the server
-            socket.emit('newPoints', candidates[i], pts);
-            socket.emit('getEnemyPoints');
+            socket.emit('newPoints', this.roomname, candidates[i], pts);
+            socket.emit('getEnemyPoints', this.roomname);
         });
 
         candidateAnswers.appendChild(pointsDiv);
         candidateAnswers.appendChild(answerDiv);
     }
+
+    const index = candidates.findIndex(cand => cand.id === userBuzzedId);
+    const ptsField = document.getElementById(`${index}-points`);
+    if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
 });
 
 // Get new candidate answer from server; message = {id = str, text = str, time = str}
-socket.on('newAnswerToMaster', message => {
+socket.on('newAnswerToMaster', (message) => {
     const answField = document.getElementById(`${message.id}`);
     if (answField) {
         answField.value = message.text;
@@ -223,20 +252,18 @@ socket.on('newAnswerToMaster', message => {
 });
 
 // Detect buzzer and see who buzzed first
-socket.on('candidateBuzzed', user => {
+socket.on('candidateBuzzed', (user) => {
     buzzedUser = user.id;
     if (firstBuzzer) {
         firstBuzzer = false;
         setTimeout(function() {analyzeBuzzing();}, 300);
-        var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
         audio.play();
         const button = document.getElementById('buzzerFreeButton');
         button.disabled = false;
     }
 });
-socket.on('candidateBuzzedLate', user => {
-    const answField = document.getElementById(user.id);
-    answField.value = 'i buzzed too late';
+socket.on('candidateBuzzedLate', (later, earlier) => {
+    console.log(`${later.username} buzzed later than ${earlier.username}.`)
 });
 
 // Crown whoever buzzed first
@@ -246,7 +273,7 @@ function analyzeBuzzing() {
     const index = candidates.findIndex(cand => cand.id === analyzedBuzzedUser);
     const ptsField = document.getElementById(`${index}-points`);
     if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
-    socket.emit('analyzedBuzzing', analyzedBuzzedUser);
+    socket.emit('analyzedBuzzing', this.roomname, analyzedBuzzedUser);
 }
 
 // Output messages from server and delete after 60 seconds; msg = str
@@ -284,6 +311,14 @@ function clearMessages() {
 // reconnect to server
 socket.on('reloadPage', () => {
     location.reload();
+});
+
+document.getElementById('question-count').addEventListener('input', (e) => {
+    // Get Number from Input
+    const count = Number(e.target.value);
+    e.target.title = `${count}`;
+    // Emit a message to the server
+    socket.emit('newQuestionCount', this.roomname, count);
 });
 
 // Listen for 'Enter'-keypress and try to start Quiz
