@@ -9,7 +9,7 @@ var roomname = '';
 var password = '';
 var buzzedUser = '';
 var firstBuzzer = true;
-var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+var audio = new Audio('https://screetox.de/files/sounds/buzzer.mp3');
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
 const username = urlParams.get('username') ? urlParams.get('username') : 'Namenloser';

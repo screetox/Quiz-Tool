@@ -9,7 +9,7 @@ const sideboard = document.getElementById('sideboard');
 const enemyPoints = document.getElementById('enemy-points');
 
 var roomname = '';
-var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+var audio = new Audio('https://screetox.de/files/sounds/buzzer.mp3');
 var audioPlayed = false;
 // Get username from url
 const urlParams = new URLSearchParams(location.search);
@@ -120,6 +120,7 @@ socket.on('newQuestionCountToAll', (count) => {
     const cntField = document.getElementById(`question-count`);
     if (cntField) {
         cntField.innerHTML = `${count}`;
+        cntField.title = `${count}`;
     }
 });
 
@@ -241,14 +242,14 @@ function clearMessages() {
 
 // self buzzing
 function buzz() {
+    audio.play();
+    audioPlayed = true;
+    setTimeout(function() {audioPlayed = false;}, 600);
     const momentBuzzed = moment();
     socket.emit('newBuzz', this.roomname, momentBuzzed);
     const buzzer = document.getElementById('buzzer');
     buzzer.disabled = true;
     buzzer.innerHTML = '...';
-    audio.play();
-    audioPlayed = true;
-    setTimeout(function() {audioPlayed = false;}, 600);
 }
 
 // reconnect to server

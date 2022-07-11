@@ -9,7 +9,7 @@ const candidateAnswersForm = document.getElementById('answers-form');
 const candidates = [];
 const username = 'Spectator';
 var roomname = '';
-var audio = new Audio('https://screetox.de/files/sounds/bonk.mp3');
+var audio = new Audio('https://screetox.de/files/sounds/buzzer.mp3');
 headline.innerHTML = `Hallo, ${username}!`;
 // window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 const socket = io();
@@ -168,6 +168,7 @@ socket.on('newQuestionCountToAll', (count) => {
     const cntField = document.getElementById(`question-count`);
     if (cntField) {
         cntField.innerHTML = `${count}`;
+        cntField.title = `${count}`;
     }
 });
 

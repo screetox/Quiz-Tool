@@ -44,9 +44,17 @@
         <option value='blue'>Blau</option>
         <option value='green'>Grün</option>
     </select>
+    <select id='sound-mode-select' onchange='changeSoundMode(this.value)'>
+        <option value='buzzer'>buzzer.mp3</option>
+        <option value='bonk'>bonk.mp3</option>
+        <option value='idea'>idea.mp3</option>
+        <option value='surprise'>surprise.mp3</option>
+        <option value='windows-error'>error.mp3</option>
+    </select>
 
     <script src="js/index.js"></script>
     <script src="js/colorMode.js"></script>
+    <script src="js/soundMode.js"></script>
 </body>
 
 </html>
