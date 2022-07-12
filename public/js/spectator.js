@@ -20,7 +20,7 @@ socket.emit('getActiveRooms');
 
 // Exit application and show server error
 socket.on('server-error', () => {
-    location.href = "/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de";
+    location.href = '/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de';
 });
 
 // Log welcomeMessage from server; message = {id = str, text = str, time = str}
@@ -196,13 +196,13 @@ function reloadRooms() {
 function joinRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
     var span = document.getElementById(`${roomnumber}-close`);
-    if (modal.style.display == "block") {
-        modal.style.display = "none";
+    if (modal.style.display == 'block') {
+        modal.style.display = 'none';
     } else {
-        modal.style.display = "block";
+        modal.style.display = 'block';
     }
     span.onclick = function() {
-        modal.style.display = "none";
+        modal.style.display = 'none';
     }
 }
 
@@ -214,7 +214,7 @@ function logIntoRoom(roomnumber) {
     document.getElementById(`${roomnumber}-pw`).value = '';
     document.getElementById(`${roomnumber}-btn`).blur();
 
-    modal.style.display = "none";
+    modal.style.display = 'none';
     socket.emit('loginTry', this.roomname, password);
 }
 
@@ -258,10 +258,10 @@ socket.on('reloadPage', () => {
 // Listen for 'Enter'-keypress and try to login if a password modal is active
 window.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        if (chooseRoom.style.display != "none") {
+        if (chooseRoom.style.display != 'none') {
             var elements = document.getElementsByClassName('modal');
             for (let i = 0; i < elements.length; i++) {
-                if (elements[i].style.display == "block") {
+                if (elements[i].style.display == 'block') {
                     logIntoRoom(`${i}`);
                 }
             }

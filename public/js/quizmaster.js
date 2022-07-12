@@ -22,7 +22,7 @@ socket.emit('login-as-quizmaster', username);
 
 // Exit application and show server error
 socket.on('server-error', () => {
-    location.href = "/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de";
+    location.href = '/?msg=Server%20Error!%20Bitte%20wende%20dich%20an%20den%20Administrator%20unter%20business@screetox.de';
 });
 
 // Log welcomeMessage from server; message = {id = str, text = str, time = str}
@@ -152,13 +152,13 @@ function allPointsToZero() {
 function askForAllPointsToZero() {
     const modal = document.getElementById('allPointsToZero-modal');
     var span = document.getElementById(`allPointsToZero-close`);
-    if (modal.style.display == "block") {
-        modal.style.display = "none";
+    if (modal.style.display == 'block') {
+        modal.style.display = 'none';
     } else {
-        modal.style.display = "block";
+        modal.style.display = 'block';
     }
     span.onclick = function() {
-        modal.style.display = "none";
+        modal.style.display = 'none';
     }
 }
 
@@ -324,7 +324,7 @@ document.getElementById('question-count').addEventListener('input', (e) => {
 // Listen for 'Enter'-keypress and try to start Quiz
 window.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        if (roomInputForm.style.display != "none") {
+        if (roomInputForm.style.display != 'none') {
             startQuiz();
         }
     }

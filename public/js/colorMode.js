@@ -2,7 +2,7 @@ const siteBody = document.getElementById('body-id');
 const colorSelect = document.getElementById('color-mode-select');
 
 // Toggle and save: dark, red, purple, blue, green, yellow
-if (typeof(Storage) !== "undefined") {
+if (typeof(Storage) !== 'undefined') {
     if (localStorage.quizmode) {
         switch (localStorage.quizmode) {
             case 'default':
@@ -43,8 +43,7 @@ if (typeof(Storage) !== "undefined") {
 function changeColorMode(color) {
     siteBody.classList = '';
     siteBody.classList.add(`${color}-mode`);
-    console.log(`${color} mode activated!`);
-    if (typeof(Storage) !== "undefined") {
+    if (typeof(Storage) !== 'undefined') {
         localStorage.quizmode = `${color}`;
     }
 }

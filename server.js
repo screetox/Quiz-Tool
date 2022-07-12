@@ -88,7 +88,9 @@ io.on('connection', (socket) => {
                 const points = getCandidatePoints(candidateArray);
                 const questionCount = 0;
                 const userBuzzedId = null;
-                socket.emit('sendCandidates', candidateArray, points, answers, questionCount, userBuzzedId);
+                saveCurrentQuestion(roomname, questionCount);
+                io.to(roomname).emit('newQuestionCountToAll', questionCount);
+                io.to(roomname).emit('sendCandidates', candidateArray, points, answers, questionCount, userBuzzedId);
             } else if (roomCreated === 2) {
                 const time = moment().format('kk:mm:ss');
                 socket.emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Der Name <i>${roomname}</i> wird bereits verwendet.<br>Bitte verwende einen anderen Raumnamen.`));

@@ -191,13 +191,13 @@ function reloadRooms() {
 function joinRoom(roomnumber) {
     var modal = document.getElementById(`${roomnumber}-modal`);
     var span = document.getElementById(`${roomnumber}-close`);
-    if (modal.style.display == "block") {
-        modal.style.display = "none";
+    if (modal.style.display == 'block') {
+        modal.style.display = 'none';
     } else {
-        modal.style.display = "block";
+        modal.style.display = 'block';
     }
     span.onclick = function() {
-        modal.style.display = "none";
+        modal.style.display = 'none';
     }
 }
 
@@ -209,7 +209,7 @@ function logIntoRoom(roomnumber) {
     document.getElementById(`${roomnumber}-pw`).value = '';
     document.getElementById(`${roomnumber}-btn`).blur();
 
-    modal.style.display = "none";
+    modal.style.display = 'none';
     socket.emit('streamOverlayLoginTry', this.roomname, password);
 }
 

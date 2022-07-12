@@ -1,7 +1,7 @@
 const soundSelect = document.getElementById('sound-mode-select');
 
 // Toggle and save: dark, red, purple, blue, green, yellow
-if (typeof(Storage) !== "undefined") {
+if (typeof(Storage) !== 'undefined') {
     var sound = '';
     if (localStorage.soundmode) {
         switch (localStorage.soundmode) {
@@ -26,11 +26,9 @@ if (typeof(Storage) !== "undefined") {
         }
         sound = soundSelect.value;
         audio = new Audio(`https://screetox.de/files/sounds/${sound}.mp3`);
-        console.log(`${sound}.mp3 buzzer-mode activated!`);
     } else {
         sound = 'buzzer';
         audio = new Audio(`https://screetox.de/files/sounds/${sound}.mp3`);
-        console.log(`${sound}.mp3 buzzer-mode activated!`);
     }
 }
 
@@ -38,9 +36,8 @@ if (typeof(Storage) !== "undefined") {
 // sound = str
 function changeSoundMode(sound) {
     audio = new Audio(`https://screetox.de/files/sounds/${sound}.mp3`);
-    console.log(`${sound}.mp3 buzzer-mode activated!`);
     audio.play();
-    if (typeof(Storage) !== "undefined") {
+    if (typeof(Storage) !== 'undefined') {
         localStorage.soundmode = `${sound}`;
     }
 }
