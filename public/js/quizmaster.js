@@ -5,6 +5,8 @@ const candidateAnswers = document.getElementById('candidate-answers');
 const candidateAnswersForm = document.getElementById('answers-form');
 
 const candidates = [];
+var timeoutsRoomname = [];
+var timeoutsPassword = [];
 var roomname = '';
 var password = '';
 var buzzedUser = '';
@@ -51,7 +53,7 @@ function startQuiz() {
             document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
         }
         if (this.password != '') {
-            document.getElementById('room-title').title = `Raum: ${this.roomname}\nPasswort: ${this.password}`;
+            document.getElementById('room-title').title = `Raum: ${this.roomname}\n\nPasswort: ${this.password}`;
         } else {
             document.getElementById('room-title').title = `Raum: ${this.roomname}`;
         }
@@ -220,7 +222,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
             <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
-            <label for="${candidates[i].id}" title="${candidates[i].username}:">${candidates[i].username}:<br></label>
+            <label for="${candidates[i].id}" title="${candidates[i].username}">${candidates[i].username}:</label>
             <input id="${candidates[i].id}" type="text" value="${answers[i]}" title="${answers[i]}" readonly />`;
         answerDiv.classList.add('candidate-answer', 'inline-block-label');
 
@@ -286,7 +288,7 @@ function outputServerMessage(msg) {
 
     setTimeout(function() {
         if (ServerMessage.firstChild) {
-            ServerMessage.removeChild(ServerMessage.firstChild);
+            if (ServerMessage.firstChild) {ServerMessage.removeChild(ServerMessage.firstChild);}
         }
     }, 60000);
 }
@@ -327,5 +329,35 @@ window.addEventListener('keydown', function(event) {
         if (roomInputForm.style.display != 'none') {
             startQuiz();
         }
+    }
+});
+
+document.getElementById('roomname').addEventListener('input', (e) => {
+    var username = e.target.value;
+    if (username.includes('<') || username.includes('>') || username.includes('"')) {
+       e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
+
+       var popup = document.getElementById('injectionPopupRoomname');
+       popup.classList.add('show');
+       for (var i = 0; i < timeoutsRoomname.length; i++) {
+           clearTimeout(timeoutsRoomname[i]);
+       }
+       timeoutsRoomname = [];
+       timeoutsRoomname.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
+    }
+});
+
+document.getElementById('password').addEventListener('input', (e) => {
+    var username = e.target.value;
+    if (username.includes('<') || username.includes('>') || username.includes('"')) {
+       e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
+
+       var popup = document.getElementById('injectionPopupPassword');
+       popup.classList.add('show');
+       for (var i = 0; i < timeoutsPassword.length; i++) {
+           clearTimeout(timeoutsPassword[i]);
+       }
+       timeoutsPassword = [];
+       timeoutsPassword.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
     }
 });

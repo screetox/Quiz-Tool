@@ -184,7 +184,7 @@ function outputServerMessage(msg) {
     ServerMessage.appendChild(div);
 
     setTimeout(function() {
-        ServerMessage.removeChild(ServerMessage.firstChild);
+        if (ServerMessage.firstChild) {ServerMessage.removeChild(ServerMessage.firstChild);}
     }, 60000);
 }
 

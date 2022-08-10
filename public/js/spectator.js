@@ -134,7 +134,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
             <input id="${candidates[i].id}-points" type="number" value="${points[i]}" title="${points[i]}" readonly />`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
-            <label for="${candidates[i].id}" title="${candidates[i].username}:">${candidates[i].username}:<br></label>
+            <label for="${candidates[i].id}" title="${candidates[i].username}">${candidates[i].username}:</label>
             <input id="${candidates[i].id}" type="text" value="${answers[i]}" title="${answers[i]}" readonly />`;
         answerDiv.classList.add('candidate-answer', 'inline-block-label');
         candidateAnswers.appendChild(pointsDiv);

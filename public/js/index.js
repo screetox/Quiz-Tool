@@ -5,6 +5,7 @@ const loginForm = document.getElementById('login-form');
 // Get msg from url
 const urlParams = new URLSearchParams(location.search);
 const msg = urlParams.get('msg');
+var timeouts = [];
 
 if (msg) {
     document.getElementById('msg-block').style.display = 'block';
@@ -38,5 +39,19 @@ function streamOverlay() {
 window.addEventListener('keyup', function(event) {
     if (event.key === 'Enter') {
         login();
+    }
+});
+
+document.getElementById('username').addEventListener('input', (e) => {
+    var username = e.target.value;
+    if (username.includes('<') || username.includes('>') || username.includes('"')) {
+        e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
+
+        var popup = document.getElementById('injectionPopupUsername');
+        popup.classList.add('show');
+        for (var i = 0; i < timeouts.length; i++) {
+            clearTimeout(timeouts[i]);
+        }
+        timeouts.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
     }
 });

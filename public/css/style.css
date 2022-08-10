@@ -315,6 +315,10 @@ button {
     grid-column: 2;
 }
 
+.candidate-answer label {
+    white-space: nowrap;
+}
+
 .i-buzzed::before {
     content: "\1F534";
     position: relative;
@@ -514,6 +518,57 @@ button {
     background-color: var(--dark-color-a-transparent);
 }
 
+.popup {
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.popup .popuptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -125px;
+}
+
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s;
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
 #html-id-stream {
     height: 100%;
 }
@@ -624,6 +679,7 @@ button {
 #headline {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #headline-stream {
@@ -829,6 +885,7 @@ button {
 
 #enemy-points {
     width: auto;
+    white-space: nowrap;
 }
 
 #question-count-sideboard {

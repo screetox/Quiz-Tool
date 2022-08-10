@@ -22,7 +22,10 @@
         <main>
             <form id="login-form" action="main.html">
                 <div class="form-control">
-                    <input type="text" name="username" id="username" placeholder="Benutzernamen eingeben..." />
+                    <div class="popup">
+                        <input type="text" name="username" id="username" placeholder="Benutzernamen eingeben..." />
+                        <span class="popuptext" id="injectionPopupUsername">Benutzername darf folgende Zeichen nicht enthalten: &lt;, &gt;, &quot;</span>
+                    </div>
                 </div>
                 <button class="btn" onclick="login()">Anmelden</button>
             </form>

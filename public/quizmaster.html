@@ -41,8 +41,14 @@
         </header>
         <main id="input-form">
             <div>
-                <input type="text" name="roomname" id="roomname" placeholder="Raumnamen eingeben..." required/>
-                <input type="password" name="password" id="password" placeholder="Passwort eingeben..." />
+                <div class="popup">
+                    <input type="text" name="roomname" id="roomname" placeholder="Raumnamen eingeben..." required/>
+                    <span class="popuptext" id="injectionPopupRoomname">Raumname darf folgende Zeichen nicht enthalten: &lt;, &gt;, &quot;</span>
+                </div>
+                <div class="popup">
+                    <input type="password" name="password" id="password" placeholder="Passwort eingeben..." />
+                    <span class="popuptext" id="injectionPopupPassword">Passwort darf folgende Zeichen nicht enthalten: &lt;, &gt;, &quot;</span>
+                </div>
             </div>
             <div id="inline-buttons">
                 <button class="btn inline-button" onclick="startQuiz()">Los gehts!</button>
