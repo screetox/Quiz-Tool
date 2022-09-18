@@ -418,7 +418,7 @@ button {
     background-color: var(--button-hover-color);
 }
 
-.candidate-points button:active {
+.candidate-points button:active:not([id*="-3-"]) {
     position: relative;
     top: 1px;
 }

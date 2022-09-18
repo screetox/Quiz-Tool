@@ -104,10 +104,30 @@ function addPoint(candidate) {
     socket.emit('getEnemyPoints', this.roomname);
 }
 
+// Add point to candidate and inform server; candidate = number
+function add3Point(candidate) {
+    var counter = document.getElementById(`${candidate}-points`).value;
+    var counter_new = Number(counter) + 3;
+    document.getElementById(`${candidate}-points`).value = `${counter_new}`;
+    document.getElementById(`${candidate}-points`).title = `${counter_new}`;
+    socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
+    socket.emit('getEnemyPoints', this.roomname);
+}
+
 // Sub point from candidate and inform server; candidate = number
 function subPoint(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
     var counter_new = Number(counter) - 1;
+    document.getElementById(`${candidate}-points`).value = `${counter_new}`;
+    document.getElementById(`${candidate}-points`).title = `${counter_new}`;
+    socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
+    socket.emit('getEnemyPoints', this.roomname);
+}
+
+// Sub point from candidate and inform server; candidate = number
+function sub3Point(candidate) {
+    var counter = document.getElementById(`${candidate}-points`).value;
+    var counter_new = Number(counter) - 3;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     document.getElementById(`${candidate}-points`).title = `${counter_new}`;
     socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
@@ -218,8 +238,10 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
             <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
+            <button id="${i}-3-points-plus" onclick="add3Point(${i})" style="position:absolute;left:0;">+ 3</button>
             <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
-            <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>`;
+            <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>
+            <button id="${i}-3-points-minus" onclick="sub3Point(${i})" style="position:absolute;left:0;">- 3</button>`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
             <label for="${candidates[i].id}" title="${candidates[i].username}">${candidates[i].username}:</label>
