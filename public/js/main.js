@@ -5,7 +5,6 @@ const ServerMessage = document.getElementById('msg-block');
 const activeRooms = document.getElementById('show-active-rooms');
 const chooseRoom = document.getElementById('choose-room');
 const candidateForm = document.getElementById('candidate-form');
-const sideboard = document.getElementById('sideboard');
 const enemyPoints = document.getElementById('enemy-points');
 
 var roomname = '';
@@ -90,7 +89,7 @@ socket.on('loginTryAnswer', (bool) => {
         document.getElementById('room-title').title = `Raum: ${this.roomname}`;
         chooseRoom.style.display = 'none';
         candidateForm.style.display = 'block';
-        sideboard.style.display = 'flex';
+        document.getElementById('sideboard-image').style.display = 'flex';
     } else {
         outputServerMessage(`Falsches Passwort für ${this.roomname}.`);
         reloadRooms();
@@ -150,7 +149,7 @@ socket.on('activateBuzzer', () => {
 socket.on('deactivateBuzzer', () => {
     const buzzer = document.getElementById('buzzer');
     buzzer.disabled = true;
-    buzzer.innerHTML = 'Buzzer!<br><span>(inactive)</span>';
+    buzzer.innerHTML = 'Buzzer!<br><span>(inaktiv)</span>';
 });
 
 // Free buzzer
@@ -222,6 +221,41 @@ function logIntoRoom(roomnumber) {
 
     modal.style.display = 'none';
     socket.emit('loginTry', this.roomname, password);
+}
+
+// Download image file
+socket.on('download', (file, type) => {
+    var blob = new Blob([file], {type: type});
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+    document.getElementById('quiz-image').src = imageUrl;
+    document.getElementById('quiz-image-big').src = imageUrl;
+});
+
+// Show picture
+socket.on('showPicture', () => {
+    document.getElementById('quiz-image').style.opacity = '1';
+    document.getElementById('quiz-image-big').style.opacity = '1';
+});
+
+// Hide picture
+socket.on('hidePicture', () => {
+    document.getElementById('quiz-image').style.opacity = '0';
+    document.getElementById('quiz-image-big').style.opacity = '0';
+});
+
+// Big view of image
+function openImage() {
+    document.getElementById('image-modal').style.opacity = '1';
+    document.getElementById('image-modal').style.zIndex = 2;
+    document.getElementById('quiz-image-big').style.zIndex = 2;
+}
+
+// Big view of image
+function closeImage() {
+    document.getElementById('image-modal').style.opacity = '0';
+    document.getElementById('image-modal').style.zIndex = -1;
+    document.getElementById('quiz-image-big').style.zIndex = -1;
 }
 
 // Clear points shown in sidebar

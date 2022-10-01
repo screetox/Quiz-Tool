@@ -1,6 +1,11 @@
-- Buzzer popup -> right/wrong/dismiss
 - quizmaster show picture/video/uploadable file (?) to candidates and stream overlay
+  - save if is hidden or shown in array and ask at connection
+  - quiz-tool
+  - spectator
+
 - fix +3 button position to be part of +1 button div
+
+- Buzzer popup -> right/wrong/dismiss
 
 - local db (json?)
   - highscores

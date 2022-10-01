@@ -1,5 +1,4 @@
 const headline = document.getElementById('headline');
-const sideboard = document.getElementById('sideboard');
 const chooseRoom = document.getElementById('choose-room');
 const activeRooms = document.getElementById('show-active-rooms');
 const ServerMessage = document.getElementById('msg-block-quizmaster');
@@ -85,7 +84,6 @@ socket.on('loginTryAnswer', (bool) => {
         document.getElementById('room-title').title = `Raum: ${this.roomname}`;
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
-        sideboard.style.display = 'flex';
         socket.emit('getCandidates', this.roomname);
     } else {
         outputServerMessage(`Falsches Passwort für ${this.roomname}.`);

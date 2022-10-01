@@ -228,6 +228,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
     clearCandidates();
     roomInputForm.style.display = 'none';
     candidateAnswersForm.style.display = 'block';
+    document.getElementById('sideboard-image').style.display = 'flex';
 
     for (let i = 0; i < cands.length; i++) {
         candidates.push(cands[i]);
@@ -287,7 +288,7 @@ socket.on('candidateBuzzed', (user) => {
     }
 });
 socket.on('candidateBuzzedLate', (later, earlier) => {
-    console.log(`${later.username} buzzed later than ${earlier.username}.`)
+    console.log(`${later.username} buzzed later than ${earlier.username}.`);
 });
 
 // Crown whoever buzzed first
@@ -299,6 +300,38 @@ function analyzeBuzzing() {
     if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
     socket.emit('analyzedBuzzing', this.roomname, analyzedBuzzedUser);
 }
+
+// Upload image file
+function upload(files) {
+    hidePicture();
+    socket.emit('upload', files[0], files[0].type, this.roomname);
+}
+
+// Show picture to candidates
+function showPicture() {
+    const button = document.getElementById('showPictureButton');
+    button.disabled = true;
+    const button2 = document.getElementById('hidePictureButton');
+    button2.disabled = false;
+    socket.emit('showPicture', this.roomname);
+}
+
+// Hide picture from candidates
+function hidePicture() {
+    const button = document.getElementById('hidePictureButton');
+    button.disabled = true;
+    const button2 = document.getElementById('showPictureButton');
+    button2.disabled = false;
+    socket.emit('hidePicture', this.roomname);
+}
+
+// Download image file
+socket.on('download', (file, type) => {
+    var blob = new Blob([file], {type: type});
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+    document.getElementById('quiz-image').src = imageUrl;
+});
 
 // Output messages from server and delete after 60 seconds; msg = str
 function outputServerMessage(msg) {

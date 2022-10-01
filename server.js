@@ -28,11 +28,12 @@ const { time } = require('console');
 const app = express();
 const server = http.createServer(app);
 const PORT = 3000;
-const io = socketio(server);
+const io = socketio(server, { maxHttpBufferSize: 1e8 });
 const botName = 'Server';
 const buzzerActive = [];
 const isBuzzed = [];
 const timeLastBuzz = [];
+const files = [];
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -159,6 +160,10 @@ io.on('connection', (socket) => {
                     const index = timeLastBuzz.findIndex(last => last.room === roomname);
                     const userBuzzed = getCurrentUser(timeLastBuzz[index].id) ? getCurrentUser(timeLastBuzz[index].id) : {username: 'Jemand', id: null};
                     socket.emit('sendBuzzed', userBuzzed);
+                }
+                const index = files.findIndex(file => file.room === roomname);
+                if (index !== -1) {
+                    socket.emit('download', files[index].file, files[index].type);
                 }
                 socket.emit('newQuestionCountToAll', getCurrentQuestion(roomname));
                 const rooms = socket.rooms;
@@ -347,6 +352,47 @@ io.on('connection', (socket) => {
         }
     });
 
+    // File upload from quizmaster
+    socket.on('upload', (file, type, roomname) => {
+        const user = getCurrentUser(socket.id);
+        if (user) {
+            const index = files.findIndex(file => file.room === roomname);
+            const newFile = {file: file, type: type, room: roomname};
+            if (index === -1) {
+                files.push(newFile);
+            } else {
+                files[index] = newFile;
+            }
+            const index2 = files.findIndex(file => file.room === roomname);
+            console.log(index);
+            console.log(index2);
+            console.log(files);
+            io.to(roomname).emit('download', files[index2].file, files[index2].type);
+        } else {
+            socket.emit('reloadPage');
+        }
+    });
+
+    // Show picture to candidates
+    socket.on('showPicture', (roomname) => {
+        const user = getCurrentUser(socket.id);
+        if (user) {
+            io.to(roomname).emit('showPicture');
+        } else {
+            socket.emit('reloadPage');
+        }
+    });
+
+    // Hide picture from candidates
+    socket.on('hidePicture', (roomname) => {
+        const user = getCurrentUser(socket.id);
+        if (user) {
+            io.to(roomname).emit('hidePicture');
+        } else {
+            socket.emit('reloadPage');
+        }
+    });
+
     // Broadcast when a user disconnects
     socket.on('disconnecting', () => {
         const user = userLeave(socket.id);
@@ -369,6 +415,10 @@ io.on('connection', (socket) => {
                         if (isBuzzed.includes(room)) {
                             const index = isBuzzed.findIndex(roomname => roomname === room);
                             isBuzzed.splice(index, 1);
+                        }
+                        const index = files.findIndex(file => file.room === room);
+                        if (index !== -1) {
+                            files.splice(index, 1);
                         }
                     }
                 });

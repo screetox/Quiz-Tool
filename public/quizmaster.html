@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Quiz-Tool - screetox</title>
@@ -39,6 +38,7 @@
             <a href="https://screetox.de/"><img src="https://screetox.de/files/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
         </header>
+
         <main id="input-form">
             <div>
                 <div class="popup">
@@ -55,6 +55,7 @@
                 <a href="/"><button class="btn inline-button">Abmelden</button></a>
             </div>
         </main>
+
         <main id="answers-form">
             <p id="room-title">Raum: </p>
             <div id="quizmaster-control">
@@ -91,7 +92,25 @@
             <div id="candidate-answers"></div>
             <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
         </main>
+
         <div id="msg-block-quizmaster"></div>
+
+        <div id="sideboard-image" class="sideboard-image">
+            <div id="sideboard-image-content-quizmaster">
+                <div class="sideboard" style="text-align: start;">
+                    <span>Bild zur Frage hochladen:</span>
+                    <input type="file" onchange="upload(this.files)" style="border: 0px;" />
+                    <img id="quiz-image" style="width: 480px; height: 300px; object-fit: contain;">
+                    <div id="buzzer-control">
+                        <div>
+                            <button id="showPictureButton" onclick="showPicture()">zeigen</button>
+                            <button id="hidePictureButton" onclick="hidePicture()" disabled>verstecken</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="empty-roomname">
             <div class="server-msg">Raumname darf nicht leer sein!</div>
         </div>
@@ -112,7 +131,6 @@
         <option value='windows-error'>error.mp3</option>
     </select>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/quizmaster.js"></script>
     <script src="js/colorMode.js"></script>
