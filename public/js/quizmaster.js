@@ -228,7 +228,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
     clearCandidates();
     roomInputForm.style.display = 'none';
     candidateAnswersForm.style.display = 'block';
-    document.getElementById('sideboard-image').style.display = 'flex';
+    document.getElementById('sideboard-image-quizmaster').style.display = 'flex';
 
     for (let i = 0; i < cands.length; i++) {
         candidates.push(cands[i]);
