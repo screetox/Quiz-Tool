@@ -364,9 +364,6 @@ io.on('connection', (socket) => {
                 files[index] = newFile;
             }
             const index2 = files.findIndex(file => file.room === roomname);
-            console.log(index);
-            console.log(index2);
-            console.log(files);
             io.to(roomname).emit('download', files[index2].file, files[index2].type);
         } else {
             socket.emit('reloadPage');
