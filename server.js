@@ -401,7 +401,7 @@ io.on('connection', (socket) => {
             if (rooms.has('quizmaster')) {
                 setRoomInactive(socket.id);
                 rooms.forEach(function(room) {
-                    if (room != 'quizmaster') {
+                    if (room != 'quizmaster' && room !== socket.id) {
                         io.to(room).emit('messageFromServer', formatMessage(botName, `- ${time} -<br>Die Verbindung zu ${user.username} wurde unterbrochen.`));
 
                         if (buzzerActive.includes(room)) {
@@ -409,14 +409,17 @@ io.on('connection', (socket) => {
                             buzzerActive.splice(index, 1);
                             io.to(room).emit('deactivateBuzzer');
                         }
+                        console.log(buzzerActive);
                         if (isBuzzed.includes(room)) {
                             const index = isBuzzed.findIndex(roomname => roomname === room);
                             isBuzzed.splice(index, 1);
                         }
+                        console.log(isBuzzed);
                         const index = files.findIndex(file => file.room === room);
                         if (index !== -1) {
                             files.splice(index, 1);
                         }
+                        console.log(files);
                     }
                 });
             } else if (rooms.has('stream-overlay')) {

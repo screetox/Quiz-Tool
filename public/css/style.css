@@ -351,7 +351,7 @@ button {
     position: relative;
     display: flex;
     height: 0;
-    left: -30px;
+    left: 10px;
     top: 40px;
     font-size: 16px;
 }
@@ -426,14 +426,14 @@ button {
 }
 
 .candidate-points {
-    width: 50px;
+    width: 100px;
     grid-column: 1;
-    text-align: center;
+    text-align: right;
 }
 
 .candidate-points button {
     height: 28px;
-    margin: 2px;
+    margin: 2px 5px;
     width: 40px;
     background: var(--button-color);
     color: var(--dark-color-a);
@@ -451,6 +451,36 @@ button {
 }
 
 .candidate-points input {
+    margin: 0;
+    width: 50px;
+    text-align: center;
+}
+
+.question-points {
+    grid-column: 1;
+    text-align: center;
+}
+
+.question-points button {
+    height: 28px;
+    margin: 2px;
+    width: 40px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    border: 1px solid var(--dark-color-a);
+    border-radius: 10px;
+}
+
+.question-points button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.question-points button:active:not([id*="-2-"]) {
+    position: relative;
+    top: 1px;
+}
+
+.question-points input {
     margin: 0;
     text-align: center;
 }
@@ -916,7 +946,7 @@ button {
 
 #hr-quizmaster {
     height: 1px;
-    margin: 10px 0;
+    margin: 10px 15px;
     border-width: 0;
     color: var(--dark-color-a);
     background-color: var(--dark-color-a);
@@ -937,6 +967,7 @@ button {
 }
 
 #answers-form {
+    padding: 15px 15px;
     display: none;
 }
 
@@ -950,7 +981,7 @@ button {
 
 #candidate-answers {
     display: grid;
-    grid-template-columns: 50px 420px;
+    grid-template-columns: 100px 420px;
     gap: 10px;
 }
 

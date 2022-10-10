@@ -158,6 +158,27 @@ function subPointToAll() {
     socket.emit('getEnemyPoints', this.roomname);
 }
 
+// Add point to all candidates except this and inform server; candidate = number
+function addPointToAllOther(candidate) {
+    const ptsInputs = document.querySelectorAll(`[id$="-points"]`);
+    const inputsToChange = [];
+    ptsInputs.forEach(input => {
+        if (input.id !== `${candidate}-points`) {
+            inputsToChange.push(input);
+        }
+    });
+    inputsToChange.forEach(input => {
+        var counter = input.value;
+        var counter_new = Number(counter) + 1;
+        input.value = `${counter_new}`;
+        input.title = `${counter_new}`;
+        var tempString = input.id;
+        const candidateToUpdate = tempString.slice(0, tempString.indexOf('-'));
+        socket.emit('newPoints', this.roomname, candidates[Number(candidateToUpdate)], counter_new);
+    });
+    socket.emit('getEnemyPoints', this.roomname);
+}
+
 // Set points from all candidates to 0 and inform server
 function allPointsToZero() {
     for (let i = 0; i < candidates.length; i++) {
@@ -238,11 +259,18 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         const pointsDiv = document.createElement('div');
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
-            <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
-            <button id="${i}-2-points-plus" onclick="add2Point(${i})" style="position:absolute;left:0;">+ 2</button>
-            <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
-            <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>
-            <button id="${i}-2-points-minus" onclick="sub2Point(${i})" style="position:absolute;left:0;">- 2</button>`;
+            <div style="display: flex;">
+                <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
+                <button id="${i}-2-points-plus" onclick="add2Point(${i})">+ 2</button>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <button id="${i}-points-plus" onclick="addPointToAllOther(${i})">X</button>
+                <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
+            </div>
+            <div style="display: flex;">
+                <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>
+                <button id="${i}-2-points-minus" onclick="sub2Point(${i})">- 2</button>
+            </div>`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
             <label for="${candidates[i].id}" title="${candidates[i].username}">${candidates[i].username}:</label>
@@ -264,7 +292,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
 
     const index = candidates.findIndex(cand => cand.id === userBuzzedId);
     const ptsField = document.getElementById(`${index}-points`);
-    if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
+    if (ptsField) {ptsField.parentElement.parentElement.classList.add('i-buzzed');}
 });
 
 // Get new candidate answer from server; message = {id = str, text = str, time = str}
@@ -297,7 +325,7 @@ function analyzeBuzzing() {
 
     const index = candidates.findIndex(cand => cand.id === analyzedBuzzedUser);
     const ptsField = document.getElementById(`${index}-points`);
-    if (ptsField) {ptsField.parentElement.classList.add('i-buzzed');}
+    if (ptsField) {ptsField.parentElement.parentElement.classList.add('i-buzzed');}
     socket.emit('analyzedBuzzing', this.roomname, analyzedBuzzedUser);
 }
 

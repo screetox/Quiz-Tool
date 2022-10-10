@@ -58,7 +58,7 @@
         <main id="answers-form">
             <p id="room-title">Raum: </p>
             <div id="quizmaster-control">
-                <div id="question-count-control" class="candidate-points">
+                <div id="question-count-control" class="question-points">
                     <button id="question-count-plus" onclick="addQuestionCount()">+ 1</button>
                     <input id="question-count" type="number" value="0" title="0" />
                     <button id="question-count-minus" onclick="subQuestionCount()">- 1</button>
@@ -74,7 +74,7 @@
                 <div id="buzzer-control">
                     <p id="showBuzzerState">Buzzer (inaktiv):</p>
                     <div>
-                        <button id="buzzerFreeButton" onclick="freeBuzzer()" disabled>freigeben</button>
+                        <button id="buzzerFreeButton" autocomplete="off" onclick="freeBuzzer()" disabled>freigeben</button>
                         <button id="buzzerActivationButton" onclick="activateBuzzer()">aktivieren</button>
                     </div>
                 </div>
