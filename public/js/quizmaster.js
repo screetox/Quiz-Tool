@@ -260,16 +260,16 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
             <div style="display: flex;">
-                <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
                 <button id="${i}-2-points-plus" onclick="add2Point(${i})">+ 2</button>
+                <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
             </div>
             <div style="display: flex; align-items: center;">
                 <button id="${i}-points-plus" onclick="addPointToAllOther(${i})">X</button>
                 <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
             </div>
             <div style="display: flex;">
+            <button id="${i}-2-points-minus" onclick="sub2Point(${i})">- 2</button>
                 <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>
-                <button id="${i}-2-points-minus" onclick="sub2Point(${i})">- 2</button>
             </div>`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
