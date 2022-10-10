@@ -594,8 +594,8 @@ button {
     height: 1px;
     margin: 10px 0;
     border-width: 0;
-    color: var(--light-color);
-    background-color: var(--light-color);
+    color: var(--dark-color-b);
+    background-color: var(--dark-color-b);
 }
 
 .enemy-points-grid {
@@ -944,15 +944,6 @@ button {
     top: 1px;
 }
 
-#hr-quizmaster {
-    height: 1px;
-    margin: 10px 15px;
-    border-width: 0;
-    color: var(--dark-color-a);
-    background-color: var(--dark-color-a);
-    box-shadow: 20px 0 var(--dark-color-a), -20px 0 var(--dark-color-a);
-}
-
 #input-form-stream {
     max-width: 480px;
 }
@@ -969,6 +960,15 @@ button {
 #answers-form {
     padding: 15px 15px;
     display: none;
+}
+
+#answers-form hr {
+    height: 1px;
+    margin: 10px 15px;
+    border-width: 0;
+    color: var(--dark-color-a);
+    background-color: var(--dark-color-a);
+    box-shadow: 20px 0 var(--dark-color-a), -20px 0 var(--dark-color-a);
 }
 
 #answers-form-stream {
