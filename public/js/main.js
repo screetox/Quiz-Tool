@@ -236,12 +236,16 @@ socket.on('download', (file, type) => {
 socket.on('showPicture', () => {
     document.getElementById('quiz-image').style.opacity = '1';
     document.getElementById('quiz-image-big').style.opacity = '1';
+    document.getElementById('shared-image').style.backgroundImage = 'url()';
+    document.getElementById('quiz-image-big-placeholder').style.opacity = '0';
 });
 
 // Hide picture
 socket.on('hidePicture', () => {
     document.getElementById('quiz-image').style.opacity = '0';
     document.getElementById('quiz-image-big').style.opacity = '0';
+    document.getElementById('shared-image').style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
+    document.getElementById('quiz-image-big-placeholder').style.opacity = '1';
 });
 
 // Big view of image

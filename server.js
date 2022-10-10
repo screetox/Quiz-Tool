@@ -27,7 +27,7 @@ const { time } = require('console');
 
 const app = express();
 const server = http.createServer(app);
-const PORT = 3000;
+const PORT = 3001;
 const io = socketio(server, { maxHttpBufferSize: 1e8 });
 const botName = 'Server';
 const buzzerActive = [];

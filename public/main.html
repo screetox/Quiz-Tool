@@ -23,7 +23,6 @@
         <main id="choose-room">
             <div id="inline-buttons">
                 <button class="btn inline-button" onclick="reloadRooms()">Aktualisieren</button>
-                <a href="/"><button class="btn inline-button">Abmelden</button></a>
             </div>
             <p>Bitte wähle einen Raum aus:</p>
             <div id="show-active-rooms"></div>
@@ -32,7 +31,6 @@
             <p id="room-title">Raum: </p>
             <input id="answ" type="text" placeholder="Antwort eingeben" title="" required autocomplete="off" />
             <button id="buzzer" class="buzzer" onclick="buzz()" disabled>Buzzer!<br><span>(inaktiv)</span></button>
-            <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
 
             <div class="sideboard-points">
                 <div id="question-count-sideboard" class="sideboard">
@@ -54,16 +52,21 @@
             <div id="sideboard-image-content">
                 <div class="sideboard">
                     <p>Geteiltes Bild:</p>
-                    <img id="quiz-image" class="quiz-image" onclick="openImage()">
+                    <div id="shared-image" class="shared-image">
+                        <img id="quiz-image" class="quiz-image" onclick="openImage()">
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="image-modal" class="modal-image" onclick="closeImage()">
             <div style="width: 100%;">
-                <img id="quiz-image-big" style="width: 1100px; height: 700px; object-fit: contain; opacity: 0;">
+                <img id="quiz-image-big" class="quiz-image-big" style="opacity: 0;">
+                <img src="/img/placeholder-quiz-tool.jpg" id="quiz-image-big-placeholder" class="quiz-image-big" style="opacity: 1;">
             </div>
         </div>
+
+        <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
     </div>
     <select id='color-mode-select' onchange='changeColorMode(this.value)'>
         <option value='default'>Default</option>
