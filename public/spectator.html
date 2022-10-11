@@ -40,7 +40,7 @@
     <div id="small-screen-warning">
         <p>Bitte rufe die Seite auf einem Gerät mit mehr als 560px Breite auf. Danke!</p>
     </div>
-    <div class="container-quizmaster">
+    <div class="container">
         <header>
             <a href="https://screetox.de/"><img src="https://screetox.de/files/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
@@ -52,19 +52,40 @@
             <p>Bitte wähle einen Raum aus:</p>
             <div id="show-active-rooms"></div>
         </main>
-        <main id="answers-form">
+        <main id="answers-form-spectator">
             <p id="room-title">Raum: </p>
-            <div id="candidate-answers"></div>
+            <div id="candidate-answers-spectator"></div>
+
+            <div class="sideboard-points">
+                <div id="question-count-sideboard" class="sideboard">
+                    <p>Frage:</p>
+                    <hr>
+                    <div><p id="question-count"></p></div>
+                </div>
+            </div>
         </main>
+
         <div id="msg-block-quizmaster"></div>
-        <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
-    </div>
-    <div class="sideboard-points">
-        <div id="question-count-sideboard" class="sideboard">
-            <p>Frage:</p>
-            <hr>
-            <div><p id="question-count"></p></div>
+
+        <div id="sideboard-image" class="sideboard-image">
+            <div id="sideboard-image-content">
+                <div class="sideboard">
+                    <p>Geteiltes Bild:</p>
+                    <div id="shared-image" class="shared-image">
+                        <img id="quiz-image" class="quiz-image" onclick="openImage()">
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div id="image-modal" class="modal-image" onclick="closeImage()">
+            <div style="width: 100%;">
+                <img id="quiz-image-big" class="quiz-image-big" style="opacity: 0;">
+                <img src="/img/placeholder-quiz-tool.jpg" id="quiz-image-big-placeholder" class="quiz-image-big" style="opacity: 1;">
+            </div>
+        </div>
+
+        <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
     </div>
     <select id='color-mode-select' onchange='changeColorMode(this.value)'>
         <option value='default'>Default</option>

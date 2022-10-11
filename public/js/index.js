@@ -1,6 +1,6 @@
+const loginForm = document.getElementById('login-form');
 const ServerMessage = document.getElementById('msg-block');
 const quizmasterCheckbox = document.getElementById('quizmaster-login');
-const loginForm = document.getElementById('login-form');
 
 // Get msg from url
 const urlParams = new URLSearchParams(location.search);
@@ -8,7 +8,7 @@ const msg = urlParams.get('msg');
 var timeouts = [];
 
 if (msg) {
-    document.getElementById('msg-block').style.display = 'block';
+    ServerMessage.style.display = 'block';
     const div = document.createElement('div');
     div.classList.add('server-msg');
     div.innerHTML = msg;

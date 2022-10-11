@@ -1,9 +1,15 @@
 const headline = document.getElementById('headline');
+const roomTitle = document.getElementById('room-title');
+const quizImage = document.getElementById('quiz-image');
 const chooseRoom = document.getElementById('choose-room');
+const imageModal = document.getElementById('image-modal');
+const sharedImage = document.getElementById('shared-image');
+const quizImageBig = document.getElementById('quiz-image-big');
 const activeRooms = document.getElementById('show-active-rooms');
 const ServerMessage = document.getElementById('msg-block-quizmaster');
-const candidateAnswers = document.getElementById('candidate-answers');
-const candidateAnswersForm = document.getElementById('answers-form');
+const candidateAnswersForm = document.getElementById('answers-form-spectator');
+const candidateAnswers = document.getElementById('candidate-answers-spectator');
+const bigImagePlaceholder = document.getElementById('quiz-image-big-placeholder');
 
 const candidates = [];
 const username = 'Spectator';
@@ -77,13 +83,14 @@ socket.on('loginTryAnswer', (bool) => {
         clearMessages();
         if (this.roomname.length > 25) {
             const cutRoomname = this.roomname.substring(0, 22);
-            document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
+            roomTitle.innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
+            roomTitle.innerHTML = `Raum: ${this.roomname}`;
         }
-        document.getElementById('room-title').title = `Raum: ${this.roomname}`;
+        roomTitle.title = `Raum: ${this.roomname}`;
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
+        document.getElementById('sideboard-image').style.display = 'flex';
         socket.emit('getCandidates', this.roomname);
     } else {
         outputServerMessage(`Falsches Passwort für ${this.roomname}.`);
@@ -117,7 +124,7 @@ socket.on('freeBuzzer', (unlockMoment) => {
 });
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str], userBuzzedId = str
-socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId) => {
+socket.on('sendCandidates', (cands, points, answers, lockedAnswers, questionCount, userBuzzedId) => {
     clearCandidates();
 
     for (let i = 0; i < cands.length; i++) {
@@ -130,7 +137,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         pointsDiv.innerHTML = `
             <div style="width:44px;height:32px;"></div>
             <input id="${candidates[i].id}-points" type="number" value="${points[i]}" title="${points[i]}" readonly />`;
-        pointsDiv.classList.add('candidate-points');
+        pointsDiv.classList.add('candidate-points-spectator');
         answerDiv.innerHTML = `
             <label for="${candidates[i].id}" title="${candidates[i].username}">${candidates[i].username}:</label>
             <input id="${candidates[i].id}" type="text" value="${answers[i]}" title="${answers[i]}" readonly />`;
@@ -214,6 +221,45 @@ function logIntoRoom(roomnumber) {
 
     modal.style.display = 'none';
     socket.emit('loginTry', this.roomname, password);
+}
+
+// Download image file
+socket.on('download', (file, type) => {
+    var blob = new Blob([file], {type: type});
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+    quizImage.src = imageUrl;
+    quizImageBig.src = imageUrl;
+});
+
+// Show picture
+socket.on('showPicture', () => {
+    quizImage.style.opacity = '1';
+    quizImageBig.style.opacity = '1';
+    sharedImage.style.backgroundImage = 'url()';
+    bigImagePlaceholder.style.opacity = '0';
+});
+
+// Hide picture
+socket.on('hidePicture', () => {
+    quizImage.style.opacity = '0';
+    quizImageBig.style.opacity = '0';
+    sharedImage.style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
+    bigImagePlaceholder.style.opacity = '1';
+});
+
+// Big view of image
+function openImage() {
+    imageModal.style.opacity = '1';
+    imageModal.style.zIndex = 2;
+    quizImageBig.style.zIndex = 2;
+}
+
+// Big view of image
+function closeImage() {
+    imageModal.style.opacity = '0';
+    imageModal.style.zIndex = -1;
+    quizImageBig.style.zIndex = -1;
 }
 
 // Output messages from server and delete after 60 seconds; msg = str

@@ -1,8 +1,20 @@
 const headline = document.getElementById('headline');
-const ServerMessage = document.getElementById('msg-block-quizmaster');
+const roomTitle = document.getElementById('room-title');
+const quizImage = document.getElementById('quiz-image');
+const roomnameInput = document.getElementById('roomname');
+const passwordInput = document.getElementById('password');
 const roomInputForm = document.getElementById('input-form');
-const candidateAnswers = document.getElementById('candidate-answers');
+const modal = document.getElementById('allPointsToZero-modal');
+const emptyRoomname = document.getElementById('empty-roomname');
+const showBuzzerState = document.getElementById('showBuzzerState');
+const questionCountInput = document.getElementById('question-count');
 const candidateAnswersForm = document.getElementById('answers-form');
+const ServerMessage = document.getElementById('msg-block-quizmaster');
+const candidateAnswers = document.getElementById('candidate-answers');
+const buzzerFreeButton = document.getElementById('buzzer-free-button');
+const showPictureButton = document.getElementById('show-picture-button');
+const hidePictureButton = document.getElementById('hide-picture-button');
+const buzzerActivationButton = document.getElementById('buzzer-activation-button');
 
 const candidates = [];
 var timeoutsRoomname = [];
@@ -40,27 +52,27 @@ socket.on('messageFromServer', (message) => {
 
 // If roomname is provided: create room and show quiz main; if not: show error
 function startQuiz() {
-    if (document.getElementById('roomname').value) {
-        this.roomname = document.getElementById('roomname').value;
-        this.password = document.getElementById('password').value;
+    if (roomnameInput.value) {
+        this.roomname = roomnameInput.value;
+        this.password = passwordInput.value;
 
         clearMessages();
-        document.getElementById('empty-roomname').style.display = 'none';
+        emptyRoomname.style.display = 'none';
         if (this.roomname.length > 25) {
             const cutRoomname = this.roomname.substring(0, 22);
-            document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
+            roomTitle.innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
+            roomTitle.innerHTML = `Raum: ${this.roomname}`;
         }
         if (this.password != '') {
-            document.getElementById('room-title').title = `Raum: ${this.roomname}\n\nPasswort: ${this.password}`;
+            roomTitle.title = `Raum: ${this.roomname}\n\nPasswort: ${this.password}`;
         } else {
-            document.getElementById('room-title').title = `Raum: ${this.roomname}`;
+            roomTitle.title = `Raum: ${this.roomname}`;
         }
 
         socket.emit('createRoom', this.roomname, this.password);
     } else {
-        document.getElementById('empty-roomname').style.display = 'block';
+        emptyRoomname.style.display = 'block';
     }
 }
 
@@ -78,19 +90,19 @@ socket.on('leavingCandidate', () => {
 
 // Add count to question count and inform server
 function addQuestionCount() {
-    var counter = document.getElementById('question-count').value;
+    var counter = questionCountInput.value;
     var counter_new = Number(counter) + 1;
-    document.getElementById('question-count').value = `${counter_new}`;
-    document.getElementById('question-count').title = `${counter_new}`;
+    questionCountInput.value = `${counter_new}`;
+    questionCountInput.title = `${counter_new}`;
     socket.emit('newQuestionCount', this.roomname, counter_new);
 }
 
 // Sub count from question count and inform server
 function subQuestionCount() {
-    var counter = document.getElementById('question-count').value;
+    var counter = questionCountInput.value;
     var counter_new = Number(counter) - 1;
-    document.getElementById('question-count').value = `${counter_new}`;
-    document.getElementById('question-count').title = `${counter_new}`;
+    questionCountInput.value = `${counter_new}`;
+    questionCountInput.title = `${counter_new}`;
     socket.emit('newQuestionCount', this.roomname, counter_new);
 }
 
@@ -188,12 +200,11 @@ function allPointsToZero() {
         socket.emit('newPoints', this.roomname, candidates[i], counter_new);
     };
     socket.emit('getEnemyPoints', this.roomname);
-    document.getElementById('allPointsToZero-modal').style.display = 'none';
+    modal.style.display = 'none';
 }
 
 // Ask for confirmation to set all points to 0
 function askForAllPointsToZero() {
-    const modal = document.getElementById('allPointsToZero-modal');
     var span = document.getElementById(`allPointsToZero-close`);
     if (modal.style.display == 'block') {
         modal.style.display = 'none';
@@ -208,8 +219,7 @@ function askForAllPointsToZero() {
 // Free buzzer after buzzed
 function freeBuzzer() {
     socket.emit('freeBuzzers', this.roomname);
-    const button = document.getElementById('buzzerFreeButton');
-    button.disabled = true;
+    buzzerFreeButton.disabled = true;
     firstBuzzer = true;
     const isBuzzed = document.querySelectorAll('.i-buzzed');
     isBuzzed.forEach((div) => {
@@ -220,23 +230,18 @@ function freeBuzzer() {
 // Activate/Deactivate buzzer
 function activateBuzzer() {
     socket.emit('activateBuzzers', this.roomname);
-    const button = document.getElementById('buzzerActivationButton');
-    button.innerHTML = 'deaktivieren';
-    const state = document.getElementById('showBuzzerState');
-    state.innerHTML = 'Buzzer (aktiv):';
-    button.setAttribute('onclick','deactivateBuzzer()');
+    buzzerActivationButton.innerHTML = 'deaktivieren';
+    showBuzzerState.innerHTML = 'Buzzer (aktiv):';
+    buzzerActivationButton.setAttribute('onclick','deactivateBuzzer()');
 }
 function deactivateBuzzer() {
     socket.emit('deactivateBuzzers', this.roomname);
-    const button = document.getElementById('buzzerActivationButton');
-    button.innerHTML = 'aktivieren';
-    const state = document.getElementById('showBuzzerState');
-    state.innerHTML = 'Buzzer (inaktiv):';
-    button.setAttribute('onclick','activateBuzzer()');
+    buzzerActivationButton.innerHTML = 'aktivieren';
+    showBuzzerState.innerHTML = 'Buzzer (inaktiv):';
+    buzzerActivationButton.setAttribute('onclick','activateBuzzer()');
 
     // free too
-    const button2 = document.getElementById('buzzerFreeButton');
-    button2.disabled = true;
+    buzzerFreeButton.disabled = true;
     firstBuzzer = true;
     const isBuzzed = document.querySelectorAll('.i-buzzed');
     isBuzzed.forEach((div) => {
@@ -244,8 +249,8 @@ function deactivateBuzzer() {
     });
 }
 
-// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], ansers = [str], userBuzzedId = str
-socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId) => {
+// Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], answers = [str], userBuzzedId = str
+socket.on('sendCandidates', (cands, points, answers, lockedAnswers, questionCount, userBuzzedId) => {
     clearCandidates();
     roomInputForm.style.display = 'none';
     candidateAnswersForm.style.display = 'block';
@@ -260,16 +265,16 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
             <div style="display: flex;">
-                <button id="${i}-2-points-plus" onclick="add2Point(${i})">+ 2</button>
-                <button id="${i}-points-plus" onclick="addPoint(${i})">+ 1</button>
+                <button id="${i}-2-points-plus" title="${candidates[i].username} + 2" onclick="add2Point(${i})">+ 2</button>
+                <button id="${i}-points-plus" title="${candidates[i].username} + 1" onclick="addPoint(${i})">+ 1</button>
             </div>
             <div style="display: flex; align-items: center;">
-                <button id="${i}-points-plus" onclick="addPointToAllOther(${i})">X</button>
+                <button id="${i}-points-plus" title="Alle außer ${candidates[i].username} + 1" onclick="addPointToAllOther(${i})">F</button>
                 <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
             </div>
             <div style="display: flex;">
-            <button id="${i}-2-points-minus" onclick="sub2Point(${i})">- 2</button>
-                <button id="${i}-points-minus" onclick="subPoint(${i})">- 1</button>
+            <button id="${i}-2-points-minus" title="${candidates[i].username} - 2" onclick="sub2Point(${i})">- 2</button>
+                <button id="${i}-points-minus" title="${candidates[i].username} - 1" onclick="subPoint(${i})">- 1</button>
             </div>`;
         pointsDiv.classList.add('candidate-points');
         answerDiv.innerHTML = `
@@ -293,6 +298,15 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
     const index = candidates.findIndex(cand => cand.id === userBuzzedId);
     const ptsField = document.getElementById(`${index}-points`);
     if (ptsField) {ptsField.parentElement.parentElement.classList.add('i-buzzed');}
+
+    console.log(lockedAnswers);
+    for (let i = 0; i < candidates.length; i++) {
+        if (lockedAnswers[i]) {
+            const index = candidates.findIndex(cand => cand.id === cands[i].id);
+            const ptsField = document.getElementById(`${index}-points`);
+            if (ptsField) {ptsField.parentElement.parentElement.classList.add('locked-in');}
+        }
+    }
 });
 
 // Get new candidate answer from server; message = {id = str, text = str, time = str}
@@ -304,6 +318,20 @@ socket.on('newAnswerToMaster', (message) => {
     }
 });
 
+// Get new candidate answer from server; id = number
+socket.on('answerLockedToMaster', (id) => {
+    const index = candidates.findIndex(cand => cand.id === id);
+    const ptsField = document.getElementById(`${index}-points`);
+    if (ptsField) {ptsField.parentElement.parentElement.classList.add('locked-in');}
+});
+
+// Get new candidate answer from server; id = number
+socket.on('answerUnlockedToMaster', (id) => {
+    const index = candidates.findIndex(cand => cand.id === id);
+    const ptsField = document.getElementById(`${index}-points`);
+    if (ptsField) {ptsField.parentElement.parentElement.classList.remove('locked-in');}
+});
+
 // Detect buzzer and see who buzzed first
 socket.on('candidateBuzzed', (user) => {
     buzzedUser = user.id;
@@ -311,8 +339,7 @@ socket.on('candidateBuzzed', (user) => {
         firstBuzzer = false;
         setTimeout(function() {analyzeBuzzing();}, 300);
         audio.play();
-        const button = document.getElementById('buzzerFreeButton');
-        button.disabled = false;
+        buzzerFreeButton.disabled = false;
     }
 });
 socket.on('candidateBuzzedLate', (later, earlier) => {
@@ -332,26 +359,22 @@ function analyzeBuzzing() {
 // Upload image file
 function upload(files) {
     hidePicture();
-    document.getElementById('quiz-image').style.opacity = '1';
+    quizImage.style.opacity = '1';
     document.getElementById('shared-image-quizmaster').style.backgroundImage = 'url()';
     socket.emit('upload', files[0], files[0].type, this.roomname);
 }
 
 // Show picture to candidates
 function showPicture() {
-    const button = document.getElementById('showPictureButton');
-    button.disabled = true;
-    const button2 = document.getElementById('hidePictureButton');
-    button2.disabled = false;
+    showPictureButton.disabled = true;
+    hidePictureButton.disabled = false;
     socket.emit('showPicture', this.roomname);
 }
 
 // Hide picture from candidates
 function hidePicture() {
-    const button = document.getElementById('hidePictureButton');
-    button.disabled = true;
-    const button2 = document.getElementById('showPictureButton');
-    button2.disabled = false;
+    hidePictureButton.disabled = true;
+    showPictureButton.disabled = false;
     socket.emit('hidePicture', this.roomname);
 }
 
@@ -360,7 +383,7 @@ socket.on('download', (file, type) => {
     var blob = new Blob([file], {type: type});
     var urlCreator = window.URL || window.webkitURL;
     var imageUrl = urlCreator.createObjectURL( blob );
-    document.getElementById('quiz-image').src = imageUrl;
+    quizImage.src = imageUrl;
 });
 
 // Output messages from server and delete after 60 seconds; msg = str
@@ -400,7 +423,7 @@ socket.on('reloadPage', () => {
     location.reload();
 });
 
-document.getElementById('question-count').addEventListener('input', (e) => {
+questionCountInput.addEventListener('input', (e) => {
     // Get Number from Input
     const count = Number(e.target.value);
     e.target.title = `${count}`;
@@ -417,7 +440,7 @@ window.addEventListener('keydown', function(event) {
     }
 });
 
-document.getElementById('roomname').addEventListener('input', (e) => {
+roomnameInput.addEventListener('input', (e) => {
     var username = e.target.value;
     if (username.includes('<') || username.includes('>') || username.includes('"')) {
        e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
@@ -432,7 +455,7 @@ document.getElementById('roomname').addEventListener('input', (e) => {
     }
 });
 
-document.getElementById('password').addEventListener('input', (e) => {
+passwordInput.addEventListener('input', (e) => {
     var username = e.target.value;
     if (username.includes('<') || username.includes('>') || username.includes('"')) {
        e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');

@@ -29,7 +29,10 @@
         </main>
         <main id="candidate-form">
             <p id="room-title">Raum: </p>
-            <input id="answ" type="text" placeholder="Antwort eingeben" title="" required autocomplete="off" />
+            <div id="answ-grid">
+                <button id="lock-button" class="lock-button" autocomplete="off" onclick="lockAnswer()">&#x1F513;</button>
+                <input id="answ" type="text" placeholder="Antwort eingeben" title="" required autocomplete="off" />
+            </div>
             <button id="buzzer" class="buzzer" autocomplete="off" onclick="buzz()" disabled>Buzzer!<br><span>(inaktiv)</span></button>
 
             <div class="sideboard-points">

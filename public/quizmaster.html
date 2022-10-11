@@ -59,23 +59,23 @@
             <p id="room-title">Raum: </p>
             <div id="quizmaster-control">
                 <div id="question-count-control" class="question-points">
-                    <button id="question-count-plus" onclick="addQuestionCount()">+ 1</button>
+                    <button id="question-count-plus" title="Fragencounter + 1" onclick="addQuestionCount()">+ 1</button>
                     <input id="question-count" type="number" value="0" title="0" />
-                    <button id="question-count-minus" onclick="subQuestionCount()">- 1</button>
+                    <button id="question-count-minus" title="Fragencounter - 1" onclick="subQuestionCount()">- 1</button>
                 </div>
                 <div id="point-buttons-all" class="candidate-points">
                     <p>Alle Kandidaten:</p>
                     <div>
-                        <button onclick="subPointToAll()">- 1</button>
-                        <button onclick="addPointToAll()">+ 1</button>
-                        <button onclick="askForAllPointsToZero()">= 0</button>
+                        <button title="Alle Kandidaten - 1" onclick="subPointToAll()">- 1</button>
+                        <button title="Alle Kandidaten + 1" onclick="addPointToAll()">+ 1</button>
+                        <button title="Alle Kandidaten = 0" onclick="askForAllPointsToZero()">= 0</button>
                     </div>
                 </div>
                 <div id="buzzer-control">
                     <p id="showBuzzerState">Buzzer (inaktiv):</p>
                     <div>
-                        <button id="buzzerFreeButton" autocomplete="off" onclick="freeBuzzer()" disabled>freigeben</button>
-                        <button id="buzzerActivationButton" onclick="activateBuzzer()">aktivieren</button>
+                        <button id="buzzer-free-button" autocomplete="off" onclick="freeBuzzer()" disabled>freigeben</button>
+                        <button id="buzzer-activation-button" onclick="activateBuzzer()">aktivieren</button>
                     </div>
                 </div>
             </div>
@@ -104,8 +104,8 @@
                     </div>
                     <div id="buzzer-control">
                         <div>
-                            <button id="showPictureButton" onclick="showPicture()" disabled>zeigen</button>
-                            <button id="hidePictureButton" onclick="hidePicture()" disabled>verstecken</button>
+                            <button id="show-picture-button" autocomplete="off" onclick="showPicture()" disabled>zeigen</button>
+                            <button id="hide-picture-button" autocomplete="off" onclick="hidePicture()" disabled>verstecken</button>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,10 @@ const activeRooms = document.getElementById('show-active-rooms');
 const ServerMessage = document.getElementById('msg-block-stream');
 const candidateAnswers = document.getElementById('candidate-answers-stream');
 const candidateAnswersForm = document.getElementById('answers-form-stream');
+const roomTitle = document.getElementById('room-title');
+const cntField = document.getElementById(`question-count`);
+const quizImage = document.getElementById('quiz-image-stream');
+const sharedImage = document.getElementById('shared-image-stream');
 
 const candidates = [];
 const username = 'Stream-Overlay';
@@ -72,12 +76,13 @@ socket.on('loginTryAnswer', (bool) => {
         clearMessages();
         if (this.roomname.length > 25) {
             const cutRoomname = this.roomname.substring(0, 22);
-            document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
+            roomTitle.innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
+            roomTitle.innerHTML = `Raum: ${this.roomname}`;
         }
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
+        document.getElementById('shared-image-stream').style.display = 'block';
         document.getElementById('question-count').style.display = 'block';
         document.getElementById('headline-stream').style.marginLeft = '110px';
         socket.emit('getCandidates', this.roomname);
@@ -112,7 +117,7 @@ socket.on('freeBuzzer', (unlockMoment) => {
 });
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], answers = [str], userBuzzedId = str
-socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId) => {
+socket.on('sendCandidates', (cands, points, answers, lockedAnswers, questionCount, userBuzzedId) => {
     clearCandidates();
 
     for (let i = 0; i < cands.length; i++) {
@@ -123,7 +128,7 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         const pointsDiv = document.createElement('div');
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
-            <button id="${i}-points-plus" onclick="moveUp(${i})">^</button>
+            <input id="${i}-order-input" type="number" value="0" onchange="changeOrder()" />
             <input id="${candidates[i].id}-points" type="number" value="${points[i]}" readonly />`;
         pointsDiv.classList.add('candidate-points-stream', 'candidate-answer-huge');
         pointsDiv.id = `${i}-points-div`;
@@ -136,7 +141,6 @@ socket.on('sendCandidates', (cands, points, answers, questionCount, userBuzzedId
         candidateAnswers.appendChild(answerDiv);
     }
 
-    const cntField = document.getElementById(`question-count`);
     if (cntField) {cntField.value = questionCount;}
 
     const answField = document.getElementById(`${userBuzzedId}`);
@@ -161,7 +165,6 @@ socket.on('newPointsToAll', (message) => {
 
 // Get new question count from server; count = number
 socket.on('newQuestionCountToAll', (count) => {
-    const cntField = document.getElementById(`question-count`);
     if (cntField) {
         cntField.value = count;
     }
@@ -213,6 +216,26 @@ function logIntoRoom(roomnumber) {
     socket.emit('streamOverlayLoginTry', this.roomname, password);
 }
 
+// Download image file
+socket.on('download', (file, type) => {
+    var blob = new Blob([file], {type: type});
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+    quizImage.src = imageUrl;
+});
+
+// Show picture
+socket.on('showPicture', () => {
+    quizImage.style.opacity = '1';
+    sharedImage.style.backgroundImage = 'url()';
+});
+
+// Hide picture
+socket.on('hidePicture', () => {
+    quizImage.style.opacity = '0';
+    sharedImage.style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
+});
+
 // Move the selected answer and points to the top most position in the list; idx = number
 function moveUp(idx) {
     var answMove = document.getElementById(`${idx}-answer-div`);
@@ -221,6 +244,28 @@ function moveUp(idx) {
     var parent = answMove.parentNode;
     parent.insertBefore(answMove, parent.firstChild);
     parent.insertBefore(ptsMove, parent.firstChild);
+}
+
+// Change the order of the candidates via orderIndex
+function changeOrder() {
+    const orderInputs = document.querySelectorAll(`[id$="-order-input"]`);
+    const allValues = [];
+    const allIndices = [];
+
+    orderInputs.forEach(input => {
+        const inputIndex = input.id.slice(0, input.id.indexOf('-'));
+
+        allValues.push(input.value);
+        allIndices.push(Number(inputIndex));
+    });
+    const allValuesReverse = allValues.reverse();
+    const allIndicesReverse = allIndices.reverse();
+
+    const indices = Array.from(allValuesReverse.keys()).sort((a,b) => allValuesReverse[b] - allValuesReverse[a]);
+    const sortedAllIndices = indices.map(i => allIndicesReverse[i]);
+    sortedAllIndices.forEach(idx => {
+        moveUp(idx);
+    });
 }
 
 // Output messages from server and delete after 60 seconds; msg = str
