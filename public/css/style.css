@@ -11,8 +11,8 @@
 }
 
 .dark-mode {
-    --dark-color-b: #424242;
     --dark-color-a: #666666;
+    --dark-color-b: #424242;
     --light-color: #1b1b1b;
     --button-color: #e0e0e0;
     --button-hover-color: #ffffff;
@@ -63,6 +63,17 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+input[id$='-order-input'] {
+    height: 28px;
+    margin-bottom: 4px;
+    background: #000;
+    color: #fff;
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    border: 0px;
 }
 
 * {
@@ -175,6 +186,12 @@ button {
     top: 1px;
 }
 
+.input-file {
+    border: 0px;
+    width: 480px;
+    margin-bottom: 0;
+}
+
 .buzzer {
     display: block;
     height: 200px;
@@ -281,6 +298,27 @@ button {
     border-radius: 5px;
 }
 
+.modal-image {
+    position: fixed;
+    z-index: -1;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-image img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
 .modal-stream {
     display: none;
     position: fixed;
@@ -319,12 +357,33 @@ button {
     white-space: nowrap;
 }
 
+.locked-in::before {
+    content: "\1F512";
+    position: relative;
+    display: flex;
+    height: 0;
+    left: -40px;
+    top: 40px;
+    font-size: 16px;
+}
+
+.lock-button {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+    font-size: 20px;
+    width: auto;
+    height: 40px;
+}
+
 .i-buzzed::before {
     content: "\1F534";
     position: relative;
     display: flex;
     height: 0;
-    left: -30px;
+    left: -40px;
     top: 40px;
     font-size: 16px;
 }
@@ -358,7 +417,7 @@ button {
     background-color: var(--light-color);
 }
 
-.candidate-answer-huge input {
+.candidate-answer-huge input:not([id$='-order-input']) {
     font-weight: bold;
     font-size: 30px;
     color: #10687A;
@@ -367,46 +426,15 @@ button {
     overflow: hidden;
 }
 
-.candidate-answer-huge button {
-    height: 28px;
-    margin: 2px;
-    width: 40px;
-    background: rgba(0, 0, 0, 0.0);
-    color: var(--dark-color-a);
-    border: 1px solid var(--dark-color-a);
-    border-radius: 10px;
-}
-
-.candidate-answer-huge button:hover {
-    background-color: var(--dark-color-b);
-}
-
-.candidate-answer-huge button:active {
-    position: relative;
-    top: 1px;
-}
-
-.candidate-points-stream {
-    width: 100px;
-    padding: 0 0 32px 0;
-    grid-column: 1;
-    text-align: center;
-}
-
-.candidate-points-stream input {
-    margin: 0;
-    text-align: center;
-}
-
 .candidate-points {
-    width: 50px;
+    width: 100px;
     grid-column: 1;
-    text-align: center;
+    text-align: right;
 }
 
 .candidate-points button {
     height: 28px;
-    margin: 2px;
+    margin: 2px 5px;
     width: 40px;
     background: var(--button-color);
     color: var(--dark-color-a);
@@ -418,12 +446,66 @@ button {
     background-color: var(--button-hover-color);
 }
 
-.candidate-points button:active:not([id*="-3-"]) {
+.candidate-points button:active:not([id*="-2-"]) {
     position: relative;
     top: 1px;
 }
 
 .candidate-points input {
+    margin: 0;
+    width: 50px;
+    text-align: center;
+}
+
+.candidate-points-spectator {
+    width: 50px;
+    grid-column: 1;
+    text-align: right;
+}
+
+.candidate-points-spectator input {
+    margin: 0;
+    width: 50px;
+    text-align: center;
+}
+
+.candidate-points-stream {
+    width: 100px;
+    padding: 0 0 32px 0;
+    grid-column: 1;
+    text-align: center;
+}
+
+.candidate-points-stream input:not([id$='-order-input']) {
+    margin: 0;
+    text-align: center;
+}
+
+.question-points {
+    grid-column: 1;
+    text-align: center;
+}
+
+.question-points button {
+    height: 28px;
+    margin: 2px;
+    width: 40px;
+    background: var(--button-color);
+    color: var(--dark-color-a);
+    border: 1px solid var(--dark-color-a);
+    border-radius: 10px;
+}
+
+.question-points button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.question-points button:active:not([id*="-2-"]) {
+    position: relative;
+    top: 1px;
+}
+
+.question-points input {
     margin: 0;
     text-align: center;
 }
@@ -442,20 +524,100 @@ button {
     overflow: hidden;
 }
 
-.sideboard-left {
+.sideboard-points {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 5px;
     width: max-content;
     position: absolute;
+    top: 154px;
+    left: 500px;
+    max-height: fit-content;
+    height: -moz-max-content;
+}
+
+.sideboard-image {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: max-content;
+    position: fixed;
     top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     margin: auto auto auto 0;
     max-height: fit-content;
     height: -moz-max-content;
+}
+
+.quiz-image {
+    width: 470px;
+    height: 300px;
+    object-fit: contain;
+    opacity: 0;
+}
+
+.quiz-image-big {
+    width: 1100px;
+    max-width: 100%;
+    height: 700px;
+    object-fit: contain;
+}
+
+.sideboard-image-quizmaster {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: max-content;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto auto auto 0;
+    max-height: fit-content;
+    height: -moz-max-content;
+}
+
+.quiz-image-quizmaster {
+    width: 470px;
+    height: 300px;
+    object-fit: contain;
+    opacity: 0;
+}
+
+.quiz-image-stream {
+    width: 470px;
+    height: 300px;
+    object-fit: contain;
+    opacity: 0;
+    border: 0px;
+}
+
+.shared-image {
+    margin-top: 10px;
+    background-image: url(/img/placeholder-quiz-tool.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 470px;
+    height: 300px;
+    margin: 5px;
+}
+
+.shared-image-stream {
+    display: none;
+    position: absolute;
+    right: 2px;
+    top: 60px;
+    background-image: url(/img/placeholder-quiz-tool.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 470px;
+    height: 300px;
 }
 
 .sideboard {
@@ -470,15 +632,15 @@ button {
     padding: 15px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background: var(--dark-color-b);
+    background: var(--dark-color-a);
 }
 
 .sideboard hr {
     height: 1px;
     margin: 10px 0;
     border-width: 0;
-    color: var(--light-color);
-    background-color: var(--light-color);
+    color: var(--dark-color-b);
+    background-color: var(--dark-color-b);
 }
 
 .enemy-points-grid {
@@ -515,7 +677,7 @@ button {
     padding: 3px 10px;
 
     border-radius: 5px;
-    background-color: var(--dark-color-a-transparent);
+    background-color: var(--dark-color-b);
 }
 
 .popup {
@@ -827,15 +989,6 @@ button {
     top: 1px;
 }
 
-#hr-quizmaster {
-    height: 1px;
-    margin: 10px 0;
-    border-width: 0;
-    color: var(--dark-color-a);
-    background-color: var(--dark-color-a);
-    box-shadow: 20px 0 var(--dark-color-a), -20px 0 var(--dark-color-a);
-}
-
 #input-form-stream {
     max-width: 480px;
 }
@@ -847,13 +1000,32 @@ button {
 
 #candidate-form {
     display: none;
+    padding: 30px 5px;
 }
 
-#sideboard {
-    display: none;
+#answ-grid {
+    display: grid;
+    grid-template-columns: 35px auto 35px;
+    gap: 0;
 }
 
 #answers-form {
+    padding: 15px 15px;
+    display: none;
+}
+
+#answers-form hr {
+    height: 1px;
+    margin: 10px 15px;
+    border-width: 0;
+    color: var(--dark-color-a);
+    background-color: var(--dark-color-a);
+    box-shadow: 20px 0 var(--dark-color-a), -20px 0 var(--dark-color-a);
+}
+
+#answers-form-spectator {
+    min-height: 120px;
+    padding: 15px 15px;
     display: none;
 }
 
@@ -867,7 +1039,13 @@ button {
 
 #candidate-answers {
     display: grid;
-    grid-template-columns: 50px 420px;
+    grid-template-columns: 100px 420px;
+    gap: 10px;
+}
+
+#candidate-answers-spectator {
+    display: grid;
+    grid-template-columns: 50px 410px;
     gap: 10px;
 }
 
@@ -878,8 +1056,7 @@ button {
 }
 
 #enemy-points-sideboard {
-    width: fit-content;
-    max-width: 200px;
+    width: 200px;
     min-height: 150px;
 }
 
@@ -924,5 +1101,43 @@ button {
 @media only screen and (max-width: 900px) {
     #enemy-points-sideboard {
         display: none;
+    }
+}
+
+
+@media only screen and (max-width: 1520px) {
+    #sideboard-image {
+        position: static;
+    }
+
+    #sideboard-image-content .sideboard {
+        border-radius: 5px;
+    }
+
+    .quiz-image {
+        width: 460px;
+    }
+
+    #shared-image {
+        width: 460px;
+    }
+}
+
+
+@media only screen and (max-width: 1580px) {
+    #sideboard-image-quizmaster {
+        position: static;
+    }
+
+    #sideboard-image-content-quizmaster .sideboard {
+        border-radius: 5px;
+    }
+
+    .quiz-image-quizmaster {
+        width: 520px;
+    }
+
+    #shared-image-quizmaster {
+        width: 520px;
     }
 }

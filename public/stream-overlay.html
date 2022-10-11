@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <script src="js/moment.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Stream-Overlay Quiz-Tool</title>
@@ -26,9 +25,11 @@
         <p id="room-title">Raum: </p>
         <div id="candidate-answers-stream"></div>
     </div>
+    <div id="shared-image-stream" class="shared-image-stream">
+        <img id="quiz-image-stream" class="quiz-image-stream">
+    </div>
     <div id="msg-block-stream"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/stream-overlay.js"></script>
 </body>

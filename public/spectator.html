@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <script src="js/moment.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Quiz-Tool - screetox</title>
@@ -41,7 +40,7 @@
     <div id="small-screen-warning">
         <p>Bitte rufe die Seite auf einem Gerät mit mehr als 560px Breite auf. Danke!</p>
     </div>
-    <div class="container-quizmaster">
+    <div class="container">
         <header>
             <a href="https://screetox.de/"><img src="https://screetox.de/files/logo_2021_klein.png" alt="screetox_logo"></a>
             <h1 id="headline">Quiz-Tool</h1>
@@ -49,24 +48,44 @@
         <main id="choose-room">
             <div id="inline-buttons">
                 <button class="btn inline-button" onclick="reloadRooms()">Aktualisieren</button>
-                <a href="/"><button class="btn inline-button">Abmelden</button></a>
             </div>
             <p>Bitte wähle einen Raum aus:</p>
             <div id="show-active-rooms"></div>
         </main>
-        <main id="answers-form">
+        <main id="answers-form-spectator">
             <p id="room-title">Raum: </p>
-            <div id="candidate-answers"></div>
-            <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
+            <div id="candidate-answers-spectator"></div>
+
+            <div class="sideboard-points">
+                <div id="question-count-sideboard" class="sideboard">
+                    <p>Frage:</p>
+                    <hr>
+                    <div><p id="question-count"></p></div>
+                </div>
+            </div>
         </main>
+
         <div id="msg-block-quizmaster"></div>
-    </div>
-    <div id="sideboard" class="sideboard-left">
-        <div id="question-count-sideboard" class="sideboard">
-            <p>Frage:</p>
-            <hr>
-            <div><p id="question-count"></p></div>
+
+        <div id="sideboard-image" class="sideboard-image">
+            <div id="sideboard-image-content">
+                <div class="sideboard">
+                    <p>Geteiltes Bild:</p>
+                    <div id="shared-image" class="shared-image">
+                        <img id="quiz-image" class="quiz-image" onclick="openImage()">
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div id="image-modal" class="modal-image" onclick="closeImage()">
+            <div style="width: 100%;">
+                <img id="quiz-image-big" class="quiz-image-big" style="opacity: 0;">
+                <img src="/img/placeholder-quiz-tool.jpg" id="quiz-image-big-placeholder" class="quiz-image-big" style="opacity: 1;">
+            </div>
+        </div>
+
+        <a href="/" class="logout-link"><button class="btn">Abmelden</button></a>
     </div>
     <select id='color-mode-select' onchange='changeColorMode(this.value)'>
         <option value='default'>Default</option>
@@ -84,7 +103,6 @@
         <option value='windows-error'>error.mp3</option>
     </select>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/spectator.js"></script>
     <script src="js/colorMode.js"></script>

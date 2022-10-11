@@ -1,12 +1,18 @@
-const headline = document.getElementById('headline');
-const answForm = document.getElementById('answ');
 const buzzer = document.getElementById('buzzer');
-const ServerMessage = document.getElementById('msg-block');
-const activeRooms = document.getElementById('show-active-rooms');
+const answForm = document.getElementById('answ');
+const headline = document.getElementById('headline');
+const roomTitle = document.getElementById('room-title');
+const quizImage = document.getElementById('quiz-image');
+const imageModal = document.getElementById('image-modal');
 const chooseRoom = document.getElementById('choose-room');
-const candidateForm = document.getElementById('candidate-form');
-const sideboard = document.getElementById('sideboard');
+const lockButton = document.getElementById('lock-button');
+const ServerMessage = document.getElementById('msg-block');
 const enemyPoints = document.getElementById('enemy-points');
+const sharedImage = document.getElementById('shared-image');
+const quizImageBig = document.getElementById('quiz-image-big');
+const candidateForm = document.getElementById('candidate-form');
+const activeRooms = document.getElementById('show-active-rooms');
+const bigImagePlaceholder = document.getElementById('quiz-image-big-placeholder');
 
 var roomname = '';
 var audio = new Audio('https://screetox.de/files/sounds/buzzer.mp3');
@@ -83,14 +89,15 @@ socket.on('loginTryAnswer', (bool) => {
         clearMessages();
         if (this.roomname.length > 25) {
             const cutRoomname = this.roomname.substring(0, 22);
-            document.getElementById('room-title').innerHTML = `Raum: ${cutRoomname}...`;
+            roomTitle.innerHTML = `Raum: ${cutRoomname}...`;
         } else {
-            document.getElementById('room-title').innerHTML = `Raum: ${this.roomname}`;
+            roomTitle.innerHTML = `Raum: ${this.roomname}`;
         }
-        document.getElementById('room-title').title = `Raum: ${this.roomname}`;
+        roomTitle.title = `Raum: ${this.roomname}`;
         chooseRoom.style.display = 'none';
         candidateForm.style.display = 'block';
-        sideboard.style.display = 'flex';
+        document.getElementById('sideboard-image').style.display = 'flex';
+        socket.emit('newAnswer', this.roomname, '');
     } else {
         outputServerMessage(`Falsches Passwort für ${this.roomname}.`);
         reloadRooms();
@@ -126,7 +133,6 @@ socket.on('newQuestionCountToAll', (count) => {
 
 // other buzzing
 socket.on('sendBuzzed', (user) => {
-    const buzzer = document.getElementById('buzzer');
     if (user.id === socket.id) {
         buzzer.innerHTML = `Du hast<br>gebuzzert!`;
     } else {
@@ -143,14 +149,12 @@ socket.on('sendBuzzed', (user) => {
 
 // Activate/Deactivate buzzer
 socket.on('activateBuzzer', () => {
-    const buzzer = document.getElementById('buzzer');
     buzzer.disabled = false;
     buzzer.innerHTML = 'Buzzer!';
 });
 socket.on('deactivateBuzzer', () => {
-    const buzzer = document.getElementById('buzzer');
     buzzer.disabled = true;
-    buzzer.innerHTML = 'Buzzer!<br><span>(inactive)</span>';
+    buzzer.innerHTML = 'Buzzer!<br><span>(inaktiv)</span>';
 });
 
 // Free buzzer
@@ -160,7 +164,6 @@ socket.on('freeBuzzer', (unlockMoment) => {
     const waitTime = timeLeft < 300 ? timeLeft : 300;
 
     setTimeout(function() {
-        const buzzer = document.getElementById('buzzer');
         buzzer.innerHTML = 'Buzzer!';
         buzzer.disabled = false;
     }, waitTime);
@@ -224,6 +227,45 @@ function logIntoRoom(roomnumber) {
     socket.emit('loginTry', this.roomname, password);
 }
 
+// Download image file
+socket.on('download', (file, type) => {
+    var blob = new Blob([file], {type: type});
+    var urlCreator = window.URL || window.webkitURL;
+    var imageUrl = urlCreator.createObjectURL( blob );
+    quizImage.src = imageUrl;
+    quizImageBig.src = imageUrl;
+});
+
+// Show picture
+socket.on('showPicture', () => {
+    quizImage.style.opacity = '1';
+    quizImageBig.style.opacity = '1';
+    sharedImage.style.backgroundImage = 'url()';
+    bigImagePlaceholder.style.opacity = '0';
+});
+
+// Hide picture
+socket.on('hidePicture', () => {
+    quizImage.style.opacity = '0';
+    quizImageBig.style.opacity = '0';
+    sharedImage.style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
+    bigImagePlaceholder.style.opacity = '1';
+});
+
+// Show big view of image
+function openImage() {
+    imageModal.style.opacity = '1';
+    imageModal.style.zIndex = 2;
+    quizImageBig.style.zIndex = 2;
+}
+
+// Hide big view of image
+function closeImage() {
+    imageModal.style.opacity = '0';
+    imageModal.style.zIndex = -1;
+    quizImageBig.style.zIndex = -1;
+}
+
 // Clear points shown in sidebar
 function clearPoints() {
     if (enemyPoints.firstChild) {
@@ -240,9 +282,21 @@ function clearMessages() {
     }
 }
 
+// Lock in/out answer
+function lockAnswer() {
+    if (answForm.disabled) {
+        answForm.disabled = false;
+        lockButton.innerHTML = '&#x1F513;';
+        socket.emit('answerUnlocked', this.roomname);
+    } else {
+        answForm.disabled = true;
+        lockButton.innerHTML = '&#x1F512;';
+        socket.emit('answerLocked', this.roomname);
+    }
+}
+
 // self buzzing
 function buzz() {
-    const buzzer = document.getElementById('buzzer');
     if (!(buzzer.disabled)) {
         audio.play();
         audioPlayed = true;

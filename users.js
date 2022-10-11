@@ -101,8 +101,24 @@ function saveAnswer(id, answ) {
         currentAnswers.splice(index, 1);
     }
 
-    const answer = { id, answ };
+    const answer = { id, answ, locked: false };
     currentAnswers.push(answer);
+}
+
+// Lock answer
+function lockAnswer(id) {
+    const index = currentAnswers.findIndex(answer => answer.id === id);
+    if (index !== -1) {
+        currentAnswers[index].locked = true;
+    }
+}
+
+// Unlock answer
+function unlockAnswer(id) {
+    const index = currentAnswers.findIndex(answer => answer.id === id);
+    if (index !== -1) {
+        currentAnswers[index].locked = false;
+    }
 }
 
 // Save new points
@@ -169,15 +185,19 @@ function setRoomInactive(id) {
 // Get candidate answers
 function getCandidateAnswers(candidates) {
     const answers = [];
+    const lockedAnswers = [];
     for (let i = 0; i < candidates.length; i++) {
         const answer = currentAnswers.find(answer => answer.id === candidates[i].id);
         var candidateAnswer = '';
+        var isLockedIn = false;
         if (answer) {
             candidateAnswer = answer.answ;
+            isLockedIn = answer.locked;
         }
         answers.push(candidateAnswer);
+        lockedAnswers.push(isLockedIn);
     }
-    return answers;
+    return { answers, lockedAnswers };
 }
 
 // Get candidate points
@@ -250,6 +270,8 @@ module.exports = {
     getCurrentUser,
     getActiveRoomNames,
     saveAnswer,
+    lockAnswer,
+    unlockAnswer,
     savePoints,
     saveCurrentQuestion,
     userLeave,
