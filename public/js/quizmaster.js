@@ -299,7 +299,6 @@ socket.on('sendCandidates', (cands, points, answers, lockedAnswers, questionCoun
     const ptsField = document.getElementById(`${index}-points`);
     if (ptsField) {ptsField.parentElement.parentElement.classList.add('i-buzzed');}
 
-    console.log(lockedAnswers);
     for (let i = 0; i < candidates.length; i++) {
         if (lockedAnswers[i]) {
             const index = candidates.findIndex(cand => cand.id === cands[i].id);
@@ -361,8 +360,20 @@ function upload(files) {
     hidePicture();
     quizImage.style.opacity = '1';
     document.getElementById('shared-image-quizmaster').style.backgroundImage = 'url()';
-    socket.emit('upload', files[0], files[0].type, this.roomname);
+
+    var firstFile = files[0];
+    var reader = new FileReader();
+    var thisRoomname = this.roomname;
+    reader.onloadend = () => {
+        socket.emit('upload-image', {name: firstFile.name, data: reader.result}, thisRoomname);
+    };
+    reader.readAsArrayBuffer(firstFile);
 }
+
+// Display uploaded file
+socket.on('image-uploaded', (message) => {
+    quizImage.src = message.name;
+});
 
 // Show picture to candidates
 function showPicture() {
@@ -377,14 +388,6 @@ function hidePicture() {
     showPictureButton.disabled = false;
     socket.emit('hidePicture', this.roomname);
 }
-
-// Download image file
-socket.on('download', (file, type) => {
-    var blob = new Blob([file], {type: type});
-    var urlCreator = window.URL || window.webkitURL;
-    var imageUrl = urlCreator.createObjectURL( blob );
-    quizImage.src = imageUrl;
-});
 
 // Output messages from server and delete after 60 seconds; msg = str
 function outputServerMessage(msg) {

@@ -223,13 +223,10 @@ function logIntoRoom(roomnumber) {
     socket.emit('loginTry', this.roomname, password);
 }
 
-// Download image file
-socket.on('download', (file, type) => {
-    var blob = new Blob([file], {type: type});
-    var urlCreator = window.URL || window.webkitURL;
-    var imageUrl = urlCreator.createObjectURL( blob );
-    quizImage.src = imageUrl;
-    quizImageBig.src = imageUrl;
+// Display uploaded file
+socket.on('image-uploaded', (message) => {
+    quizImage.src = message.name;
+    quizImageBig.src = message.name;
 });
 
 // Show picture

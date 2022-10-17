@@ -1,5 +1,6 @@
 const path = require('path');
 const http = require('http');
+const fs = require('fs');
 const moment = require('moment');
 const express = require('express');
 const socketio = require('socket.io');
@@ -167,7 +168,7 @@ io.on('connection', (socket) => {
                 }
                 const index = files.findIndex(file => file.room === roomname);
                 if (index !== -1) {
-                    socket.emit('download', files[index].file, files[index].type);
+                    socket.emit('image-uploaded', {name: '/img/tmp/' + files[index].file});
                     if (files[index].isVisible) {
                         socket.emit('showPicture');
                     }
@@ -200,7 +201,7 @@ io.on('connection', (socket) => {
                 }
                 const index = files.findIndex(file => file.room === roomname);
                 if (index !== -1) {
-                    socket.emit('download', files[index].file, files[index].type);
+                    socket.emit('image-uploaded', {name: '/img/tmp/' + files[index].file});
                     if (files[index].isVisible) {
                         socket.emit('showPicture');
                     }
@@ -389,18 +390,28 @@ io.on('connection', (socket) => {
     });
 
     // File upload from quizmaster
-    socket.on('upload', (file, type, roomname) => {
+    socket.on('upload-image', (message, roomname) => {
         const user = getCurrentUser(socket.id);
         if (user) {
+            var messageName = imageNameUnique(message.name);
+
             const index = files.findIndex(file => file.room === roomname);
-            const newFile = {file: file, type: type, room: roomname, isVisible: false};
+            const newFile = {file: messageName, room: roomname, isVisible: false};
             if (index === -1) {
                 files.push(newFile);
             } else {
+                fs.unlink(`./public/img/tmp/${files[index].file}`, (err) => {if (err) {console.log(err);}});
                 files[index] = newFile;
             }
-            const index2 = files.findIndex(file => file.room === roomname);
-            io.to(roomname).emit('download', files[index2].file, files[index2].type);
+            console.log(files);
+
+            var writer = fs.createWriteStream(path.resolve(__dirname, './public/img/tmp/' + messageName), {encoding: 'base64'});
+            writer.write(message.data);
+            writer.end();
+
+            writer.on('finish', function () {
+                io.to(roomname).emit('image-uploaded', {name: '/img/tmp/' + messageName});
+            });
         } else {
             socket.emit('reloadPage');
         }
@@ -459,6 +470,7 @@ io.on('connection', (socket) => {
                         }
                         const index = files.findIndex(file => file.room === room);
                         if (index !== -1) {
+                            fs.unlink(`./public/img/tmp/${files[index].file}`, (err) => {if (err) {console.log(err);}});
                             files.splice(index, 1);
                             io.to(room).emit('hidePicture');
                         }
@@ -494,6 +506,16 @@ function formatMessage(id, text) {
         id,
         text,
         time: moment().format('kk:mm:ss')
+    };
+}
+
+// Format image name if already exists
+function imageNameUnique(name) {
+    const index = files.findIndex(file => file.file === name);
+    if (index === -1) {
+        return name;
+    } else {
+        return imageNameUnique(`_${name}`);
     }
 }
 
