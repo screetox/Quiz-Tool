@@ -2,14 +2,12 @@ const buzzer = document.getElementById('buzzer');
 const answForm = document.getElementById('answ');
 const headline = document.getElementById('headline');
 const roomTitle = document.getElementById('room-title');
-const quizImage = document.getElementById('quiz-image');
 const imageModal = document.getElementById('image-modal');
 const chooseRoom = document.getElementById('choose-room');
 const lockButton = document.getElementById('lock-button');
 const ServerMessage = document.getElementById('msg-block');
 const enemyPoints = document.getElementById('enemy-points');
 const sharedImage = document.getElementById('shared-image');
-const quizImageBig = document.getElementById('quiz-image-big');
 const candidateForm = document.getElementById('candidate-form');
 const activeRooms = document.getElementById('show-active-rooms');
 const bigImagePlaceholder = document.getElementById('quiz-image-big-placeholder');
@@ -229,22 +227,40 @@ function logIntoRoom(roomnumber) {
 
 // Display uploaded file
 socket.on('image-uploaded', (message) => {
-    quizImage.src = message.name;
-    quizImageBig.src = message.name;
+    var oldImg = document.getElementById('quiz-image');
+    sharedImage.removeChild(oldImg);
+
+    var newImg = document.createElement('img');
+    newImg.setAttribute('id', 'quiz-image');
+    newImg.setAttribute('src', message.name);
+    newImg.setAttribute('class', 'quiz-image');
+    newImg.setAttribute('onclick', 'openImage()');
+    sharedImage.appendChild(newImg);
+
+    var oldImgBig = document.getElementById('quiz-image-big');
+    var parent = oldImgBig.parentElement;
+    parent.removeChild(oldImgBig);
+
+    var newImgBig = document.createElement('img');
+    newImgBig.setAttribute('id', 'quiz-image-big');
+    newImgBig.setAttribute('src', message.name);
+    newImgBig.setAttribute('class', 'quiz-image-big');
+    newImgBig.setAttribute('onclick', 'openImage()');
+    parent.appendChild(newImgBig);
 });
 
 // Show picture
 socket.on('showPicture', () => {
-    quizImage.style.opacity = '1';
-    quizImageBig.style.opacity = '1';
+    document.getElementById('quiz-image').style.opacity = '1';
+    document.getElementById('quiz-image-big').style.opacity = '1';
     sharedImage.style.backgroundImage = 'url()';
     bigImagePlaceholder.style.opacity = '0';
 });
 
 // Hide picture
 socket.on('hidePicture', () => {
-    quizImage.style.opacity = '0';
-    quizImageBig.style.opacity = '0';
+    document.getElementById('quiz-image').style.opacity = '0';
+    document.getElementById('quiz-image-big').style.opacity = '0';
     sharedImage.style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
     bigImagePlaceholder.style.opacity = '1';
 });
@@ -253,14 +269,14 @@ socket.on('hidePicture', () => {
 function openImage() {
     imageModal.style.opacity = '1';
     imageModal.style.zIndex = 2;
-    quizImageBig.style.zIndex = 2;
+    document.getElementById('quiz-image-big').style.zIndex = 2;
 }
 
 // Hide big view of image
 function closeImage() {
     imageModal.style.opacity = '0';
     imageModal.style.zIndex = -1;
-    quizImageBig.style.zIndex = -1;
+    document.getElementById('quiz-image-big').style.zIndex = -1;
 }
 
 // Clear points shown in sidebar

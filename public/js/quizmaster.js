@@ -1,6 +1,5 @@
 const headline = document.getElementById('headline');
 const roomTitle = document.getElementById('room-title');
-const quizImage = document.getElementById('quiz-image');
 const roomnameInput = document.getElementById('roomname');
 const passwordInput = document.getElementById('password');
 const roomInputForm = document.getElementById('input-form');
@@ -11,6 +10,7 @@ const questionCountInput = document.getElementById('question-count');
 const candidateAnswersForm = document.getElementById('answers-form');
 const ServerMessage = document.getElementById('msg-block-quizmaster');
 const candidateAnswers = document.getElementById('candidate-answers');
+const sharedImage = document.getElementById('shared-image-quizmaster');
 const buzzerFreeButton = document.getElementById('buzzer-free-button');
 const showPictureButton = document.getElementById('show-picture-button');
 const hidePictureButton = document.getElementById('hide-picture-button');
@@ -358,8 +358,7 @@ function analyzeBuzzing() {
 // Upload image file
 function upload(files) {
     hidePicture();
-    quizImage.style.opacity = '1';
-    document.getElementById('shared-image-quizmaster').style.backgroundImage = 'url()';
+    sharedImage.style.backgroundImage = 'url()';
 
     var firstFile = files[0];
     var reader = new FileReader();
@@ -372,7 +371,16 @@ function upload(files) {
 
 // Display uploaded file
 socket.on('image-uploaded', (message) => {
-    quizImage.src = message.name;
+    var oldImg = document.getElementById('quiz-image');
+    sharedImage.removeChild(oldImg);
+
+    var newImg = document.createElement('img');
+    newImg.setAttribute('id', 'quiz-image');
+    newImg.setAttribute('src', message.name);
+    newImg.setAttribute('class', 'quiz-image-quizmaster');
+    sharedImage.appendChild(newImg);
+
+    document.getElementById('quiz-image').style.opacity = '1';
 });
 
 // Show picture to candidates

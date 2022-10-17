@@ -5,7 +5,6 @@ const candidateAnswers = document.getElementById('candidate-answers-stream');
 const candidateAnswersForm = document.getElementById('answers-form-stream');
 const roomTitle = document.getElementById('room-title');
 const cntField = document.getElementById(`question-count`);
-const quizImage = document.getElementById('quiz-image-stream');
 const sharedImage = document.getElementById('shared-image-stream');
 
 const candidates = [];
@@ -218,18 +217,25 @@ function logIntoRoom(roomnumber) {
 
 // Display uploaded file
 socket.on('image-uploaded', (message) => {
-    quizImage.src = message.name;
+    var oldImg = document.getElementById('quiz-image-stream');
+    sharedImage.removeChild(oldImg);
+
+    var newImg = document.createElement('img');
+    newImg.setAttribute('id', 'quiz-image-stream');
+    newImg.setAttribute('src', message.name);
+    newImg.setAttribute('class', 'quiz-image-stream');
+    sharedImage.appendChild(newImg);
 });
 
 // Show picture
 socket.on('showPicture', () => {
-    quizImage.style.opacity = '1';
+    document.getElementById('quiz-image-stream').style.opacity = '1';
     sharedImage.style.backgroundImage = 'url()';
 });
 
 // Hide picture
 socket.on('hidePicture', () => {
-    quizImage.style.opacity = '0';
+    document.getElementById('quiz-image-stream').style.opacity = '0';
     sharedImage.style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
 });
 

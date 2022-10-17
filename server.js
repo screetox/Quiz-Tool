@@ -403,7 +403,6 @@ io.on('connection', (socket) => {
                 fs.unlink(`./public/img/tmp/${files[index].file}`, (err) => {if (err) {console.log(err);}});
                 files[index] = newFile;
             }
-            console.log(files);
 
             var writer = fs.createWriteStream(path.resolve(__dirname, './public/img/tmp/' + messageName), {encoding: 'base64'});
             writer.write(message.data);
