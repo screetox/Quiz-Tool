@@ -82,7 +82,6 @@ socket.on('loginTryAnswer', (bool) => {
         }
         chooseRoom.style.display = 'none';
         candidateAnswersForm.style.display = 'block';
-        document.getElementById('shared-image-stream').style.display = 'block';
         document.getElementById('question-count').style.display = 'block';
         document.getElementById('headline-stream').style.marginLeft = '110px';
         socket.emit('getCandidates', this.roomname);
@@ -215,26 +214,6 @@ function logIntoRoom(roomnumber) {
     modal.style.display = 'none';
     socket.emit('streamOverlayLoginTry', this.roomname, password);
 }
-
-// Download image file
-socket.on('download', (file, type) => {
-    var blob = new Blob([file], {type: type});
-    var urlCreator = window.URL || window.webkitURL;
-    var imageUrl = urlCreator.createObjectURL( blob );
-    quizImage.src = imageUrl;
-});
-
-// Show picture
-socket.on('showPicture', () => {
-    quizImage.style.opacity = '1';
-    sharedImage.style.backgroundImage = 'url()';
-});
-
-// Hide picture
-socket.on('hidePicture', () => {
-    quizImage.style.opacity = '0';
-    sharedImage.style.backgroundImage = 'url(/img/placeholder-quiz-tool.jpg';
-});
 
 // Move the selected answer and points to the top most position in the list; idx = number
 function moveUp(idx) {

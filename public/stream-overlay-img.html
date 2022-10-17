@@ -14,21 +14,18 @@
     <div id="small-screen-warning">
         <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
     </div>
-    <input id="question-count" class="question-count-stream" type="number" value="" readonly />
-    <h1 id="headline-stream">Stream-Overlay Quiz-Tool</h1>
+    <h1 id="headline-stream">Stream-Overlay Quiz-Tool Bild</h1>
     <div id="choose-stream-room">
         <button class="btn-stream" onclick="reloadRooms()">Aktualisieren</button>
         <p>Bitte wähle einen Raum aus:</p>
         <div id="show-active-rooms"></div>
     </div>
-    <div id="answers-form-stream">
-        <p id="room-title">Raum: </p>
-        <div id="candidate-answers-stream"></div>
+    <div id="shared-image-stream" class="shared-image-stream">
+        <img id="quiz-image-stream" class="quiz-image-stream">
     </div>
-    <div id="msg-block-stream"></div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/stream-overlay.js"></script>
+    <script src="js/stream-overlay-img.js"></script>
 </body>
 
 </html>
