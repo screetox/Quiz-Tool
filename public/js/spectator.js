@@ -12,7 +12,7 @@ const bigImagePlaceholder = document.getElementById('quiz-image-big-placeholder'
 const candidates = [];
 const username = 'Spectator';
 var roomname = '';
-var audio = new Audio('https://screetox.de/files/sounds/buzzer.mp3');
+var audio = new Audio('/mp3/buzzer.mp3');
 headline.innerHTML = `Hallo, ${username}!`;
 // window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 const socket = io();

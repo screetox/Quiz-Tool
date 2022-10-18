@@ -13,7 +13,7 @@ const activeRooms = document.getElementById('show-active-rooms');
 const bigImagePlaceholder = document.getElementById('quiz-image-big-placeholder');
 
 var roomname = '';
-var audio = new Audio('https://screetox.de/files/sounds/buzzer.mp3');
+var audio = new Audio('/mp3/buzzer.mp3');
 var audioPlayed = false;
 // Get username from url
 const urlParams = new URLSearchParams(location.search);

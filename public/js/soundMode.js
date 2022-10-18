@@ -25,17 +25,17 @@ if (typeof(Storage) !== 'undefined') {
                 break;
         }
         sound = soundSelect.value;
-        audio = new Audio(`https://screetox.de/files/sounds/${sound}.mp3`);
+        audio = new Audio(`/mp3/${sound}.mp3`);
     } else {
         sound = 'buzzer';
-        audio = new Audio(`https://screetox.de/files/sounds/${sound}.mp3`);
+        audio = new Audio(`/mp3/${sound}.mp3`);
     }
 }
 
 // Activate sound mode
 // sound = str
 function changeSoundMode(sound) {
-    audio = new Audio(`https://screetox.de/files/sounds/${sound}.mp3`);
+    audio = new Audio(`/mp3/${sound}.mp3`);
     audio.play();
     if (typeof(Storage) !== 'undefined') {
         localStorage.soundmode = `${sound}`;
