@@ -1,2 +1,7 @@
+# ignore node modules (can be installed)
 /node_modules/
 /node_modules/*
+
+# ignore temporary images but include placeholder
+/public/img/tmp/*
+!/public/img/tmp/placeholder
