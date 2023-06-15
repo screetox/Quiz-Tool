@@ -337,7 +337,11 @@ window.addEventListener('keydown', function(event) {
                 }
             }
         } else if (candidateForm.style.display != 'none') {
-            buzz();
+            if (this.document.activeElement == answForm) {
+                lockAnswer();
+            } else {
+                buzz();
+            }
         }
     }
     if (event.key === ' ') {
