@@ -117,9 +117,9 @@ function addPoint(candidate) {
 }
 
 // Add point to candidate and inform server; candidate = number
-function add2Point(candidate) {
+function add3Point(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
-    var counter_new = Number(counter) + 2;
+    var counter_new = Number(counter) + 3;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     document.getElementById(`${candidate}-points`).title = `${counter_new}`;
     socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
@@ -137,9 +137,9 @@ function subPoint(candidate) {
 }
 
 // Sub point from candidate and inform server; candidate = number
-function sub2Point(candidate) {
+function sub3Point(candidate) {
     var counter = document.getElementById(`${candidate}-points`).value;
-    var counter_new = Number(counter) - 2;
+    var counter_new = Number(counter) - 3;
     document.getElementById(`${candidate}-points`).value = `${counter_new}`;
     document.getElementById(`${candidate}-points`).title = `${counter_new}`;
     socket.emit('newPoints', this.roomname, candidates[candidate], counter_new);
@@ -265,7 +265,7 @@ socket.on('sendCandidates', (cands, points, answers, lockedAnswers, questionCoun
         const answerDiv = document.createElement('div');
         pointsDiv.innerHTML = `
             <div style="display: flex;">
-                <button id="${i}-2-points-plus" title="${candidates[i].username} + 2" onclick="add2Point(${i})">+ 2</button>
+                <button id="${i}-3-points-plus" title="${candidates[i].username} + 3" onclick="add3Point(${i})">+ 3</button>
                 <button id="${i}-points-plus" title="${candidates[i].username} + 1" onclick="addPoint(${i})">+ 1</button>
             </div>
             <div style="display: flex; align-items: center;">
@@ -273,7 +273,7 @@ socket.on('sendCandidates', (cands, points, answers, lockedAnswers, questionCoun
                 <input id="${i}-points" type="number" value="${points[i]}" title="${points[i]}" />
             </div>
             <div style="display: flex;">
-            <button id="${i}-2-points-minus" title="${candidates[i].username} - 2" onclick="sub2Point(${i})">- 2</button>
+            <button id="${i}-3-points-minus" title="${candidates[i].username} - 3" onclick="sub3Point(${i})">- 3</button>
                 <button id="${i}-points-minus" title="${candidates[i].username} - 1" onclick="subPoint(${i})">- 1</button>
             </div>`;
         pointsDiv.classList.add('candidate-points');
