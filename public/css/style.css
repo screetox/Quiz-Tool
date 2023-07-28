@@ -82,6 +82,10 @@ input[id$='-order-input'] {
     padding: 0;
 }
 
+*:not([input]) {
+    -webkit-user-select: none;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
