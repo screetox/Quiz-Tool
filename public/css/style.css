@@ -146,7 +146,7 @@ input {
     border: 1px solid var(--dark-color-a);
 }
 
-button {
+button, input#file-upload-button, .buzzer, .close, .lock-button, .pointer, #quizmaster-login {
     cursor: pointer;
 }
 
@@ -215,7 +215,6 @@ button {
     font-size: 25px;
     border: 1px solid var(--dark-color-a);
     border-radius: 100%;
-    cursor: pointer;
 }
 
 .buzzer:disabled {
@@ -354,7 +353,6 @@ button {
     font-size: 28px;
     font-weight: bold;
     line-height: 0;
-    cursor: pointer;
 }
 
 .candidate-answer {
@@ -380,7 +378,6 @@ button {
     border:none;
     margin:0;
     padding:0;
-    cursor: pointer;
     font-size: 20px;
     width: auto;
     height: 40px;
@@ -891,7 +888,6 @@ button {
     padding: 0px;
     height: auto;
     width: auto;
-    cursor: pointer;
 }
 
 #inline-buttons {
