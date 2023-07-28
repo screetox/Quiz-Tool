@@ -690,7 +690,6 @@ button {
 
 .popup {
     position: relative;
-    cursor: pointer;
 }
 
 .popup .popuptext {
@@ -892,6 +891,7 @@ button {
     padding: 0px;
     height: auto;
     width: auto;
+    cursor: pointer;
 }
 
 #inline-buttons {
