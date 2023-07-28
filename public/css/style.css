@@ -84,6 +84,9 @@ input[id$='-order-input'] {
 
 *:not([input]) {
     -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 body {
@@ -688,10 +691,6 @@ button {
 .popup {
     position: relative;
     cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 .popup .popuptext {
