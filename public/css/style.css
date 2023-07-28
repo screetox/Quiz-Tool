@@ -146,7 +146,7 @@ input {
     border: 1px solid var(--dark-color-a);
 }
 
-button, input#file-upload-button, .buzzer, .close, .lock-button, .pointer, #quizmaster-login {
+button, .buzzer, .close, .lock-button, .input-file, .input-file::file-selector-button, .pointer, #quizmaster-login {
     cursor: pointer;
 }
 
@@ -197,6 +197,11 @@ button, input#file-upload-button, .buzzer, .close, .lock-button, .pointer, #quiz
     border: 0px;
     width: 480px;
     margin-bottom: 0;
+}
+
+.input-file::file-selector-button {
+    font-size: 13px;
+    margin-right: 12px;
 }
 
 .buzzer {
@@ -933,21 +938,24 @@ button, input#file-upload-button, .buzzer, .close, .lock-button, .pointer, #quiz
 }
 
 #buzzer-control button {
-    height: 28px;
     width: 90px;
     margin: 2px;
-    padding: 0 5px;
+}
+
+#buzzer-control button, .input-file::file-selector-button {
+    height: 28px;
+    padding: 0 10px;
     background: var(--button-color);
     color: var(--dark-color-a);
     border: 1px solid var(--dark-color-a);
     border-radius: 10px;
 }
 
-#buzzer-control button:hover {
+#buzzer-control button:hover, .input-file::file-selector-button:hover {
     background-color: var(--button-hover-color);
 }
 
-#buzzer-control button:active:not(button:disabled) {
+#buzzer-control button:active:not(button:disabled), .input-file::file-selector-button:active {
     position: relative;
     top: 1px;
 }
