@@ -30,13 +30,12 @@ const {
 const { time } = require('console');
 
 const app = express();
-// const options = {
-//     key: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/privkey.pem'),
-//     cert: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/cert.pem'),
-//     ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/chain.pem')
-// }
-// const server = https.createServer(options, app);
-const server = http.createServer(app);
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/cert.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/chain.pem')
+}
+const server = https.createServer(options, app);
 const PORT = 3000;
 const io = socketio(server, { maxHttpBufferSize: 1e8 });
 const botName = 'Server';
