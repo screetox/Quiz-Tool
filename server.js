@@ -30,12 +30,18 @@ const {
 const { time } = require('console');
 
 const app = express();
-const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/cert.pem'),
-    ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/chain.pem')
+var server = null;
+if (process.argv[2] == '-dev') {
+    server = http.createServer(app);
+    console.log('\x1b[36m%s\x1b[0m', 'Starting dev mode: SSL deactivated');
+} else {
+    const options = {
+        key: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/cert.pem'),
+        ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/chain.pem')
+    }
+    server = https.createServer(options, app);
 }
-const server = https.createServer(options, app);
 const PORT = 3000;
 const io = socketio(server, { maxHttpBufferSize: 1e8 });
 const botName = 'Server';
