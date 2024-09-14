@@ -38,7 +38,7 @@ if (process.argv[2] == '-dev') {
     const options = {
         key: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/privkey.pem'),
         cert: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/cert.pem'),
-        ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/chain.pem')
+        ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/fullchain.pem')
     }
     server = https.createServer(options, app);
 }
