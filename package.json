@@ -10,13 +10,13 @@
     "author": "David Felder",
     "license": "MIT",
     "dependencies": {
-        "express": "^4.21.0",
+        "express": "^5.1.0",
         "fs": "^0.0.1-security",
         "moment": "^2.30.1",
-        "semver": "^7.6.3",
-        "socket.io": "^4.7.5"
+        "semver": "^7.7.2",
+        "socket.io": "^4.8.1"
     },
     "devDependencies": {
-        "nodemon": "^3.1.5"
+        "nodemon": "^3.1.10"
     }
 }
