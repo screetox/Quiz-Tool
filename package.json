@@ -5,7 +5,7 @@
     "main": "server.js",
     "scripts": {
         "start": "node server",
-        "dev": "nodemon server -dev"
+        "dev": "nodemon server"
     },
     "author": "David Felder",
     "license": "MIT",

@@ -1,6 +1,5 @@
 const path = require('path');
 const http = require('http');
-const https = require('https');
 const fs = require('fs');
 const moment = require('moment');
 const express = require('express');
@@ -27,21 +26,9 @@ const {
     getAllPoints,
     getCurrentQuestion
     } = require('./users');
-const { time } = require('console');
 
 const app = express();
-var server = null;
-if (process.argv[2] == '-dev') {
-    server = http.createServer(app);
-    console.log('\x1b[36m%s\x1b[0m', 'Starting dev mode: SSL deactivated');
-} else {
-    const options = {
-        key: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/cert.pem'),
-        ca: fs.readFileSync('/etc/letsencrypt/live/doppelkekse.com-0001/fullchain.pem')
-    }
-    server = https.createServer(options, app);
-}
+const server = http.createServer(app);
 const PORT = 3000;
 const io = socketio(server, { maxHttpBufferSize: 1e8 });
 const botName = 'Server';
