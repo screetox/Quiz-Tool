@@ -156,15 +156,9 @@ socket.on('deactivateBuzzer', () => {
 });
 
 // Free buzzer
-socket.on('freeBuzzer', (unlockMoment) => {
-    const now = moment().valueOf();
-    const timeLeft = unlockMoment - now;
-    const waitTime = timeLeft < 300 ? timeLeft : 300;
-
-    setTimeout(function() {
-        buzzer.innerHTML = 'Buzzer!';
-        buzzer.disabled = false;
-    }, waitTime);
+socket.on('freeBuzzer', () => {
+    buzzer.innerHTML = 'Buzzer!';
+    buzzer.disabled = false;
 });
 
 // Message submit
@@ -314,8 +308,7 @@ function buzz() {
         audio.play();
         audioPlayed = true;
         setTimeout(function() {audioPlayed = false;}, 600);
-        const momentBuzzed = moment();
-        socket.emit('newBuzz', this.roomname, momentBuzzed);
+        socket.emit('newBuzz', this.roomname);
         buzzer.disabled = true;
         buzzer.innerHTML = '...';
     }

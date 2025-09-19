@@ -331,29 +331,16 @@ socket.on('answerUnlockedToMaster', (id) => {
     if (ptsField) {ptsField.parentElement.parentElement.classList.remove('locked-in');}
 });
 
-// Detect buzzer and see who buzzed first
-socket.on('candidateBuzzed', (user) => {
-    buzzedUser = user.id;
-    if (firstBuzzer) {
-        firstBuzzer = false;
-        setTimeout(function() {analyzeBuzzing();}, 300);
-        audio.play();
-        buzzerFreeButton.disabled = false;
-    }
-});
-socket.on('candidateBuzzedLate', (later, earlier) => {
-    console.log(`${later.username} buzzed later than ${earlier.username}.`);
-});
+// Detect buzzer
+socket.on('sendBuzzed', (user) => {
+    const buzzedUser = user.id;
+    audio.play();
+    buzzerFreeButton.disabled = false;
 
-// Crown whoever buzzed first
-function analyzeBuzzing() {
-    const analyzedBuzzedUser = buzzedUser;
-
-    const index = candidates.findIndex(cand => cand.id === analyzedBuzzedUser);
+    const index = candidates.findIndex(cand => cand.id === buzzedUser);
     const ptsField = document.getElementById(`${index}-points`);
     if (ptsField) {ptsField.parentElement.parentElement.classList.add('i-buzzed');}
-    socket.emit('analyzedBuzzing', this.roomname, analyzedBuzzedUser);
-}
+});
 
 // Upload image file
 function upload(files) {
@@ -454,29 +441,29 @@ window.addEventListener('keydown', function(event) {
 roomnameInput.addEventListener('input', (e) => {
     var username = e.target.value;
     if (username.includes('<') || username.includes('>') || username.includes('"')) {
-       e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
+        e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
 
-       var popup = document.getElementById('injectionPopupRoomname');
-       popup.classList.add('show');
-       for (var i = 0; i < timeoutsRoomname.length; i++) {
-           clearTimeout(timeoutsRoomname[i]);
-       }
-       timeoutsRoomname = [];
-       timeoutsRoomname.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
+        var popup = document.getElementById('injectionPopupRoomname');
+        popup.classList.add('show');
+        for (var i = 0; i < timeoutsRoomname.length; i++) {
+            clearTimeout(timeoutsRoomname[i]);
+        }
+        timeoutsRoomname = [];
+        timeoutsRoomname.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
     }
 });
 
 passwordInput.addEventListener('input', (e) => {
     var username = e.target.value;
     if (username.includes('<') || username.includes('>') || username.includes('"')) {
-       e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
+        e.target.value = username.replaceAll('<', '').replaceAll('>', '').replaceAll('"', '');
 
-       var popup = document.getElementById('injectionPopupPassword');
-       popup.classList.add('show');
-       for (var i = 0; i < timeoutsPassword.length; i++) {
-           clearTimeout(timeoutsPassword[i]);
-       }
-       timeoutsPassword = [];
-       timeoutsPassword.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
+        var popup = document.getElementById('injectionPopupPassword');
+        popup.classList.add('show');
+        for (var i = 0; i < timeoutsPassword.length; i++) {
+            clearTimeout(timeoutsPassword[i]);
+        }
+        timeoutsPassword = [];
+        timeoutsPassword.push(setTimeout(function() {popup.classList.remove('show');}, 3000));
     }
 });

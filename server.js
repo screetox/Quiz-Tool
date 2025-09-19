@@ -34,7 +34,7 @@ const io = socketio(server, { maxHttpBufferSize: 1e8 });
 const botName = 'Server';
 const buzzerActive = [];
 const isBuzzed = [];
-const timeLastBuzz = [];
+const whoBuzzed = [];
 const files = [];
 
 // Set static folder
@@ -128,8 +128,8 @@ io.on('connection', (socket) => {
             const questionCount = getCurrentQuestion(roomname);
             var userBuzzedId = null;
             if (isBuzzed.includes(roomname)) {
-                const index = timeLastBuzz.findIndex(last => last.room === roomname);
-                if (getCurrentUser(timeLastBuzz[index].id)) {userBuzzedId = timeLastBuzz[index].id;}
+                const index = whoBuzzed.findIndex(who => who.room === roomname);
+                if (getCurrentUser(whoBuzzed[index].id)) {userBuzzedId = whoBuzzed[index].id;}
             }
 
             socket.emit('sendCandidates', candidateArray, points, answers, lockedAnswers, questionCount, userBuzzedId);
@@ -161,8 +161,8 @@ io.on('connection', (socket) => {
                     socket.emit('activateBuzzer');
                 }
                 if (isBuzzed.includes(roomname)) {
-                    const index = timeLastBuzz.findIndex(last => last.room === roomname);
-                    const userBuzzed = getCurrentUser(timeLastBuzz[index].id) ? getCurrentUser(timeLastBuzz[index].id) : {username: 'Jemand', id: null};
+                    const index = whoBuzzed.findIndex(who => who.room === roomname);
+                    const userBuzzed = getCurrentUser(whoBuzzed[index].id) ? getCurrentUser(whoBuzzed[index].id) : {username: 'Jemand', id: null};
                     socket.emit('sendBuzzed', userBuzzed);
                 }
                 const index = files.findIndex(file => file.room === roomname);
@@ -174,36 +174,8 @@ io.on('connection', (socket) => {
                 }
                 socket.emit('newQuestionCountToAll', getCurrentQuestion(roomname));
                 const rooms = socket.rooms;
-                if (!(rooms.has('spectator'))) {
+                if (!(rooms.has('spectator') || rooms.has('stream-overlay'))) {
                     io.to(roomname).emit('newCandidate');
-                }
-            } else {
-                socket.emit('loginTryAnswer', false);
-            }
-        } else {
-            socket.emit('reloadPage');
-        }
-    });
-
-    // Login user if stream overlay credentials correct
-    socket.on('streamOverlayLoginTry', (roomname, password) => {
-        const user = getCurrentUser(socket.id);
-        if (user) {
-            const correct = testPassword(roomname, password);
-            if (correct) {
-                socket.join(roomname);
-                socket.emit('loginTryAnswer', true);
-                if (isBuzzed.includes(roomname)) {
-                    const index = timeLastBuzz.findIndex(last => last.room === roomname);
-                    const userBuzzed = getCurrentUser(timeLastBuzz[index].id) ? getCurrentUser(timeLastBuzz[index].id) : {username: 'Jemand', id: null};
-                    setTimeout(function() {socket.emit('sendBuzzed', userBuzzed);}, 300);
-                }
-                const index = files.findIndex(file => file.room === roomname);
-                if (index !== -1) {
-                    socket.emit('image-uploaded', {name: '/img/tmp/' + files[index].file});
-                    if (files[index].isVisible) {
-                        socket.emit('showPicture');
-                    }
                 }
             } else {
                 socket.emit('loginTryAnswer', false);
@@ -247,48 +219,26 @@ io.on('connection', (socket) => {
     });
 
     // Listen for newBuzz
-    socket.on('newBuzz', (roomname, momentSent) => {
+    socket.on('newBuzz', (roomname) => {
         const user = getCurrentUser(socket.id);
         if (user) {
             if (!isBuzzed.includes(roomname)) {
                 isBuzzed.push(roomname);
-                io.to(roomname).emit('candidateBuzzed', user);
+                io.to(roomname).emit('sendBuzzed', user);
 
-                const index = timeLastBuzz.findIndex(last => last.room === roomname);
-                if (index != -1) {timeLastBuzz.splice(index, 1);}
+                const index = whoBuzzed.findIndex(who => who.room === roomname);
+                if (index != -1) {whoBuzzed.splice(index, 1);}
 
-                const setLastBuzz = {room: `${roomname}`, time: momentSent, id: user.id};
-                timeLastBuzz.push(setLastBuzz);
+                const setWhoBuzzed = {room: `${roomname}`, id: user.id};
+                whoBuzzed.push(setWhoBuzzed);
             } else {
-                const index = timeLastBuzz.findIndex(last => last.room === roomname);
-                if (index != -1) {
-                    const lastBuzz = timeLastBuzz[index].time;
-                    const orig = getCurrentUser(timeLastBuzz[index].id);
-                    if (momentSent < lastBuzz) {
-                        timeLastBuzz.splice(index, 1);
-                        io.to(roomname).emit('candidateBuzzed', user);
-                        io.to(roomname).emit('candidateBuzzedLate', orig, user);
-                        const setLastBuzz = {room: `${roomname}`, time: momentSent, id: user.id};
-                        timeLastBuzz.push(setLastBuzz);
-                    } else {
-                        io.to(roomname).emit('candidateBuzzedLate', user, orig);
-                    }
-                } else {
-                    io.to(roomname).emit('candidateBuzzed', user);
-                    const setLastBuzz = {room: `${roomname}`, time: momentSent, id: user.id};
-                    timeLastBuzz.push(setLastBuzz);
+                const index = whoBuzzed.findIndex(who => who.room === roomname);
+                if (index == -1) {
+                    io.to(roomname).emit('sendBuzzed', user);
+                    const setWhoBuzzed = {room: `${roomname}`, id: user.id};
+                    whoBuzzed.push(setWhoBuzzed);
                 }
             }
-        } else {
-            socket.emit('reloadPage');
-        }
-    });
-
-    // Listen for analyzedBuzzing
-    socket.on('analyzedBuzzing', (roomname, buzzedId) => {
-        const user = getCurrentUser(socket.id);
-        if (user) {
-            io.to(roomname).emit('sendBuzzed', getCurrentUser(buzzedId));
         } else {
             socket.emit('reloadPage');
         }
@@ -298,8 +248,7 @@ io.on('connection', (socket) => {
     socket.on('freeBuzzers', (roomname) => {
         const user = getCurrentUser(socket.id);
         if (user) {
-            const updateMoment = moment().valueOf() + 300;
-            io.to(roomname).emit('freeBuzzer', updateMoment);
+            io.to(roomname).emit('freeBuzzer');
             if (isBuzzed.includes(roomname)) {
                 const index = isBuzzed.findIndex(room => room === roomname);
                 isBuzzed.splice(index, 1);
@@ -316,8 +265,7 @@ io.on('connection', (socket) => {
             if (!buzzerActive.includes(roomname)) {
                 buzzerActive.push(roomname);
             }
-            const updateMoment = moment().valueOf() + 300;
-            io.to(roomname).emit('freeBuzzer', updateMoment);
+            io.to(roomname).emit('freeBuzzer');
             io.to(roomname).emit('activateBuzzer');
         } else {
             socket.emit('reloadPage');

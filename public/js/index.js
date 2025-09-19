@@ -19,20 +19,20 @@ window.history.replaceState('', 'Quiz-Tool - screetox', '/');
 
 function login() {
     if (quizmasterCheckbox.checked) {
-        loginForm.action = 'quizmaster.html';
+        loginForm.action = 'quizmaster';
     } else {
-        loginForm.action = 'main.html';
+        loginForm.action = 'main';
     }
     loginForm.submit();
 }
 
 function spectate() {
-    loginForm.action = 'spectator.html';
+    loginForm.action = 'spectator';
     loginForm.submit();
 }
 
 function streamOverlay() {
-    loginForm.action = 'stream-overlay.html';
+    loginForm.action = 'stream-overlay';
     loginForm.submit();
 }
 

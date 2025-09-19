@@ -4,47 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="js/moment.min.js"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Quiz-Tool - screetox</title>
-
-    <style>
-        @media only screen and (max-width: 560px) {
-            div:not(#small-screen-warning) {
-                display: none;
-            }
-            html,
-            body {
-                height: 100%;
-            }
-            #small-screen-warning {
-                color: var(--dark-color-a);
-                display: flex;
-                text-align: center;
-                align-items: center;
-                height: 100%;
-                padding: 20px;
-            }
-        }
-
-        @media only screen and (max-width: 760px) {
-            #question-count-sideboard {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 <body id="body-id">
     <div id="small-screen-warning">
-        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 560px Breite auf. Danke!</p>
+        <p>Bitte rufe die Seite auf einem Gerät mit mehr als 500px Breite auf. Danke!</p>
     </div>
     <div class="container">
         <header>
             <img src="/img/logo_2021_klein.png" alt="screetox_logo">
             <h1 id="headline">Quiz-Tool</h1>
         </header>
+
         <main id="choose-room">
             <div id="inline-buttons">
                 <button class="btn inline-button" onclick="reloadRooms()">Aktualisieren</button>
@@ -52,9 +26,13 @@
             <p>Bitte wähle einen Raum aus:</p>
             <div id="show-active-rooms"></div>
         </main>
-        <main id="answers-form-spectator">
+        <main id="candidate-form">
             <p id="room-title">Raum: </p>
-            <div id="candidate-answers-spectator"></div>
+            <div id="answ-grid">
+                <button id="lock-button" class="lock-button" autocomplete="off" onclick="lockAnswer()">&#x1F513;</button>
+                <input id="answ" type="text" placeholder="Antwort eingeben" title="" required autocomplete="off" />
+            </div>
+            <button id="buzzer" class="buzzer" autocomplete="off" onclick="buzz()" disabled>Buzzer!<br><span>(inaktiv)</span></button>
 
             <div class="sideboard-points">
                 <div id="question-count-sideboard" class="sideboard">
@@ -62,10 +40,15 @@
                     <hr>
                     <div><p id="question-count"></p></div>
                 </div>
+                <div id="enemy-points-sideboard" class="sideboard">
+                    <p>Punkte:</p>
+                    <hr>
+                    <div id="enemy-points"></div>
+                </div>
             </div>
         </main>
 
-        <div id="msg-block-quizmaster"></div>
+        <div id="msg-block"></div>
 
         <div id="sideboard-image" class="sideboard-image">
             <div id="sideboard-image-content">
@@ -104,9 +87,9 @@
     </select>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/spectator.js"></script>
-    <script src="js/colorMode.js"></script>
-    <script src="js/soundMode.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/colorMode.js"></script>
+    <script src="/js/soundMode.js"></script>
 </body>
 
 </html>

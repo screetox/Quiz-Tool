@@ -102,17 +102,11 @@ socket.on('deactivateBuzzer', () => {
         div.classList.remove('i-buzzed-stream');
     });
 });
-socket.on('freeBuzzer', (unlockMoment) => {
-    const now = moment().valueOf();
-    const timeLeft = unlockMoment - now;
-    const waitTime = timeLeft < 300 ? timeLeft : 300;
-
-    setTimeout(function() {
-        const isBuzzed = document.querySelectorAll('.i-buzzed-stream');
-        isBuzzed.forEach((div) => {
-            div.classList.remove('i-buzzed-stream');
-        });
-    }, waitTime);
+socket.on('freeBuzzer', () => {
+    const isBuzzed = document.querySelectorAll('.i-buzzed-stream');
+    isBuzzed.forEach((div) => {
+        div.classList.remove('i-buzzed-stream');
+    });
 });
 
 // Get candidates from current room from server amd print current points and answers; cands = [str], points = [number], answers = [str], userBuzzedId = str
@@ -212,7 +206,7 @@ function logIntoRoom(roomnumber) {
     document.getElementById(`${roomnumber}-btn`).blur();
 
     modal.style.display = 'none';
-    socket.emit('streamOverlayLoginTry', this.roomname, password);
+    socket.emit('loginTry', this.roomname, password);
 }
 
 // Display uploaded file
