@@ -751,6 +751,11 @@ button, .buzzer, .close, .lock-button, .input-file, .input-file::file-selector-b
     background-color: rgba(0, 0, 0, 0.0);
 }
 
+#logo {
+    width: 100px;
+    margin: 36px;
+}
+
 #choose-stream-room {
     background-color: var(--light-color);
 }
